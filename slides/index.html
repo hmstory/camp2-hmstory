@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>보이스 그룹 카운슬링 앱 - Pitch Deck</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg-card: #141414;
+      --text: #ffffff;
+      --text-sub: #888888;
+      --accent: #4F8CFF;
+      --accent-green: #34D399;
+      --accent-red: #F87171;
+      --accent-yellow: #FBBF24;
+      --accent-purple: #A78BFA;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* Slide Container */
+    .deck { width: 100vw; height: 100vh; position: relative; }
+
+    .slide {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 80px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    /* Stagger animation for child elements */
+    .slide.active .anim {
+      animation: fadeUp 0.5s ease forwards;
+      opacity: 0;
+    }
+
+    .slide.active .anim:nth-child(1) { animation-delay: 0.1s; }
+    .slide.active .anim:nth-child(2) { animation-delay: 0.25s; }
+    .slide.active .anim:nth-child(3) { animation-delay: 0.4s; }
+    .slide.active .anim:nth-child(4) { animation-delay: 0.55s; }
+    .slide.active .anim:nth-child(5) { animation-delay: 0.7s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Typography */
+    .slide-number {
+      position: absolute;
+      top: 40px;
+      right: 60px;
+      font-size: 14px;
+      color: #333;
+      font-weight: 300;
+    }
+
+    .tag {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 54px;
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 20px;
+      color: var(--text-sub);
+      font-weight: 300;
+      line-height: 1.7;
+      text-align: center;
+      max-width: 680px;
+    }
+
+    /* Stats Row */
+    .stats-row {
+      display: flex;
+      gap: 56px;
+      margin-top: 40px;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-item .number {
+      font-size: 56px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .stat-item .label {
+      font-size: 15px;
+      color: var(--text-sub);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .stat-item .source {
+      font-size: 11px;
+      color: #444;
+      margin-top: 4px;
+    }
+
+    /* Flow */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 36px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .flow-step {
+      background: var(--bg-card);
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 22px 24px;
+      text-align: center;
+      min-width: 140px;
+    }
+
+    .flow-step.active-step {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(79,140,255,0.15);
+    }
+
+    .flow-step .icon { font-size: 28px; margin-bottom: 8px; }
+    .flow-step .step-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .flow-step .step-desc { font-size: 11px; color: var(--text-sub); line-height: 1.4; }
+
+    .flow-arrow { font-size: 20px; color: #333; }
+
+    /* Cards */
+    .cards {
+      display: flex;
+      gap: 20px;
+      margin-top: 32px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 26px;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .card .card-icon { font-size: 24px; margin-bottom: 12px; }
+    .card .card-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .card .card-desc { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+
+    /* Compare */
+    .compare { display: flex; gap: 32px; margin-top: 32px; }
+
+    .compare-item {
+      flex: 1;
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid #222;
+    }
+
+    .compare-item.highlight {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, #0a0a0a, #111827);
+    }
+
+    .compare-item .compare-label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+
+    .compare-item ul { list-style: none; font-size: 15px; line-height: 2.2; }
+    .compare-item ul li::before { margin-right: 8px; }
+    .compare-item.bad ul li::before { content: "\2715"; color: var(--accent-red); }
+    .compare-item.highlight ul li::before { content: "\2713"; color: var(--accent-green); }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .badge-blue { background: rgba(79,140,255,0.15); color: var(--accent); }
+    .badge-green { background: rgba(52,211,153,0.15); color: var(--accent-green); }
+    .badge-purple { background: rgba(167,139,250,0.15); color: var(--accent-purple); }
+
+    /* Pills */
+    .pills {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pill {
+      padding: 8px 18px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--bg-card);
+      border: 1px solid #333;
+    }
+
+    /* Phase indicator */
+    .phase-bar {
+      display: flex;
+      gap: 4px;
+      margin-top: 28px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .phase-segment {
+      flex: 1;
+      height: 6px;
+      border-radius: 3px;
+      background: #222;
+    }
+
+    .phase-segment.done { background: var(--accent); }
+    .phase-segment.current { background: var(--accent); animation: pulse 2s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .phase-labels {
+      display: flex;
+      width: 100%;
+      max-width: 600px;
+      margin-top: 8px;
+    }
+
+    .phase-label {
+      flex: 1;
+      font-size: 12px;
+      color: #555;
+    }
+
+    .phase-label.active-label { color: var(--accent); font-weight: 700; }
+
+    /* Quote */
+    .quote {
+      font-size: 30px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-sub);
+      text-align: center;
+      max-width: 680px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .quote em { color: var(--text); font-weight: 700; font-style: normal; }
+
+    /* Demo CTA */
+    .demo-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 36px;
+      padding: 20px 48px;
+      background: var(--accent);
+      color: white;
+      border-radius: 16px;
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: 700;
+      transition: all 0.3s;
+      box-shadow: 0 0 40px rgba(79,140,255,0.3);
+    }
+
+    .demo-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 60px rgba(79,140,255,0.5);
+    }
+
+    .demo-cta .arrow {
+      font-size: 24px;
+      transition: transform 0.3s;
+    }
+
+    .demo-cta:hover .arrow { transform: translateX(4px); }
+
+    .demo-mockup {
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .chat-bubble {
+      padding: 12px 18px;
+      border-radius: 16px;
+      font-size: 13px;
+      max-width: 80%;
+      line-height: 1.5;
+    }
+
+    .chat-bot {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      align-self: flex-start;
+      color: #ccc;
+    }
+
+    .chat-user {
+      background: var(--accent);
+      color: white;
+      align-self: flex-end;
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 100;
+    }
+
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #333;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .nav-dot.active {
+      background: var(--accent);
+      width: 28px;
+      border-radius: 5px;
+    }
+
+    .nav-hint {
+      position: fixed;
+      bottom: 30px;
+      right: 40px;
+      font-size: 12px;
+      color: #333;
+      z-index: 100;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .slide { padding: 40px 24px; overflow-y: auto; justify-content: flex-start; padding-top: 60px; }
+
+      .slide-number { top: 20px; right: 24px; font-size: 12px; }
+
+      h1 { font-size: 28px; }
+      h2 { font-size: 24px; }
+      .tag { font-size: 11px; letter-spacing: 2px; margin-bottom: 16px; }
+      .subtitle { font-size: 15px; line-height: 1.6; }
+      .quote { font-size: 20px; line-height: 1.5; margin-bottom: 16px; }
+
+      /* Stats */
+      .stats-row { flex-direction: column; gap: 24px; margin-top: 24px; }
+      .stat-item .number { font-size: 36px; }
+      .stat-item .label { font-size: 13px; }
+
+      /* Flow */
+      .flow { flex-direction: column; gap: 8px; margin-top: 24px; }
+      .flow-step { min-width: unset; width: 100%; padding: 16px 20px; }
+      .flow-arrow { transform: rotate(90deg); font-size: 16px; }
+
+      /* Cards */
+      .cards { flex-direction: column; gap: 12px; margin-top: 20px; }
+      .card { min-width: unset; padding: 20px; }
+      .card .card-title { font-size: 14px; }
+      .card .card-desc { font-size: 12px; }
+
+      /* Compare */
+      .compare { flex-direction: column; gap: 16px; margin-top: 20px; }
+      .compare-item { padding: 20px; }
+      .compare-item ul { font-size: 13px; line-height: 2; }
+
+      /* Badge */
+      .badge { font-size: 11px; padding: 5px 12px; }
+
+      /* Demo */
+      .demo-cta { padding: 16px 32px; font-size: 16px; }
+      .demo-mockup { max-width: 100%; }
+      .chat-bubble { font-size: 12px; max-width: 85%; }
+
+      /* Nav */
+      .nav { bottom: 16px; }
+      .nav-hint { display: none; }
+    }
+
+    /* Small mobile */
+    @media (max-width: 380px) {
+      .slide { padding: 32px 16px; padding-top: 50px; }
+      h1 { font-size: 24px; }
+      h2 { font-size: 20px; }
+      .stat-item .number { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+
+    <!-- Slide 1: Title -->
+    <div class="slide active" data-index="0">
+      <span class="slide-number">01 / 09</span>
+      <div class="anim tag">AI-Powered Group Counseling</div>
+      <h1 class="anim">AI로 사람과 사람을<br>연결하다</h1>
+      <p class="anim subtitle">
+        대화 한 번으로 나와 비슷한 고민을 가진 사람들을 찾아주는<br>
+        AI 그룹 카운슬링 매칭 서비스
+      </p>
+      <div class="anim" style="margin-top: 40px;">
+        <span class="badge badge-blue">연세대 심리이노베이션대학원</span>
+        <span style="margin-left: 12px; color: var(--text-sub); font-size: 14px;">김형모</span>
+      </div>
+    </div>
+
+    <!-- Slide 2: Problem -->
+    <div class="slide" data-index="1">
+      <span class="slide-number">02 / 09</span>
+      <div class="anim tag">Problem</div>
+      <h2 class="anim">상담이 필요한 사람은 많지만<br>상담받는 사람은 적다</h2>
+      <div class="anim stats-row">
+        <div class="stat-item">
+          <div class="number" style="color: var(--accent-red);">4명 중 1명</div>
+          <div class="label">정신건강 문제를 경험</div>
+          <div class="source">WHO, 2022</div>
+        </div>
+        <div class="stat-item">
+          <div class="number" style="color: var(--accent-yellow);">7.2%</div>
+          <div class="label">한국 성인 서비스 이용률</div>
+          <div class="source">국립정신건강센터, 2021</div>
+        </div>
+        <div class="stat-item">
+          <div class="number" style="color: var(--text-sub);">OECD<br>최하위</div>
+          <div class="label">정신건강 접근성 순위</div>
+          <div class="source">OECD Health at a Glance, 2023</div>
+        </div>
+      </div>
+      <p class="anim subtitle" style="margin-top: 32px;">
+        비용, 접근성, 낙인 — 세 가지 벽이 상담을 가로막는다
+      </p>
+    </div>
+
+    <!-- Slide 3: Insight -->
+    <div class="slide" data-index="2">
+      <span class="slide-number">03 / 09</span>
+      <div class="anim tag">Insight</div>
+      <div class="anim quote">
+        "AI 챗봇은 결국 <em>AI</em>다.<br>
+        우리는 AI를 <em>도구</em>로 써서<br>
+        <em>사람과 사람</em>을 연결한다."
+      </div>
+      <div class="anim compare">
+        <div class="compare-item bad">
+          <div class="compare-label" style="color: var(--accent-red);">기존 서비스</div>
+          <ul>
+            <li>1:1 상담만, 비용 높음</li>
+            <li>AI 챗봇 = 공감 불가</li>
+            <li>매칭 불투명, 설문 수동 배정</li>
+          </ul>
+        </div>
+        <div class="compare-item highlight">
+          <div class="compare-label" style="color: var(--accent-green);">우리의 접근</div>
+          <ul>
+            <li>AI 대화로 고민 파악</li>
+            <li>비슷한 사람끼리 그룹 매칭</li>
+            <li>전문 상담사가 그룹 진행</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 4: End Picture & Vision -->
+    <div class="slide" data-index="3">
+      <span class="slide-number">04 / 09</span>
+      <div class="anim tag">End Picture</div>
+      <h2 class="anim">대화 한 번으로, 나와 같은 사람을 만나다</h2>
+      <div class="anim flow">
+        <div class="flow-step">
+          <div class="icon">💬</div>
+          <div class="step-title">AI와 대화</div>
+          <div class="step-desc">"요즘 회사에서<br>너무 지쳐요..."</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="icon">🧠</div>
+          <div class="step-title">AI 자동 분석</div>
+          <div class="step-desc">EBT 척도를<br>대화에 녹여<br>자동 평가</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="icon">👥</div>
+          <div class="step-title">나와 비슷한 4명</div>
+          <div class="step-desc">"회사에서 버티기<br>힘든 사람들"<br>그룹 매칭</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step" style="border-color: var(--accent); box-shadow: 0 0 20px rgba(79,140,255,0.15);">
+          <div class="icon">🎙️</div>
+          <div class="step-title">음성 그룹 상담</div>
+          <div class="step-desc">자격 있는 상담사가<br>이끄는 소그룹<br>집단 상담</div>
+        </div>
+      </div>
+      <div class="anim cards" style="margin-top: 36px;">
+        <div class="card" style="text-align: center;">
+          <div class="card-icon">😌</div>
+          <div class="card-title">얼굴 부담 없이</div>
+          <div class="card-desc">화면 켤 필요 없습니다.<br>목소리만으로 충분히 연결됩니다.</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div class="card-icon">🌙</div>
+          <div class="card-title">밤 11시에도</div>
+          <div class="card-desc">퇴근 후, 아이 재운 후.<br>내가 편한 시간에 참여합니다.</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div class="card-icon">🛋️</div>
+          <div class="card-title">어디서든 편하게</div>
+          <div class="card-desc">침대에서, 산책하면서.<br>장소 제약이 없습니다.</div>
+        </div>
+      </div>
+      <p class="anim subtitle" style="margin-top: 28px; font-size: 18px;">
+        대기 없이. 부담 없이. 혼자가 아니게.
+      </p>
+    </div>
+
+    <!-- Slide 5: Why Now -->
+    <div class="slide" data-index="4">
+      <span class="slide-number">05 / 09</span>
+      <div class="anim tag">Why Now</div>
+      <h2 class="anim">아직 아무도 안 하고 있다</h2>
+      <div class="anim" style="width: 100%; max-width: 800px; overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 8px;">
+          <thead>
+            <tr style="border-bottom: 2px solid #333;">
+              <th style="padding: 12px 16px; text-align: left; color: var(--text-sub); font-weight: 400;"></th>
+              <th style="padding: 12px 16px; text-align: center; color: var(--text-sub);">
+                <a href="https://medcitynews.com/2025/07/talkspace-tia-women-mental-health/" target="_blank" style="color: var(--text-sub); text-decoration: underline;">Talkspace</a>
+              </th>
+              <th style="padding: 12px 16px; text-align: center; color: var(--text-sub);">
+                <a href="https://www.betterhelp.com/about/" target="_blank" style="color: var(--text-sub); text-decoration: underline;">BetterHelp</a>
+              </th>
+              <th style="padding: 12px 16px; text-align: center; color: var(--text-sub);">
+                <a href="https://www.trost.co.kr/" target="_blank" style="color: var(--text-sub); text-decoration: underline;">트로스트</a>
+              </th>
+              <th style="padding: 12px 16px; text-align: center; color: var(--accent); font-weight: 700;">우리</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid #222;">
+              <td style="padding: 10px 16px; color: var(--text-sub);">상담 형태</td>
+              <td style="padding: 10px 16px; text-align: center;">1:1 텍스트/화상</td>
+              <td style="padding: 10px 16px; text-align: center;">1:1 텍스트/화상</td>
+              <td style="padding: 10px 16px; text-align: center;">1:1 텍스트</td>
+              <td style="padding: 10px 16px; text-align: center; color: var(--accent); font-weight: 700;">그룹 음성</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #222;">
+              <td style="padding: 10px 16px; color: var(--text-sub);">매칭 방식</td>
+              <td style="padding: 10px 16px; text-align: center;">의사 수동 의뢰</td>
+              <td style="padding: 10px 16px; text-align: center;">설문 → AI 추천</td>
+              <td style="padding: 10px 16px; text-align: center;">사용자 직접 검색</td>
+              <td style="padding: 10px 16px; text-align: center; color: var(--accent); font-weight: 700;">AI 대화 → 자동 그룹</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #222;">
+              <td style="padding: 10px 16px; color: var(--text-sub);">AI 역할</td>
+              <td style="padding: 10px 16px; text-align: center; color: var(--accent-red);">없음</td>
+              <td style="padding: 10px 16px; text-align: center;">상담사 추천만</td>
+              <td style="padding: 10px 16px; text-align: center; color: var(--accent-red);">없음</td>
+              <td style="padding: 10px 16px; text-align: center; color: var(--accent); font-weight: 700;">평가 + 분류 + 매칭</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 16px; color: var(--text-sub);">그룹 상담</td>
+              <td style="padding: 10px 16px; text-align: center; color: var(--accent-red);">없음</td>
+              <td style="padding: 10px 16px; text-align: center; color: var(--accent-yellow);">있음 (수동 배정)</td>
+              <td style="padding: 10px 16px; text-align: center; color: var(--accent-red);">없음</td>
+              <td style="padding: 10px 16px; text-align: center; color: var(--accent-green); font-weight: 700;">AI 자동 매칭</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="anim subtitle" style="margin-top: 28px;">
+        기존 서비스는 전부 1:1이고, 사람이 매칭한다.<br>
+        <strong style="color: var(--text);">AI가 매칭하고, 그룹으로 연결하는 서비스는 아직 없다.</strong>
+      </p>
+    </div>
+
+    <!-- Slide 6: Phase Pipeline -->
+    <div class="slide" data-index="5">
+      <span class="slide-number">06 / 09</span>
+      <div class="anim tag">Roadmap</div>
+      <h2 class="anim">어떻게 만들 것인가</h2>
+      <div class="anim flow">
+        <div class="flow-step active-step">
+          <div class="icon">📚</div>
+          <div class="step-title">1단계: 수업</div>
+          <div class="step-desc">EBT 기반<br>대화형 평가 챗봇<br>전용 플랫폼 개발</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="icon">🔀</div>
+          <div class="step-title">2단계: 자체 개발</div>
+          <div class="step-desc">평가 결과 기반<br>AI 그루핑 엔진<br>자동 매칭</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="icon">🎙️</div>
+          <div class="step-title">3단계: 엔드 픽쳐</div>
+          <div class="step-desc">상담사가 이끄는<br>소그룹 음성<br>집단 상담</div>
+        </div>
+      </div>
+      <div class="anim cards" style="margin-top: 32px;">
+        <div class="card" style="text-align: center;">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">EBT 선택</div>
+          <div class="card-desc">수업에서 근거기반치료를 배운 후<br>교수님과 상의하여 확정 예정</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div class="card-icon">📊</div>
+          <div class="card-title">분류 체계</div>
+          <div class="card-desc">EBT에 따라<br>그루핑 기준이 결정됨<br>수업 진행 후 확정</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div class="card-icon">🔬</div>
+          <div class="card-title">연구 가능성</div>
+          <div class="card-desc">서비스 개발과 병행하여<br>데이터 수집 구조 설계<br>석사 논문 연결 검토</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 7: Phase 1 Detail -->
+    <div class="slide" data-index="6">
+      <span class="slide-number">07 / 09</span>
+      <div class="anim tag">Phase 1 &mdash; Now</div>
+      <h2 class="anim">같이 만들어봐요</h2>
+      <p class="anim subtitle" style="margin-bottom: 8px;">
+        그룹 매칭을 위한 EBT 기반 심리 평가 챗봇
+      </p>
+      <div class="anim cards">
+        <div class="card">
+          <div class="card-icon">📚</div>
+          <div class="card-title">심리학 기반 AI 수업</div>
+          <div class="card-desc">
+            전용 플랫폼에서 Prompt Engineering으로 개발.
+            RAG에 근거기반치료(EBT)가 내장되어 있어
+            대화 속에 임상 척도를 자연스럽게 녹입니다.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <div class="card-title">구조화된 결과 출력</div>
+          <div class="card-desc">
+            대화가 끝나면 고민 카테고리, 심각도,
+            호소문제 요약이 자동 생성됩니다.
+            이 결과가 2단계 그루핑의 입력값이 됩니다.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🛡️</div>
+          <div class="card-title">안전장치 설계</div>
+          <div class="card-desc">
+            "본 서비스는 위기 상담을 대체하지 않습니다."
+            사전 동의 + 위기 연계처(1393) 상시 표시.
+          </div>
+        </div>
+      </div>
+      <div class="anim flow" style="margin-top: 24px;">
+        <div class="flow-step active-step" style="flex: 1;">
+          <div class="step-title" style="font-size: 12px;">챗봇 대화</div>
+          <div class="step-desc">"요즘 힘들어요..."</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step active-step" style="flex: 1;">
+          <div class="step-title" style="font-size: 12px;">평가 결과</div>
+          <div class="step-desc">카테고리 + 심각도</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step" style="flex: 1; border-style: dashed;">
+          <div class="step-title" style="font-size: 12px;">2단계로 전달</div>
+          <div class="step-desc">그루핑 엔진 입력</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 8: Demo -->
+    <div class="slide" data-index="7">
+      <span class="slide-number">08 / 09</span>
+      <div class="anim tag">Live Demo</div>
+      <h2 class="anim">직접 대화해보세요</h2>
+      <div class="anim demo-mockup">
+        <div class="chat-bubble chat-bot">안녕하세요. 요즘 어떻게 지내고 계신지 편하게 이야기해 주세요.</div>
+        <div class="chat-bubble chat-user">요즘 회사에서 너무 지쳐요...</div>
+        <div class="chat-bubble chat-bot">회사에서 많이 힘드시군요. 어떤 부분이 가장 버거우세요?</div>
+      </div>
+      <a href="https://camp2-hmstory.vercel.app" target="_blank" class="anim demo-cta">
+        지금 바로 대화하기 <span class="arrow">→</span>
+      </a>
+      <p class="anim" style="margin-top: 20px; font-size: 14px; color: var(--text-sub);">
+        대화를 마치면 호소문제 분류 · 심각도 · 그룹 추천이 자동 생성됩니다
+      </p>
+    </div>
+
+    <!-- Slide 9: Join -->
+    <div class="slide" data-index="8">
+      <span class="slide-number">09 / 09</span>
+      <div class="anim tag">Join Us</div>
+      <h1 class="anim">혼자보다 함께라면<br>더 멀리 갈 수 있습니다</h1>
+      <p class="anim subtitle">
+        AI와 심리학의 교차점에서<br>
+        진짜 사람을 위한 서비스를 만들고 있습니다.<br>
+        관심 있으시면 편하게 연락주세요.
+      </p>
+      <div class="anim" style="margin-top: 48px; display: flex; gap: 16px;">
+        <span class="badge badge-purple" style="font-size: 16px; padding: 12px 28px;">
+          GitHub: hmstory
+        </span>
+        <span class="badge badge-blue" style="font-size: 16px; padding: 12px 28px;">
+          연세대 심리이노베이션대학원
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav" id="nav"></div>
+  <div class="nav-hint">← → 키로 이동</div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const nav = document.getElementById('nav');
+    let current = 0;
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => goTo(i));
+      nav.appendChild(dot);
+    });
+
+    function goTo(index) {
+      if (index < 0 || index >= slides.length) return;
+      slides[current].classList.remove('active');
+      nav.children[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      nav.children[current].classList.add('active');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+    });
+
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) { diff > 0 ? goTo(current + 1) : goTo(current - 1); }
+    });
+  </script>
+</body>
+</html>
