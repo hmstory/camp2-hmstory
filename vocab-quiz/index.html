@@ -5,24 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vocab Quiz — Make Your Job a Calling</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwindcss.config = {
-      theme: {
-        extend: {
-          colors: {
-            dark: { 950: '#0a0a0f', 900: '#111118', 800: '#1a1a24', 700: '#24242f' }
-          }
-        }
-      }
-    }
-  </script>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
     .fade-in { animation: fadeIn 0.3s ease-in; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
-<body class="bg-dark-950 text-gray-100 min-h-screen">
+<body class="bg-gray-950 text-white min-h-screen">
   <div id="app"></div>
 
   <script>
@@ -87,8 +76,7 @@
   };
 
   const CAT_LABELS = { all:"전체", vocabulary:"단어", phrasal_verb:"구동사/숙어", sentence:"문장 해석" };
-  const CAT_COLORS = { vocabulary:"bg-blue-500/20 text-blue-300", phrasal_verb:"bg-purple-500/20 text-purple-300", sentence:"bg-amber-500/20 text-amber-300" };
-  const CAT_BTN = { vocabulary:"bg-blue-600", phrasal_verb:"bg-purple-600", sentence:"bg-amber-600" };
+  const CAT_COLORS = { vocabulary:"bg-blue-900 text-blue-200 border border-blue-700", phrasal_verb:"bg-purple-900 text-purple-200 border border-purple-700", sentence:"bg-amber-900 text-amber-200 border border-amber-700" };
 
   function shuffle(arr) {
     const a = [...arr];
@@ -149,7 +137,7 @@
     }
 
     if (!state.questions.length) {
-      app.innerHTML = `<div class="min-h-screen flex items-center justify-center"><p class="text-gray-400">이 카테고리에 문제가 없어요.</p></div>`;
+      app.innerHTML = `<div class="min-h-screen flex items-center justify-center"><p class="text-gray-300">이 카테고리에 문제가 없어요.</p></div>`;
       return;
     }
 
@@ -159,15 +147,15 @@
     app.innerHTML = `
       <div class="min-h-screen flex flex-col">
         <!-- Header -->
-        <header class="px-4 py-4 md:px-8 border-b border-gray-800/50">
+        <header class="px-4 py-4 md:px-8 border-b border-gray-700">
           <div class="max-w-2xl mx-auto flex items-center justify-between">
             <div>
-              <h1 class="text-lg font-bold">Vocab Quiz</h1>
-              <p class="text-xs text-gray-500">${set.book} · ${set.title} (${set.pages})</p>
+              <h1 class="text-lg font-bold text-white">Vocab Quiz</h1>
+              <p class="text-xs text-gray-400">${set.book} · ${set.title} (${set.pages})</p>
             </div>
             <div class="text-right">
-              <p class="text-sm font-mono text-gray-400">${state.current + 1}/${state.questions.length}</p>
-              <p class="text-xs text-emerald-400">${state.score}점</p>
+              <p class="text-sm font-mono text-gray-300">${state.current + 1} / ${state.questions.length}</p>
+              <p class="text-xs text-emerald-400 font-semibold">${state.score}점</p>
             </div>
           </div>
         </header>
@@ -178,16 +166,16 @@
             ${Object.entries(CAT_LABELS).map(([k,v]) => {
               const cnt = k === "all" ? set.questions.length : set.questions.filter(q=>q.cat===k).length;
               const active = state.cat === k;
-              return `<button onclick="restart('${k}')" class="px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition ${active ? 'bg-blue-600 text-white' : 'bg-dark-800 text-gray-400 hover:bg-dark-700'}">${v} (${cnt})</button>`;
+              return `<button onclick="restart('${k}')" class="px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition ${active ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-600'}">${v} (${cnt})</button>`;
             }).join("")}
           </div>
         </div>
 
         <!-- Progress -->
-        <div class="px-4 md:px-8">
+        <div class="px-4 md:px-8 mt-1">
           <div class="max-w-2xl mx-auto">
-            <div class="h-1 bg-dark-800 rounded-full overflow-hidden">
-              <div class="h-full bg-blue-500 transition-all duration-300" style="width:${pct}%"></div>
+            <div class="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+              <div class="h-full bg-blue-500 rounded-full transition-all duration-300" style="width:${pct}%"></div>
             </div>
           </div>
         </div>
@@ -196,33 +184,33 @@
         <main class="flex-1 flex items-center justify-center px-4 py-6">
           <div class="max-w-2xl w-full space-y-6 fade-in">
             <div class="space-y-3">
-              <span class="inline-block text-xs px-2.5 py-1 rounded-full ${CAT_COLORS[q.cat] || ''}">${CAT_LABELS[q.cat] || ''}</span>
-              <h2 class="font-bold leading-snug ${q.cat === 'sentence' ? 'text-lg md:text-xl' : 'text-2xl md:text-3xl'}">${q.q}</h2>
+              <span class="inline-block text-xs px-2.5 py-1 rounded-full font-medium ${CAT_COLORS[q.cat] || ''}">${CAT_LABELS[q.cat] || ''}</span>
+              <h2 class="font-bold leading-snug text-white ${q.cat === 'sentence' ? 'text-lg md:text-xl' : 'text-2xl md:text-3xl'}">${q.q}</h2>
             </div>
 
             <div class="space-y-3">
               ${q.opts.map((opt, i) => {
-                let style = "bg-dark-800 hover:bg-dark-700 border-dark-700";
+                let style = "bg-gray-800 hover:bg-gray-700 border-gray-600 text-gray-100";
                 if (state.showResult) {
-                  if (i === q.ans) style = "bg-emerald-900/40 border-emerald-500 text-emerald-300";
-                  else if (i === state.selected) style = "bg-red-900/40 border-red-500 text-red-300";
-                  else style = "bg-dark-800/50 border-dark-700 text-gray-600";
+                  if (i === q.ans) style = "bg-emerald-900 border-emerald-400 text-emerald-200";
+                  else if (i === state.selected) style = "bg-red-900 border-red-400 text-red-200";
+                  else style = "bg-gray-800 border-gray-700 text-gray-500";
                 }
-                return `<button onclick="selectOption(${i})" ${state.showResult ? 'disabled' : ''} class="w-full text-left px-4 py-3.5 rounded-xl border transition text-sm md:text-base cursor-pointer disabled:cursor-default ${style}">
-                  <span class="font-mono text-xs text-gray-500 mr-3">${String.fromCharCode(65+i)}</span>${opt}
+                return `<button onclick="selectOption(${i})" ${state.showResult ? 'disabled' : ''} class="w-full text-left px-4 py-3.5 rounded-xl border-2 transition text-sm md:text-base cursor-pointer disabled:cursor-default ${style}">
+                  <span class="font-mono text-xs text-gray-400 mr-3 font-bold">${String.fromCharCode(65+i)}</span>${opt}
                 </button>`;
               }).join("")}
             </div>
 
             ${state.showResult ? `
-              <div class="bg-dark-800/60 rounded-xl p-4 space-y-2 border border-dark-700 fade-in">
-                <p class="text-sm font-semibold ${state.selected === q.ans ? 'text-emerald-400' : 'text-red-400'}">
+              <div class="bg-gray-900 rounded-xl p-5 space-y-3 border-2 border-gray-700 fade-in">
+                <p class="text-base font-bold ${state.selected === q.ans ? 'text-emerald-400' : 'text-red-400'}">
                   ${state.selected === q.ans ? '✓ 정답!' : '✗ 오답'}
                 </p>
-                <p class="text-sm text-gray-300">${q.meaning}</p>
-                <p class="text-xs text-gray-500 italic leading-relaxed">"${q.ex}"</p>
+                <p class="text-sm text-gray-200 leading-relaxed">${q.meaning}</p>
+                <p class="text-sm text-gray-400 italic leading-relaxed border-l-4 border-gray-600 pl-3">"${q.ex}"</p>
               </div>
-              <button onclick="nextQuestion()" class="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 font-medium transition text-sm">
+              <button onclick="nextQuestion()" class="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition text-base">
                 ${state.current + 1 >= state.questions.length ? '결과 보기' : '다음 문제 →'}
               </button>
             ` : ''}
@@ -243,24 +231,24 @@
         <div class="max-w-lg w-full space-y-6 fade-in">
           <div class="text-center space-y-3">
             <p class="text-5xl">${emoji}</p>
-            <h2 class="text-2xl font-bold">결과</h2>
+            <h2 class="text-2xl font-bold text-white">결과</h2>
             <p class="text-4xl font-bold text-blue-400">${state.score}/${total}<span class="text-lg text-gray-400 ml-2">(${pct}%)</span></p>
-            <p class="text-gray-400 text-sm">${msg}</p>
+            <p class="text-gray-300 text-sm">${msg}</p>
           </div>
 
           ${state.wrong.length ? `
             <div class="space-y-3">
-              <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wide">틀린 문제 복습</h3>
+              <h3 class="text-sm font-bold text-gray-300 uppercase tracking-wide">틀린 문제 복습</h3>
               <div class="space-y-2 max-h-[40vh] overflow-y-auto pr-1">
                 ${state.wrong.map(w => `
-                  <div class="bg-dark-800 rounded-xl p-4 space-y-2">
+                  <div class="bg-gray-900 border-2 border-gray-700 rounded-xl p-4 space-y-2">
                     <div class="flex items-start gap-2">
-                      <span class="text-xs px-2 py-0.5 rounded-full ${CAT_COLORS[w.cat]}">${CAT_LABELS[w.cat]}</span>
-                      <p class="font-semibold text-sm flex-1">${w.q}</p>
+                      <span class="text-xs px-2 py-0.5 rounded-full font-medium ${CAT_COLORS[w.cat]}">${CAT_LABELS[w.cat]}</span>
+                      <p class="font-bold text-sm flex-1 text-white">${w.q}</p>
                     </div>
-                    <p class="text-sm text-emerald-400">정답: ${w.opts[w.ans]}</p>
-                    <p class="text-xs text-gray-400">${w.meaning}</p>
-                    <p class="text-xs text-gray-500 italic">"${w.ex}"</p>
+                    <p class="text-sm text-emerald-400 font-semibold">정답: ${w.opts[w.ans]}</p>
+                    <p class="text-xs text-gray-300">${w.meaning}</p>
+                    <p class="text-xs text-gray-400 italic border-l-4 border-gray-600 pl-3">"${w.ex}"</p>
                   </div>
                 `).join("")}
               </div>
@@ -268,7 +256,7 @@
           ` : ''}
 
           <div class="flex flex-col gap-2">
-            <button onclick="restart()" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 font-medium transition">다시 풀기</button>
+            <button onclick="restart()" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition text-base">다시 풀기</button>
           </div>
         </div>
       </div>
