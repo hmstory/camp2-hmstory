@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PreQuiz — Roediger & Karpicke (2006)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .fade-in { animation: fadeIn 0.3s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="bg-gray-950 text-white min-h-screen">
+  <div id="app"></div>
+
+  <script>
+  // ── Quiz Data ──────────────────────────────────────
+  // PreQuiz: 논문을 읽기 전에 풀며, 초록+인트로 수준에서 예측 가능한 문제들
+  const QUIZ_SETS = [
+    {
+      id: "roediger-2006-prequiz",
+      title: "Test-Enhanced Learning",
+      book: "Roediger & Karpicke (2006)",
+      pages: "📖 논문 읽기 전에 풀어보세요!",
+      questions: [
+
+        // ════════════════════════════════════════════
+        // 연구 가설 & 설계 (15문제)
+        // 이 논문이 어떤 질문을 던지고, 어떻게 검증하는지
+        // ════════════════════════════════════════════
+
+        { id:"h1", cat:"hypothesis", q:"[핵심 가설] '시험이 기억에 좋은 이유는, 시험을 보면서 자료를 다시 접하게 되기 때문이다.' — 이 설명에 동의하는가?",
+          opts:["동의 — 시험 중 자료를 다시 보는 게 핵심이다","반대 — 재노출 이상의 다른 효과가 있을 것이다","부분 동의 — 재노출도 효과가 있지만 전부는 아니다","판단할 수 없다"],
+          ans:1, meaning:"이 논문의 핵심 가설. 저자들은 '재노출(re-presentation) 설명'을 반증하기 위해, 재학습 그룹에게 자료 100%를 다시 보게 하고도 시험 그룹이 장기 기억에서 우수함을 보였다. 시험의 효과는 단순 재노출을 넘어선다.", ex:"Testing has positive effects on long-term retention above and beyond any effect of re-presentation of the material." },
+
+        { id:"h2", cat:"hypothesis", q:"[가설] '반복 학습은 즉각 시험에서 유리하지만, 시험은 지연 시험에서 유리할 것이다.' — 어떻게 생각하는가?",
+          opts:["동의 — 학습 방식에 따라 효과가 다른 시점에 나타날 수 있다","반대 — 시험이 항상 모든 시점에서 더 좋을 것이다","반대 — 반복 학습이 항상 모든 시점에서 더 좋을 것이다","시점에 따른 차이는 없을 것이다"],
+          ans:0, meaning:"정확히 이 패턴이 나타났다. 5분 후에는 재학습 > 시험 (81% vs 75%), 1주일 후에는 시험 > 재학습 (56% vs 42%). 이 교차(crossover interaction)가 논문의 핵심 발견.", ex:"Restudying produced better performance on the 5-min test, but testing produced better performance on the 2-day and 1-week tests." },
+
+        { id:"h3", cat:"hypothesis", q:"[가설] '반복 학습한 학생들이 자기 기억력에 대해 더 높은 자신감을 보일 것이다.' — 이게 사실이라면, 무엇이 문제일까?",
+          opts:["문제없다 — 자신감이 높으면 실제로도 잘한다","문제다 — 실제 기억과 자신감이 불일치할 수 있다 (메타인지 착각)","자신감은 측정할 수 없다","이 논문에서는 자신감을 다루지 않았다"],
+          ans:1, meaning:"SSSS 그룹이 자신감 최고(4.8/7)였지만 1주일 후 성적은 최하(40%). 반복 읽기가 '처리 유창성'을 높여 '잘 안다'고 착각하게 만든다. 이것이 학생들이 비효율적 전략을 고집하는 이유.", ex:"Repeated studying inflated students' confidence... even though repeated-study subjects actually showed much poorer retention." },
+
+        { id:"h4", cat:"hypothesis", q:"[실험 설계] 이 가설을 검증하려면 '재학습' 통제 조건을 어떻게 설계해야 할까?",
+          opts:["재학습 그룹에게 자료 일부만 다시 보여준다","재학습 그룹에게 자료 전체를 다시 읽게 한다","재학습 그룹에게 아무것도 하지 않게 한다","재학습 그룹에게 다른 자료를 읽게 한다"],
+          ans:1, meaning:"자료 전체를 다시 읽게 해야 한다. 시험 그룹은 기억나는 것만 인출(약 70%)하므로, 재학습 그룹에게 100% 재노출을 주는 것이 오히려 재학습에 유리한 설계. 그런데도 시험이 이기면 → 재노출 설명 반증.", ex:"Students who take free-recall tests can only reexperience whatever material they can recall." },
+
+        { id:"h5", cat:"hypothesis", q:"[실험 설계] 시험의 '횟수' 효과를 검증하려면 어떤 조건을 비교해야 할까?",
+          opts:["시험 1번 vs 시험 0번","학습 4번 vs 학습 1번","학습 4번(SSSS) vs 학습 3번+시험 1번(SSST) vs 학습 1번+시험 3번(STTT)","시험 시간을 다르게 한다"],
+          ans:2, meaning:"실험 2의 설계. 총 4기간을 학습과 시험으로 어떻게 배분하느냐를 조작. 학습 횟수와 시험 횟수의 비율을 체계적으로 바꿔서 반복 시험의 효과를 분리해냈다.", ex:"Repeated study (SSSS), single test (SSST), or repeated test (STTT)." },
+
+        { id:"h6", cat:"hypothesis", q:"[가설] '시험 효과가 있으려면 피드백(정답 알려주기)이 반드시 필요하다.' — 동의하는가?",
+          opts:["동의 — 정답을 모르면 학습이 안 된다","반대 — 인출 행위 자체가 기억을 강화할 수 있다","피드백이 있으면 오히려 해롭다","이 연구에서는 피드백 유무를 비교하지 않았다"],
+          ans:1, meaning:"이 연구의 모든 시험은 피드백 없이 진행. 그런데도 강력한 Testing Effect 발생 → 인출(retrieval) 행위 자체가 기억 흔적을 강화한다는 증거. 피드백이 추가되면 효과가 더 커질 수 있다.", ex:"This outcome occurred even though the tests included no feedback." },
+
+        { id:"h7", cat:"hypothesis", q:"[실험 설계] '시험 시점'의 효과를 보려면 최종 시험을 어떻게 설계해야 할까?",
+          opts:["모든 참가자에게 같은 시점에 시험을 본다","다른 시점(예: 5분, 2일, 1주일)에 나눠서 시험을 본다","시험을 보지 않고 자기 보고만 받는다","시험 대신 관찰로 측정한다"],
+          ans:1, meaning:"retention interval을 5분/2일/1주일로 나눠서 between-subjects로 조작. 이렇게 해야 '단기에는 재학습이 좋지만 장기에는 시험이 좋다'는 교차 패턴을 발견할 수 있었다.", ex:"Delay of the final test (5 min, 2 days, or 1 week) was manipulated between subjects." },
+
+        { id:"h8", cat:"hypothesis", q:"[가설] '기존 testing effect 연구는 단어 목록을 사용해서 교육 현장에 적용하기 어렵다.' — 이 비판이 타당하다면, 어떤 자료를 써야 할까?",
+          opts:["더 긴 단어 목록","교육 현장과 유사한 산문(prose) 지문","수학 문제","프로그래밍 코드"],
+          ans:1, meaning:"저자들은 TOEFL 독해 연습서의 산문 지문(256-275 단어)을 사용. 자유 회상 시험도 에세이 시험과 유사하게 설계. 교육적 생태 타당도(ecological validity)를 높이려는 의도.", ex:"Using prose materials and free-recall tests without feedback (somewhat akin to essay tests used in education)." },
+
+        { id:"h9", cat:"hypothesis", q:"[너의 예측] 자료를 14번 읽은 그룹 vs 3번만 읽은 그룹. 1주일 후 누가 더 기억할까?",
+          opts:["당연히 14번 읽은 그룹 — 노출이 4배 이상이니까","3번 읽은 그룹 — 그 사이에 시험을 봤다면","비슷할 것이다","읽은 횟수는 기억과 무관하다"],
+          ans:1, meaning:"STTT 그룹은 3.4번 읽고 61% 기억, SSSS 그룹은 14.2번 읽고 40% 기억. 4배 이상 많이 읽었는데 오히려 21%p 낮은 기억. 인출 연습의 위력을 극적으로 보여주는 결과.", ex:"Students in the former condition read the passage only 3.4 times and those in the latter condition read it 14.2 times." },
+
+        { id:"h10", cat:"hypothesis", q:"[너의 예측] 시험을 1번 본 것만으로도 '며칠치 망각'을 방지할 수 있을까?",
+          opts:["불가능 — 시험 한 번으로는 효과가 미미할 것이다","가능 — 인출 한 번도 기억 흔적을 상당히 강화할 수 있다","시험 3번은 돼야 효과가 있다","시간이 지나면 시험 효과도 사라진다"],
+          ans:1, meaning:"시험 1번 본 그룹의 1주일 후 성적(56%)이 재학습 그룹의 2일 후 성적(54%)과 동일. 시험 한 번이 약 5일치 망각을 방지한 셈.", ex:"The initially tested group recalled as much on the 1-week retention test as the additional-study group did after only 2 days." },
+
+        { id:"h11", cat:"hypothesis", q:"[실험 설계] 학습과 시험의 순서 효과를 통제하려면 어떻게 해야 할까?",
+          opts:["모든 참가자에게 같은 순서로 진행한다","조건과 자료의 순서를 참가자마다 다르게 배치한다 (counterbalancing)","순서를 무작위로 섞는다","순서는 통제할 필요 없다"],
+          ans:1, meaning:"counterbalancing: 절반은 지문A→B, 나머지는 B→A 순서. 학습→시험 순서도 교차 배치. 순서 효과(order effect)가 결과를 오염시키지 않도록 하는 실험 설계의 기본.", ex:"The order of learning conditions and the order of passages were counterbalanced across subjects." },
+
+        { id:"h12", cat:"hypothesis", q:"[가설] spacing effect(분산 학습 효과)와 testing effect는 같은 원리로 설명될 수 있을까?",
+          opts:["네 — 둘 다 단기에는 불리하지만 장기에 유리한 'desirable difficulties'이다","아니오 — 완전히 다른 현상이다","spacing effect만 효과적이고 testing effect는 없다","두 효과는 서로 상쇄된다"],
+          ans:0, meaning:"저자들은 두 현상이 같은 패턴(massed = 단기↑장기↓, spaced/tested = 단기↓장기↑)을 보인다고 지적. Bjork(1994)의 'desirable difficulties' 프레임워크로 통합 설명.", ex:"Massed study leads to a short-term benefit, but the other manipulation (testing or spaced studying) has a greater effect on long-term retention." },
+
+        { id:"h13", cat:"hypothesis", q:"[실험 설계] 이 실험에서 시험의 채점 기준은 무엇이어야 할까?",
+          opts:["맞춤법과 문법 정확도","지문의 의미 단위(idea unit)를 얼마나 회상했는지","글자 수","회상에 걸린 시간"],
+          ans:1, meaning:"각 지문을 30개 idea unit으로 나누고, 학생이 회상한 내용이 몇 개의 idea unit에 해당하는지로 채점. 정확한 문구가 아닌 의미 전달 여부를 평가.", ex:"Each passage was divided into 30 idea units for scoring purposes." },
+
+        { id:"h14", cat:"hypothesis", q:"[너의 입장] '학생들이 반복 읽기를 선호하는 이유'는 뭘까?",
+          opts:["실제로 가장 효과적이기 때문","읽을수록 쉽게 느껴져서 '잘 안다'고 착각하기 때문","교수가 그렇게 하라고 해서","시험보다 스트레스가 적어서"],
+          ans:1, meaning:"반복 읽기는 처리 유창성(processing fluency)을 높여서 '잘 알고 있다'는 착각을 만든다. 학생들은 이 단기 유창성을 장기 학습으로 오인. 메타인지의 함정.", ex:"Students often use ineffective learning strategies because they base their predictions on what produces rapid short-term gains." },
+
+        { id:"h15", cat:"hypothesis", q:"[너의 예측] 시험을 3번 본 그룹 vs 4번 학습한 그룹. 1주일 동안 망각률 차이가 얼마나 될까?",
+          opts:["거의 비슷할 것이다 (5%p 이내)","시험 그룹이 약간 덜 잊을 것이다 (10-20%p)","시험 그룹이 훨씬 덜 잊을 것이다 (30%p 이상)","학습 그룹이 덜 잊을 것이다"],
+          ans:2, meaning:"SSSS는 52% 망각, STTT는 14% 망각. 차이가 38%p. 시험 3번이 망각을 거의 방지하는 수준. 반복 학습은 오히려 절반 이상을 잊게 만들었다.", ex:"Subjects in the SSSS condition forgot far more (52%) than subjects in the STTT condition (14%)." },
+
+        // ════════════════════════════════════════════
+        // 영어 (15문제) — 학술/실험 표현 위주
+        // ════════════════════════════════════════════
+
+        { id:"e1", cat:"english", q:"retention",
+          opts:["보유, 유지 (기억의 유지)","주의, 집중","반복, 되풀이","인식, 재인"],
+          ans:0, meaning:"retention = 기억의 보유/유지. 학습한 내용이 시간이 지나도 기억에 남아 있는 정도. 이 논문의 핵심 종속변수.", ex:"Taking memory tests improves long-term retention." },
+
+        { id:"e2", cat:"english", q:"free-recall test",
+          opts:["무료로 제공되는 시험","단서 없이 기억나는 것을 자유롭게 적는 시험","선택지가 있는 객관식 시험","구술 시험"],
+          ans:1, meaning:"free recall = 단서(cue) 없이 기억나는 것을 자유롭게 인출하는 시험 형태. 에세이 시험과 유사. cued recall(단서 회상), recognition(재인)과 구분되는 가장 어려운 인출 방식.", ex:"Took one or three immediate free-recall tests, without feedback." },
+
+        { id:"e3", cat:"english", q:"mixed-factorial design",
+          opts:["여러 과목을 섞어서 시험 보는 것","피험자 내 변인과 피험자 간 변인을 함께 사용하는 실험 설계","무작위 배정만 사용하는 설계","사후 분석만 하는 연구 방법"],
+          ans:1, meaning:"mixed-factorial = within-subjects 변인과 between-subjects 변인을 동시에 사용. 실험 1은 학습 조건(within) × 시험 시점(between)의 2×3 혼합 설계.", ex:"A 2 × 3 mixed-factorial design was used." },
+
+        { id:"e4", cat:"english", q:"manipulated within subjects",
+          opts:["참가자의 내면을 조작한","같은 참가자가 모든 실험 조건을 경험하도록 설계한","참가자 수를 조작한","참가자를 속인"],
+          ans:1, meaning:"within subjects = 피험자 내 설계. 한 참가자가 재학습 조건과 시험 조건 모두를 경험. ↔ between subjects는 참가자마다 하나의 조건만 경험.", ex:"Learning condition (restudy vs. test) was manipulated within subjects." },
+
+        { id:"e5", cat:"english", q:"counterbalanced across subjects",
+          opts:["참가자 수의 균형을 맞춘","조건·자료의 제시 순서를 참가자마다 다르게 배치한","참가자끼리 서로 평가하게 한","통제 집단을 추가한"],
+          ans:1, meaning:"counterbalancing = 순서 효과(order effect)를 통제하기 위한 기법. 예: 절반은 지문A→B, 나머지는 B→A. 순서가 결과를 오염시키지 않도록 방지.", ex:"The order of passages were counterbalanced across subjects." },
+
+        { id:"e6", cat:"english", q:"retention interval",
+          opts:["시험을 보는 시간","학습 후 최종 시험까지의 시간 간격","연구에 참여하는 기간","기억이 형성되는 시간"],
+          ans:1, meaning:"retention interval = 학습(encoding)과 최종 시험(retrieval) 사이의 시간 간격. 이 연구에서는 5분/2일/1주일 세 수준. 간격이 길수록 testing effect가 두드러짐.", ex:"Delay of the final test (5 min, 2 days, or 1 week)." },
+
+        { id:"e7", cat:"english", q:"crossover interaction",
+          opts:["참가자들이 서로 교차한 것","두 조건의 우열이 시점에 따라 역전되는 상호작용 패턴","교차 검증 방법","두 실험을 교차로 실시하는 것"],
+          ans:1, meaning:"crossover interaction = 한 시점에서는 A>B이지만 다른 시점에서는 B>A로 역전되는 통계적 상호작용. 이 논문에서는 재학습(5분 후 우세) vs 시험(1주일 후 우세)의 역전.", ex:"The crossover interaction observed in Figure 1." },
+
+        { id:"e8", cat:"english", q:"η²ₚ (partial eta squared)",
+          opts:["오차 비율","효과 크기 — 독립변인이 종속변인 분산의 몇 %를 설명하는지","표본 크기 보정 계수","유의 수준"],
+          ans:1, meaning:"partial eta squared = ANOVA에서 사용하는 효과 크기(effect size) 지표. .01=작은 효과, .06=중간, .14=큰 효과. 이 논문에서 η²ₚ = .35는 매우 큰 효과.", ex:"F(2, 117) = 32.10, ηₚ² = .35" },
+
+        { id:"e9", cat:"english", q:"post hoc analyses",
+          opts:["사전에 계획된 분석","ANOVA 후 어떤 조건 간 차이가 유의한지 추가로 비교하는 분석","연구 종료 후 하는 면담","참가자 사후 추적 조사"],
+          ans:1, meaning:"post hoc = '사후'라는 뜻의 라틴어. ANOVA에서 주효과/상호작용이 유의하면, 구체적으로 어떤 조건 쌍이 차이가 나는지 확인하는 다중 비교 분석.", ex:"Post hoc analyses confirmed that on the 5-min retention tests, restudying produced better recall than testing." },
+
+        { id:"e10", cat:"english", q:"\"cumulative recall data showed that subjects had exhausted their knowledge\"에서 exhausted의 뜻은?",
+          opts:["지쳤다, 피곤해졌다","고갈시켰다, 다 써버렸다 (기억할 수 있는 것을 모두 인출했다)","잊어버렸다","거부했다"],
+          ans:1, meaning:"exhausted their knowledge = 기억할 수 있는 것을 모두 인출해서 더 이상 새로운 것이 나오지 않는 상태. 누적 회상 곡선이 점근선(asymptote)에 도달했다는 의미.", ex:"Cumulative recall data showed that subjects had exhausted their knowledge by the end of the retention interval." },
+
+        { id:"e11", cat:"english", q:"interrater reliability",
+          opts:["시험의 난이도 일관성","두 명 이상의 채점자 간 채점 일치도","참가자 간 점수 차이","시험-재시험 신뢰도"],
+          ans:1, meaning:"interrater reliability = 평가자 간 신뢰도. 두 채점자가 같은 답안을 독립적으로 채점했을 때 얼마나 일치하는지. 이 연구에서 r = .95로 매우 높았다.", ex:"The Pearson product-moment correlation (r) between their scores was .95. Given the high interrater reliability..." },
+
+        { id:"e12", cat:"english", q:"\"bias performance results in favor of this condition\"에서 'bias in favor of'의 뜻은?",
+          opts:["~에 불리하게 편향시키다","~에 유리하게 편향시키다","~에 대해 중립적이다","~를 제거하다"],
+          ans:1, meaning:"bias in favor of = ~에 유리하도록 편향시키다. 재학습 조건이 자료 100%를 다시 볼 수 있으므로, 결과가 재학습에 유리하게 편향될 수 있다는 인정. 그런데도 시험이 이김.", ex:"Which should, if anything, bias performance results in favor of this condition." },
+
+        { id:"e13", cat:"english", q:"proportional measure of forgetting: (initial recall − final recall) / initial recall — 이 공식이 의미하는 것은?",
+          opts:["최종 시험 점수","절대적 망각량","초기 기억 대비 망각 비율 (%)","학습 효율성 지수"],
+          ans:2, meaning:"비례적 망각 측정 = 초기에 기억한 것 중 얼마나 잊었는지를 비율로 계산. 절대량이 아닌 비율이므로 초기 수준이 다른 조건 간 공정한 비교 가능.", ex:"An alternative approach to examining forgetting is to use a proportional measure: (initial recall − final recall)/initial recall." },
+
+        { id:"e14", cat:"english", q:"\"the effect was qualified by a significant interaction\"에서 'qualified by'의 뜻은?",
+          opts:["~에 의해 자격이 주어진","~에 의해 제한/수정된 (단순하지 않음을 의미)","~에 의해 강화된","~에 의해 제거된"],
+          ans:1, meaning:"qualified by = (통계에서) 주효과가 상호작용에 의해 '조건부'가 됨. 즉, 시험의 효과가 항상 같은 게 아니라 retention interval에 따라 달라진다는 뜻.", ex:"These main effects were qualified by a significant Learning Condition × Retention Interval interaction." },
+
+        { id:"e15", cat:"english", q:"\"boundary conditions for the testing effect are not yet known\"에서 boundary conditions의 뜻은?",
+          opts:["실험실의 물리적 경계","어떤 효과가 작동하거나 작동하지 않는 조건의 범위","참가자 수의 상한선","통계적 유의 수준의 기준"],
+          ans:1, meaning:"boundary conditions = 경계 조건. 어떤 현상이 나타나는 조건과 나타나지 않는 조건의 경계. Testing effect가 어떤 상황에서는 안 나타날 수 있는지 아직 모른다는 한계 인정.", ex:"The boundary conditions for the testing effect are not yet known." },
+      ]
+    }
+  ];
+
+  // ── App State ──────────────────────────────────────
+  const state = {
+    setIdx: 0,
+    cat: "all",
+    questions: [],
+    current: 0,
+    selected: null,
+    showResult: false,
+    score: 0,
+    finished: false,
+    wrong: []
+  };
+
+  const CAT_LABELS = { all:"전체", hypothesis:"가설 & 설계", english:"학술 영어" };
+  const CAT_COLORS = { hypothesis:"bg-indigo-900 text-indigo-200 border border-indigo-700", english:"bg-teal-900 text-teal-200 border border-teal-700" };
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function loadQuestions() {
+    const set = QUIZ_SETS[state.setIdx];
+    const filtered = state.cat === "all" ? set.questions : set.questions.filter(q => q.cat === state.cat);
+    state.questions = shuffle(filtered);
+    state.current = 0;
+    state.selected = null;
+    state.showResult = false;
+    state.score = 0;
+    state.finished = false;
+    state.wrong = [];
+  }
+
+  function selectOption(idx) {
+    if (state.showResult) return;
+    const q = state.questions[state.current];
+    state.selected = idx;
+    state.showResult = true;
+    if (idx === q.ans) state.score++;
+    else state.wrong.push(q);
+    render();
+  }
+
+  function nextQuestion() {
+    if (state.current + 1 >= state.questions.length) {
+      state.finished = true;
+    } else {
+      state.current++;
+      state.selected = null;
+      state.showResult = false;
+    }
+    render();
+  }
+
+  function restart(cat) {
+    if (cat !== undefined) state.cat = cat;
+    loadQuestions();
+    render();
+  }
+
+  // ── Render ─────────────────────────────────────────
+  function render() {
+    const app = document.getElementById("app");
+    const set = QUIZ_SETS[state.setIdx];
+
+    if (state.finished) {
+      app.innerHTML = renderFinished(set);
+      return;
+    }
+
+    if (!state.questions.length) {
+      app.innerHTML = `<div class="min-h-screen flex items-center justify-center"><p class="text-gray-300">이 카테고리에 문제가 없어요.</p></div>`;
+      return;
+    }
+
+    const q = state.questions[state.current];
+    const pct = ((state.current + (state.showResult ? 1 : 0)) / state.questions.length * 100).toFixed(1);
+
+    app.innerHTML = `
+      <div class="min-h-screen flex flex-col">
+        <header class="px-4 py-4 md:px-8 border-b border-gray-700">
+          <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <div>
+              <h1 class="text-lg font-bold text-white">PreQuiz</h1>
+              <p class="text-xs text-gray-400">${set.book} · ${set.title}</p>
+              <p class="text-xs text-gray-500">${set.pages}</p>
+            </div>
+            <div class="text-right">
+              <p class="text-sm font-mono text-gray-300">${state.current + 1} / ${state.questions.length}</p>
+              <p class="text-xs text-emerald-400 font-semibold">${state.score}점</p>
+            </div>
+          </div>
+        </header>
+
+        <div class="px-4 py-3 md:px-8">
+          <div class="max-w-2xl mx-auto flex gap-2 overflow-x-auto pb-1">
+            ${Object.entries(CAT_LABELS).map(([k,v]) => {
+              const cnt = k === "all" ? set.questions.length : set.questions.filter(q=>q.cat===k).length;
+              const active = state.cat === k;
+              return `<button onclick="restart('${k}')" class="px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition ${active ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-600'}">${v} (${cnt})</button>`;
+            }).join("")}
+          </div>
+        </div>
+
+        <div class="px-4 md:px-8 mt-1">
+          <div class="max-w-2xl mx-auto">
+            <div class="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+              <div class="h-full bg-blue-500 rounded-full transition-all duration-300" style="width:${pct}%"></div>
+            </div>
+          </div>
+        </div>
+
+        <main class="flex-1 flex items-center justify-center px-4 py-6">
+          <div class="max-w-2xl w-full space-y-6 fade-in">
+            <div class="space-y-3">
+              <span class="inline-block text-xs px-2.5 py-1 rounded-full font-medium ${CAT_COLORS[q.cat] || ''}">${CAT_LABELS[q.cat] || ''}</span>
+              <h2 class="font-bold leading-snug text-white ${q.q.length > 50 ? 'text-base md:text-lg' : 'text-xl md:text-2xl'}">${q.q}</h2>
+            </div>
+
+            <div class="space-y-3">
+              ${q.opts.map((opt, i) => {
+                let style = "bg-gray-800 hover:bg-gray-700 border-gray-600 text-gray-100";
+                if (state.showResult) {
+                  if (i === q.ans) style = "bg-emerald-900 border-emerald-400 text-emerald-200";
+                  else if (i === state.selected) style = "bg-red-900 border-red-400 text-red-200";
+                  else style = "bg-gray-800 border-gray-700 text-gray-500";
+                }
+                return `<button onclick="selectOption(${i})" ${state.showResult ? 'disabled' : ''} class="w-full text-left px-4 py-3.5 rounded-xl border-2 transition text-sm md:text-base cursor-pointer disabled:cursor-default ${style}">
+                  <span class="font-mono text-xs text-gray-400 mr-3 font-bold">${String.fromCharCode(65+i)}</span>${opt}
+                </button>`;
+              }).join("")}
+            </div>
+
+            ${state.showResult ? `
+              <div class="bg-gray-900 rounded-xl p-5 space-y-3 border-2 border-gray-700 fade-in">
+                <p class="text-base font-bold ${state.selected === q.ans ? 'text-emerald-400' : 'text-red-400'}">
+                  ${state.selected === q.ans ? '✓ 정답!' : '✗ 오답'}
+                </p>
+                <p class="text-sm text-gray-200 leading-relaxed">${q.meaning}</p>
+                <p class="text-sm text-gray-400 italic leading-relaxed border-l-4 border-gray-600 pl-3">"${q.ex}"</p>
+              </div>
+              <button onclick="nextQuestion()" class="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition text-base">
+                ${state.current + 1 >= state.questions.length ? '결과 보기' : '다음 문제 →'}
+              </button>
+            ` : ''}
+          </div>
+        </main>
+      </div>
+    `;
+  }
+
+  function renderFinished(set) {
+    const total = state.questions.length;
+    const pct = Math.round(state.score / total * 100);
+    const emoji = pct >= 80 ? "🎉" : pct >= 50 ? "💪" : "📖";
+    const msg = pct >= 80 ? "논문의 맥락을 이미 잘 파악하고 있어요!" : pct >= 50 ? "좋아요! 틀린 부분을 논문에서 찾아보면 더 깊이 기억될 거예요." : "완벽해요 — PreQuiz는 틀릴수록 효과적입니다! 이제 논문을 읽으면 틀린 부분에 자연스럽게 주의가 집중돼요.";
+
+    return `
+      <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-lg w-full space-y-6 fade-in">
+          <div class="text-center space-y-3">
+            <p class="text-5xl">${emoji}</p>
+            <h2 class="text-2xl font-bold text-white">PreQuiz 결과</h2>
+            <p class="text-4xl font-bold text-blue-400">${state.score}/${total}<span class="text-lg text-gray-400 ml-2">(${pct}%)</span></p>
+            <p class="text-gray-300 text-sm">${msg}</p>
+            <p class="text-xs text-gray-500 mt-2">💡 Pretesting Effect: 틀린 문제의 정답이 논문을 읽을 때 더 깊이 각인됩니다</p>
+          </div>
+
+          ${state.wrong.length ? `
+            <div class="space-y-3">
+              <h3 class="text-sm font-bold text-gray-300 uppercase tracking-wide">틀린 문제 — 논문에서 찾아보세요</h3>
+              <div class="space-y-2 max-h-[40vh] overflow-y-auto pr-1">
+                ${state.wrong.map(w => `
+                  <div class="bg-gray-900 border-2 border-gray-700 rounded-xl p-4 space-y-2">
+                    <div class="flex items-start gap-2">
+                      <span class="text-xs px-2 py-0.5 rounded-full font-medium ${CAT_COLORS[w.cat]}">${CAT_LABELS[w.cat]}</span>
+                      <p class="font-bold text-sm flex-1 text-white">${w.q}</p>
+                    </div>
+                    <p class="text-sm text-emerald-400 font-semibold">정답: ${w.opts[w.ans]}</p>
+                    <p class="text-xs text-gray-300">${w.meaning}</p>
+                    <p class="text-xs text-gray-400 italic border-l-4 border-gray-600 pl-3">"${w.ex}"</p>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="flex flex-col gap-2">
+            <button onclick="restart()" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition text-base">다시 풀기</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ── Init ───────────────────────────────────────────
+  loadQuestions();
+  render();
+  </script>
+</body>
+</html>
