@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아동상담 접수면접 챗봇 — 기획 초안</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg-card: #141414;
+      --text: #ffffff;
+      --text-sub: #888888;
+      --accent: #4F8CFF;
+      --accent-green: #34D399;
+      --accent-red: #F87171;
+      --accent-yellow: #FBBF24;
+      --accent-purple: #A78BFA;
+      --accent-orange: #FB923C;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .deck { width: 100vw; height: 100vh; position: relative; }
+
+    .slide {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 80px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .slide.active .anim {
+      animation: fadeUp 0.5s ease forwards;
+      opacity: 0;
+    }
+
+    .slide.active .anim:nth-child(1) { animation-delay: 0.1s; }
+    .slide.active .anim:nth-child(2) { animation-delay: 0.25s; }
+    .slide.active .anim:nth-child(3) { animation-delay: 0.4s; }
+    .slide.active .anim:nth-child(4) { animation-delay: 0.55s; }
+    .slide.active .anim:nth-child(5) { animation-delay: 0.7s; }
+    .slide.active .anim:nth-child(6) { animation-delay: 0.85s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-number {
+      position: absolute;
+      top: 40px;
+      right: 60px;
+      font-size: 14px;
+      color: #333;
+      font-weight: 300;
+    }
+
+    .tag {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1.3;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: var(--text-sub);
+      font-weight: 300;
+      line-height: 1.7;
+      text-align: center;
+      max-width: 680px;
+    }
+
+    /* Flow */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 36px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .flow-step {
+      background: var(--bg-card);
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 24px 28px;
+      text-align: center;
+      min-width: 160px;
+      max-width: 200px;
+    }
+
+    .flow-step.highlight {
+      border-color: var(--accent);
+      box-shadow: 0 0 24px rgba(79,140,255,0.2);
+      background: #0d1a2e;
+    }
+
+    .flow-step.highlight-green {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 24px rgba(52,211,153,0.15);
+      background: #0a1f1a;
+    }
+
+    .flow-step.highlight-red {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 24px rgba(248,113,113,0.15);
+      background: #1f0a0a;
+    }
+
+    .flow-step .icon { font-size: 32px; margin-bottom: 10px; }
+    .flow-step .step-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .flow-step .step-desc { font-size: 12px; color: var(--text-sub); line-height: 1.5; }
+
+    .flow-arrow { font-size: 22px; color: #444; }
+
+    /* Cards */
+    .cards {
+      display: flex;
+      gap: 20px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 28px 24px;
+      min-width: 180px;
+      max-width: 220px;
+      flex: 1;
+    }
+
+    .card .card-icon { font-size: 28px; margin-bottom: 12px; }
+    .card .card-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .card .card-desc { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+
+    /* Compare Table */
+    .compare {
+      display: flex;
+      gap: 24px;
+      margin-top: 36px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .compare-col {
+      background: var(--bg-card);
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 32px 28px;
+      min-width: 280px;
+      max-width: 340px;
+      flex: 1;
+    }
+
+    .compare-col.old {
+      border-color: #333;
+    }
+
+    .compare-col.new {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 20px rgba(52,211,153,0.1);
+    }
+
+    .compare-col .col-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .compare-col.old .col-tag { color: var(--accent-red); }
+    .compare-col.new .col-tag { color: var(--accent-green); }
+
+    .compare-col .col-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .compare-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 14px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .compare-item .ci-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+    .compare-item .ci-text { color: var(--text-sub); }
+
+    /* Chat mockup */
+    .chat-box {
+      background: var(--bg-card);
+      border: 1px solid #222;
+      border-radius: 20px;
+      padding: 28px;
+      max-width: 520px;
+      width: 100%;
+      margin-top: 32px;
+    }
+
+    .chat-msg {
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .chat-msg:last-child { margin-bottom: 0; }
+
+    .chat-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .chat-avatar.bot { background: #1a2a4a; }
+    .chat-avatar.user { background: #1a3a2a; }
+
+    .chat-bubble {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-sub);
+      max-width: 400px;
+    }
+
+    .chat-bubble.bot-bubble { border-color: #1a2a4a; }
+    .chat-bubble.user-bubble { background: #0d1f14; border-color: #1a3a2a; }
+
+    /* 9-grid */
+    .grid-9 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 32px;
+      max-width: 680px;
+      width: 100%;
+    }
+
+    .grid-item {
+      background: var(--bg-card);
+      border: 1px solid #222;
+      border-radius: 14px;
+      padding: 18px 16px;
+      text-align: center;
+    }
+
+    .grid-item .gi-num {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .grid-item .gi-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .grid-item .gi-desc {
+      font-size: 11px;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+
+    .grid-item.bot-handles {
+      border-color: var(--accent);
+      background: #0d1a2e;
+    }
+
+    .grid-item.human-only {
+      border-color: #444;
+      opacity: 0.5;
+    }
+
+    /* Chatbot stages */
+    .stages {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stage {
+      background: var(--bg-card);
+      border: 1px solid #222;
+      border-radius: 14px;
+      padding: 20px 18px;
+      text-align: center;
+      min-width: 130px;
+      max-width: 155px;
+      flex: 1;
+    }
+
+    .stage .stage-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .stage .stage-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .stage .stage-desc {
+      font-size: 11px;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    .stage-arrow { color: #333; font-size: 18px; display: flex; align-items: center; }
+
+    /* Nav */
+    .nav {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .nav button {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: var(--text);
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    .nav button:hover { background: #222; }
+
+    .nav .page-indicator {
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      color: #555;
+      padding: 0 8px;
+    }
+
+    /* Annotation */
+    .annotation {
+      font-size: 12px;
+      color: #444;
+      margin-top: 24px;
+      text-align: center;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    .source {
+      position: absolute;
+      bottom: 72px;
+      left: 80px;
+      font-size: 10px;
+      color: #333;
+      line-height: 1.6;
+      max-width: 70%;
+    }
+
+    .source a { color: #444; text-decoration: none; }
+    .source a:hover { text-decoration: underline; }
+
+    .highlight-text { color: var(--accent); font-weight: 700; }
+    .highlight-green { color: var(--accent-green); font-weight: 700; }
+    .highlight-red { color: var(--accent-red); font-weight: 700; }
+    .highlight-yellow { color: var(--accent-yellow); font-weight: 700; }
+
+    @media (max-width: 768px) {
+      .slide { padding: 40px 24px; }
+      h1 { font-size: 32px; }
+      h2 { font-size: 26px; }
+      .subtitle { font-size: 15px; }
+      .flow { gap: 10px; }
+      .flow-step { min-width: 120px; padding: 16px; }
+      .grid-9 { grid-template-columns: repeat(2, 1fr); }
+      .compare { flex-direction: column; align-items: center; }
+      .compare-col { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+
+    <!-- Slide 1: Title -->
+    <div class="slide active" data-slide="1">
+      <span class="slide-number">01</span>
+      <div class="anim tag">수업 과제 기획</div>
+      <h1 class="anim">아동상담 접수면접을<br>다시 설계하다</h1>
+      <p class="anim subtitle">부모가 아이의 상태를 AI 챗봇에 입력하면,<br>상담사는 아이에게 집중할 수 있다</p>
+      <p class="anim annotation">심리학기반 AI 수업 | 2026-1학기</p>
+    </div>
+
+    <!-- Slide 2: 아동상담 전체 구조 -->
+    <div class="slide" data-slide="2">
+      <span class="slide-number">02</span>
+      <div class="anim tag">현행 구조</div>
+      <h2 class="anim">아동상담은 이렇게 진행된다</h2>
+      <p class="anim subtitle">접수면접은 부모면담에서 시작. 약 1시간 30분 소요.</p>
+
+      <div class="anim flow">
+        <div class="flow-step highlight">
+          <div class="icon">👨‍👩‍👧</div>
+          <div class="step-title">1단계: 부모 면담</div>
+          <div class="step-desc">상담사가 부모에게<br>아이 상태 질문<br><span class="highlight-text">30~40분</span></div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="icon">🧒</div>
+          <div class="step-title">2단계: 아동 면접</div>
+          <div class="step-desc">놀이 관찰<br>행동 관찰<br>30~40분</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="icon">📋</div>
+          <div class="step-title">3단계: 피드백</div>
+          <div class="step-desc">부모에게<br>발견점 공유<br>치료 방향 논의</div>
+        </div>
+      </div>
+
+      <p class="anim annotation">1단계 부모 면담 = 정보 수집 단계. 여기가 챗봇이 들어갈 자리.</p>
+      <div class="source">출처: 아동상담 초기접수면접 — 면접의 구조 (reportshop.co.kr/report/447155)<br>서울시 아동복지센터 — 면접상담 기법 (child.seoul.go.kr)</div>
+    </div>
+
+    <!-- Slide 3: 접수면접에서 수집하는 9가지 -->
+    <div class="slide" data-slide="3">
+      <span class="slide-number">03</span>
+      <div class="anim tag">부모 면담 내용</div>
+      <h2 class="anim">접수면접에서 수집하는 9가지 정보</h2>
+
+      <div class="anim grid-9">
+        <div class="grid-item bot-handles">
+          <div class="gi-num">01</div>
+          <div class="gi-title">현재 문제</div>
+          <div class="gi-desc">주호소, 발생 시기</div>
+        </div>
+        <div class="grid-item bot-handles">
+          <div class="gi-num">02</div>
+          <div class="gi-title">가족 관계</div>
+          <div class="gi-desc">가족 구성, 관계 패턴</div>
+        </div>
+        <div class="grid-item bot-handles">
+          <div class="gi-num">03</div>
+          <div class="gi-title">학교/유치원</div>
+          <div class="gi-desc">적응, 학업, 교사 평가</div>
+        </div>
+        <div class="grid-item bot-handles">
+          <div class="gi-num">04</div>
+          <div class="gi-title">또래 관계</div>
+          <div class="gi-desc">친구 관계, 사회성</div>
+        </div>
+        <div class="grid-item bot-handles">
+          <div class="gi-num">05</div>
+          <div class="gi-title">사회문화적 요소</div>
+          <div class="gi-desc">환경, 문화적 배경</div>
+        </div>
+        <div class="grid-item bot-handles">
+          <div class="gi-num">06</div>
+          <div class="gi-title">흥미/취미</div>
+          <div class="gi-desc">좋아하는 것, 놀이 패턴</div>
+        </div>
+        <div class="grid-item bot-handles">
+          <div class="gi-num">07</div>
+          <div class="gi-title">발달/건강</div>
+          <div class="gi-desc">발달력, 건강 이력</div>
+        </div>
+        <div class="grid-item human-only">
+          <div class="gi-num">08</div>
+          <div class="gi-title">미래 계획</div>
+          <div class="gi-desc">상담 기대, 목표</div>
+        </div>
+        <div class="grid-item human-only">
+          <div class="gi-num">09</div>
+          <div class="gi-title">행동 관찰</div>
+          <div class="gi-desc">대면에서만 가능</div>
+        </div>
+      </div>
+
+      <p class="anim annotation"><span class="highlight-text">파란색 = 챗봇 수집 가능</span> &nbsp;|&nbsp; <span style="color:#555">회색 = 대면 필요</span><br>9개 중 7개를 챗봇이 사전 수집 가능</p>
+      <div class="source">출처: 아동상담 초기접수면접 — 접수 면접 동안 얻어야 할 9가지 주제 (reportshop.co.kr/report/447155)</div>
+    </div>
+
+    <!-- Slide 4: 현재 문제점 -->
+    <div class="slide" data-slide="4">
+      <span class="slide-number">04</span>
+      <div class="anim tag">문제</div>
+      <h2 class="anim">부모 면담의 현실</h2>
+
+      <div class="anim cards">
+        <div class="card">
+          <div class="card-icon">⏰</div>
+          <div class="card-title">시간 부담</div>
+          <div class="card-desc">상담사가 부모와 30~40분 면담.<br>그만큼 아이에게 쓸 시간이 줄어든다.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📝</div>
+          <div class="card-title">종이 기록지</div>
+          <div class="card-desc">대기실에서 체크박스 위주 작성.<br>맥락 없는 단편 정보만 수집.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">😰</div>
+          <div class="card-title">부모의 긴장</div>
+          <div class="card-desc">첫 방문에서 상담사 앞에<br>솔직하게 말하기 어려움.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔄</div>
+          <div class="card-title">중복 질문</div>
+          <div class="card-desc">기록지 작성 후 면담에서<br>같은 질문 반복.</div>
+        </div>
+      </div>
+      <div class="source">출처: 마인드카페 심리상담센터 — 아동상담 과정 (center.mindcafe.co.kr/child_therapy)<br>클로버가족상담센터 — 초기 면접 구조 (cafe.daum.net/clovercounseling/12zU/37)</div>
+    </div>
+
+    <!-- Slide 5: Before → After -->
+    <div class="slide" data-slide="5">
+      <span class="slide-number">05</span>
+      <div class="anim tag">솔루션</div>
+      <h2 class="anim">챗봇이 1단계를 맡는다</h2>
+
+      <div class="anim compare">
+        <div class="compare-col old">
+          <div class="col-tag">Before</div>
+          <div class="col-title">현재 접수면접</div>
+          <div class="compare-item">
+            <span class="ci-icon">📍</span>
+            <span class="ci-text">상담센터에 직접 방문</span>
+          </div>
+          <div class="compare-item">
+            <span class="ci-icon">⏱️</span>
+            <span class="ci-text">부모 면담 30~40분 소요</span>
+          </div>
+          <div class="compare-item">
+            <span class="ci-icon">📋</span>
+            <span class="ci-text">종이 기록지 (체크박스)</span>
+          </div>
+          <div class="compare-item">
+            <span class="ci-icon">😶</span>
+            <span class="ci-text">첫 대면에서 솔직하기 어려움</span>
+          </div>
+          <div class="compare-item">
+            <span class="ci-icon">🔁</span>
+            <span class="ci-text">기록지 + 면담 = 중복 질문</span>
+          </div>
+        </div>
+
+        <div class="compare-col new">
+          <div class="col-tag">After</div>
+          <div class="col-title">챗봇 접수면접</div>
+          <div class="compare-item">
+            <span class="ci-icon">🏠</span>
+            <span class="ci-text">집에서 편하게 대화</span>
+          </div>
+          <div class="compare-item">
+            <span class="ci-icon">🤖</span>
+            <span class="ci-text">AI가 7개 항목 사전 수집</span>
+          </div>
+          <div class="compare-item">
+            <span class="ci-icon">💬</span>
+            <span class="ci-text">대화형 → 맥락 풍부한 정보</span>
+          </div>
+          <div class="compare-item">
+            <span class="ci-icon">🛋️</span>
+            <span class="ci-text">비대면 → 솔직한 표현 유도</span>
+          </div>
+          <div class="compare-item">
+            <span class="ci-icon">👧</span>
+            <span class="ci-text">상담사는 아이에게 집중</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6: 챗봇 대화 구조 -->
+    <div class="slide" data-slide="6">
+      <span class="slide-number">06</span>
+      <div class="anim tag">챗봇 설계</div>
+      <h2 class="anim">대화 흐름: 5단계</h2>
+
+      <div class="anim stages">
+        <div class="stage">
+          <div class="stage-num">1</div>
+          <div class="stage-title">라포 형성</div>
+          <div class="stage-desc">인사, 비밀보장 안내,<br>부모의 걱정 수용</div>
+        </div>
+        <div class="stage-arrow">→</div>
+        <div class="stage">
+          <div class="stage-num">2</div>
+          <div class="stage-title">주호소 파악</div>
+          <div class="stage-desc">"아이가 어떤 점이<br>가장 걱정되세요?"</div>
+        </div>
+        <div class="stage-arrow">→</div>
+        <div class="stage">
+          <div class="stage-num">3</div>
+          <div class="stage-title">맥락 수집</div>
+          <div class="stage-desc">가족, 학교, 또래,<br>발달력, 건강</div>
+        </div>
+        <div class="stage-arrow">→</div>
+        <div class="stage">
+          <div class="stage-num">4</div>
+          <div class="stage-title">위험도 확인</div>
+          <div class="stage-desc">자해/타해 여부,<br>긴급 연계 필요성</div>
+        </div>
+        <div class="stage-arrow">→</div>
+        <div class="stage">
+          <div class="stage-num">5</div>
+          <div class="stage-title">요약 확인</div>
+          <div class="stage-desc">부모가 직접 요약<br>→ 봇이 보완</div>
+        </div>
+      </div>
+
+      <p class="anim annotation">단계 전환은 턴 수가 아닌 <span class="highlight-text">정보 확인 여부</span> 기준으로 자동 판별</p>
+    </div>
+
+    <!-- Slide 7: 대화 예시 -->
+    <div class="slide" data-slide="7">
+      <span class="slide-number">07</span>
+      <div class="anim tag">대화 예시</div>
+      <h2 class="anim">부모와 챗봇의 대화</h2>
+
+      <div class="anim chat-box">
+        <div class="chat-msg">
+          <div class="chat-avatar bot">🤖</div>
+          <div class="chat-bubble bot-bubble">안녕하세요. 저는 OO상담센터의 접수면접 도우미입니다. 아이에 대해 걱정되는 점을 편하게 이야기해 주세요. 말씀하신 내용은 담당 상담사에게만 전달됩니다.</div>
+        </div>
+        <div class="chat-msg" style="justify-content: flex-end;">
+          <div class="chat-bubble user-bubble">아이가 요즘 유치원에서 자꾸 친구를 때려요. 집에서는 괜찮은데...</div>
+          <div class="chat-avatar user">👩</div>
+        </div>
+        <div class="chat-msg">
+          <div class="chat-avatar bot">🤖</div>
+          <div class="chat-bubble bot-bubble">걱정이 많으시겠어요. 유치원에서 그런 행동이 언제부터 시작됐는지 기억나세요?</div>
+        </div>
+        <div class="chat-msg" style="justify-content: flex-end;">
+          <div class="chat-bubble user-bubble">한 두 달 전부터요. 동생이 태어나고 나서인 것 같기도...</div>
+          <div class="chat-avatar user">👩</div>
+        </div>
+        <div class="chat-msg">
+          <div class="chat-avatar bot">🤖</div>
+          <div class="chat-bubble bot-bubble">동생이 태어난 시기와 겹치는군요. 집에서 아이가 동생에게 어떻게 대하는지도 알려주실 수 있을까요?</div>
+        </div>
+      </div>
+
+      <p class="anim annotation">자유 대화 속에서 주호소 + 시기 + 가족 변화 + 맥락을 자연스럽게 수집</p>
+    </div>
+
+    <!-- Slide 8: 상담사에게 전달되는 결과 -->
+    <div class="slide" data-slide="8">
+      <span class="slide-number">08</span>
+      <div class="anim tag">OUTPUT</div>
+      <h2 class="anim">상담사가 받는 사전 리포트</h2>
+
+      <div class="anim" style="background: var(--bg-card); border: 1px solid #222; border-radius: 20px; padding: 32px; max-width: 520px; width: 100%; margin-top: 24px;">
+        <div style="font-size: 12px; color: var(--accent); font-weight: 700; letter-spacing: 1px; margin-bottom: 16px;">접수면접 요약 리포트</div>
+
+        <div style="margin-bottom: 16px;">
+          <div style="font-size: 13px; color: #555; margin-bottom: 4px;">주호소</div>
+          <div style="font-size: 15px; line-height: 1.6;">유치원에서 또래 공격 행동 (약 2개월 전 시작, 동생 출생 시기와 일치)</div>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <div style="font-size: 13px; color: #555; margin-bottom: 4px;">가족 상황</div>
+          <div style="font-size: 15px; line-height: 1.6;">2개월 전 동생 출생. 집에서는 공격 행동 없으나 퇴행 행동(손가락 빨기) 관찰됨.</div>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <div style="font-size: 13px; color: #555; margin-bottom: 4px;">학교/유치원</div>
+          <div style="font-size: 15px; line-height: 1.6;">담임 교사도 동일 행동 보고. 이전에는 친구 관계 원만했음.</div>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <div style="font-size: 13px; color: #555; margin-bottom: 4px;">위험도</div>
+          <div style="font-size: 15px;"><span style="background: #1a3a2a; color: var(--accent-green); padding: 3px 10px; border-radius: 6px; font-size: 13px; font-weight: 600;">낮음</span> 자해/타해 위험 없음</div>
+        </div>
+
+        <div style="border-top: 1px solid #222; padding-top: 16px;">
+          <div style="font-size: 13px; color: #555; margin-bottom: 4px;">상담사 참고사항</div>
+          <div style="font-size: 14px; color: var(--text-sub); line-height: 1.6;">동생 출생에 따른 적응 문제 가능성. 아동 면접 시 형제 관계 탐색 권장.</div>
+        </div>
+      </div>
+
+      <p class="anim annotation">상담사는 이 리포트를 보고 <span class="highlight-green">아동 면접에 바로 집중</span>할 수 있다</p>
+      <div class="source">리포트 형식 예시 — 실제 상담센터 접수면접지 양식 참고 (thinkzon.com/share_report/1063644)</div>
+    </div>
+
+    <!-- Slide 9: Next Steps -->
+    <div class="slide" data-slide="9">
+      <span class="slide-number">09</span>
+      <div class="anim tag">Next Steps</div>
+      <h2 class="anim">다음 단계</h2>
+
+      <div class="anim flow">
+        <div class="flow-step highlight-green">
+          <div class="icon">1️⃣</div>
+          <div class="step-title">EBT 선택</div>
+          <div class="step-desc">수업에서 배운 후<br>근거기반치료 선택</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="icon">2️⃣</div>
+          <div class="step-title">프롬프트 설계</div>
+          <div class="step-desc">수업 플랫폼에서<br>시스템 프롬프트 구현</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="icon">3️⃣</div>
+          <div class="step-title">테스트</div>
+          <div class="step-desc">부모 시나리오로<br>대화 품질 검증</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="icon">4️⃣</div>
+          <div class="step-title">1차 발표</div>
+          <div class="step-desc">4주차<br>기획 발표</div>
+        </div>
+      </div>
+
+      <p class="anim subtitle" style="margin-top: 32px; font-size: 16px;">
+        <span class="highlight-text">스코프</span>: 아동상담센터에서 사용하는 부모 접수면접 챗봇<br>
+        <span class="highlight-text">구매 주체</span>: 아동상담센터, 소아정신과<br>
+        <span class="highlight-text">핵심 가치</span>: 상담사의 시간을 아이에게 돌려준다
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav">
+    <button onclick="prev()">← 이전</button>
+    <span class="page-indicator" id="pageIndicator">1 / 9</span>
+    <button onclick="next()">다음 →</button>
+  </div>
+
+  <script>
+    let current = 1;
+    const total = document.querySelectorAll('.slide').length;
+
+    function show(n) {
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      const target = document.querySelector(`[data-slide="${n}"]`);
+      if (target) target.classList.add('active');
+      document.getElementById('pageIndicator').textContent = `${n} / ${total}`;
+    }
+
+    function next() { if (current < total) { current++; show(current); } }
+    function prev() { if (current > 1) { current--; show(current); } }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+    });
+
+    // Touch support
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) { diff > 0 ? next() : prev(); }
+    });
+  </script>
+</body>
+</html>
