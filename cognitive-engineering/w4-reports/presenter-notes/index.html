@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>W4 발표자 노트 - Slide Bridge</title>
+  <style>
+    :root {
+      --bg: #0f0f1a;
+      --surface: #1a1a2e;
+      --card: #1e2a4a;
+      --text: #d4d4d8;
+      --heading: #ffffff;
+      --accent: #fbbf24;
+      --accent2: #f97316;
+      --bridge: #34d399;
+      --mic: #60a5fa;
+      --border: #333;
+      --dim: #888;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 17px;
+    }
+    .header {
+      background: var(--surface);
+      border-bottom: 2px solid var(--accent);
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .header h1 {
+      font-size: 1.1rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .header p {
+      font-size: 0.8rem;
+      color: var(--dim);
+      margin-top: 2px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px 16px 100px;
+    }
+
+    /* Slide card */
+    .slide {
+      background: var(--surface);
+      border-radius: 14px;
+      margin: 16px 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .slide-header {
+      background: var(--card);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .slide-num {
+      background: var(--accent);
+      color: #000;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 4px 10px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+    .slide-title {
+      color: var(--heading);
+      font-weight: 600;
+      font-size: 0.95rem;
+      flex: 1;
+    }
+    .slide-toggle {
+      color: var(--dim);
+      font-size: 1.2rem;
+      transition: transform 0.2s;
+    }
+    .slide.open .slide-toggle {
+      transform: rotate(90deg);
+    }
+    .slide-body {
+      display: none;
+      padding: 0 18px 18px;
+    }
+    .slide.open .slide-body {
+      display: block;
+    }
+
+    /* One-liner */
+    .oneliner {
+      background: rgba(251,191,36,0.1);
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px;
+      margin: 12px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Bridge */
+    .bridge {
+      background: rgba(52,211,153,0.1);
+      border-left: 3px solid var(--bridge);
+      padding: 10px 14px;
+      margin: 10px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .bridge-label {
+      color: var(--bridge);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .bridge p {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    /* Mic (presentation line) */
+    .mic {
+      background: rgba(96,165,250,0.1);
+      border-left: 3px solid var(--mic);
+      padding: 10px 14px;
+      margin: 10px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .mic-label {
+      color: var(--mic);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .mic p {
+      font-size: 0.9rem;
+      color: var(--text);
+      font-style: italic;
+    }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+      font-size: 0.8rem;
+      color: var(--dim);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+    .legend span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      .slide-header { padding: 12px 14px; }
+      .slide-body { padding: 0 14px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>W4 Slide Bridge - 발표자 노트</h1>
+    <p>주교재 3장: Attention & Display Space | 슬라이드 탭해서 펼치기</p>
+  </div>
+
+  <div class="container">
+    <div class="legend">
+      <span><span class="legend-dot" style="background:var(--accent)"></span> 한 줄 요약</span>
+      <span><span class="legend-dot" style="background:var(--bridge)"></span> 브릿지 질문</span>
+      <span><span class="legend-dot" style="background:var(--mic)"></span> 발표 멘트</span>
+    </div>
+
+    <!-- Slide 1 -->
+    <div class="slide open">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">01</span>
+        <span class="slide-title">시각적 탐색과 UFOV</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">우리 눈은 한 번에 모든 걸 못 본다. 볼 수 있는 범위(UFOV)로 화면을 차례차례 훑는 과정이 시각적 탐색이다.</div>
+        <div class="bridge">
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"그럼 이 탐색이 <strong>얼마나 걸리는지</strong> 예측할 수 있을까?"</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"시각적 탐색이란 눈을 움직여 목표물을 찾는 과정입니다. 눈이 한 번에 볼 수 있는 범위를 UFOV라 하는데, 이 범위로 화면을 빈틈없이 훑는 겁니다."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">02</span>
+        <span class="slide-title">SSTS 모델 (공식 분해)</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">찾는 시간 = 준비 시간 + (하나 확인하는 시간 x 물건 개수의 절반). 물건이 많을수록 정직하게 느려진다.</div>
+        <div class="bridge">
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"근데 만약 <strong>없는 걸</strong> 찾으면 어떻게 될까?"</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"이 공식의 핵심은 화면에 물건이 많을수록 찾는 시간이 비례해서 늘어난다는 겁니다. 평균적으로 절반 정도 확인하면 찾으니까 N을 2로 나눕니다."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">03</span>
+        <span class="slide-title">목표물 부재 시 비용 급증</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">없는 걸 찾으면 전부 다 뒤져봐야 하므로 시간이 2배. 점선이 더 가파른 이유.</div>
+        <div class="bridge">
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"근데 만약 목표물이 <strong>여러 개</strong>면? 하나 찾고 멈춰도 될까?"</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"목표물이 있으면 찾는 순간 멈추니까 빠른데, 없으면 끝까지 다 봐야 해서 시간이 두 배입니다. 그래서 그래프에서 점선이 더 가파릅니다."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">04</span>
+        <span class="slide-title">예외 1: 포괄적 탐색</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">X-ray에서 종양 3개를 찾아야 하면 하나 찾고 멈추면 안 된다. 전수 검사가 필요.</div>
+        <div class="bridge">
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"근데 만약 목표물이 주변과 <strong>확 다르게</strong> 생겼으면, 하나씩 안 봐도 되지 않을까?"</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"SSTS는 하나 찾으면 멈추는 모델인데, 의료 영상처럼 여러 개를 전부 찾아야 하는 상황에서는 멈출 수 없습니다. 이게 첫 번째 예외입니다."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">05</span>
+        <span class="slide-title">예외 2: 팝아웃 효과</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">색이나 모양이 확 다르면 하나씩 안 봐도 한눈에 보인다. 이때 기울기 b=0.</div>
+        <div class="bridge">
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"근데 만약 <strong>빨간색+세모</strong>처럼 특징이 2개 합쳐지면 여전히 팝아웃 될까?"</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"목표물이 주변과 완전히 다른 특징을 가지면 눈에 바로 들어옵니다. 이걸 팝아웃이라 하고, 물건이 아무리 많아도 찾는 시간이 같습니다."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">06</span>
+        <span class="slide-title">예외 3: 결합 탐색과 방해물</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">특징 2개가 합쳐진 걸 찾을 땐 팝아웃 불가. 다시 하나씩 봐야 하고, 방해물이 제각각이면 더 어렵다.</div>
+        <div class="bridge">
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"근데 만약 <strong>엄청 많이 훈련</strong>하면 결합 탐색도 빨라질 수 있을까?"</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"특징 하나면 팝아웃되지만, 빨간색+세모처럼 두 개 이상을 조합해서 찾으면 다시 느려집니다. 방해물이 제각각이면 더 힘들고요."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 7 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">07</span>
+        <span class="slide-title">예외 4: 훈련과 자동성</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">항상 같은 걸 찾는 훈련을 하면 자동화 가능. 하지만 매번 달라지면 영원히 느리다.</div>
+        <div class="bridge">
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"그러면 뇌는 <strong>전체를 무작정 훑는 게 아니라</strong> 뭔가 전략이 있지 않을까?"</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"찾아야 할 대상이 매번 똑같으면 훈련으로 자동화됩니다. 하지만 매번 바뀌면 아무리 연습해도 순차 탐색에서 벗어날 수 없습니다."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 8 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">08</span>
+        <span class="slide-title">유도 탐색 모델 (퍼널)</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">뇌는 깔때기처럼 필터링한다: 전체 시야 &rarr; 특징 필터 &rarr; 위치 지식 &rarr; 좁혀진 영역에서 순차 탐색.</div>
+        <div class="bridge">
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"근데 만약 목표물이 <strong>거의 안 나온다고 기대</strong>하면 어떻게 될까?"</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"뇌는 화면 전체를 무작정 훑지 않습니다. 특징 필터, 위치 경험을 거쳐 후보를 줄여가는 깔때기 구조입니다. 메뉴 수가 7개 안팎이 최적인 이유도 여기에 있습니다."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 9 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">09</span>
+        <span class="slide-title">기대치 함정과 놓침 오류</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">"어차피 없겠지" 하면 진짜 있어도 못 본다. 출현율 1%면 놓침률 30%까지 치솟는다.</div>
+        <div class="bridge">
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"이런 놓침 말고, <strong>화면 자체가 복잡해서</strong> 못 찾는 경우는?"</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"공항 보안 검색에서 무기가 거의 안 나오면 검색원이 대충 보게 됩니다. 그래서 가짜 무기 이미지를 일부러 섞어 긴장감을 유지시킵니다."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 10 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">10</span>
+        <span class="slide-title">4대 클러터 유형</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">화면이 복잡한 이유 4가지: 너무 많거나 / 너무 가깝거나 / 정리 안 되었거나 / 모양이 다 다르거나.</div>
+        <div class="bridge">
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"클러터 때문에 사람이 못 찾으면, <strong>시스템이 도와줄 방법</strong>은 없을까?"</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"클러터란 화면의 시각적 소음입니다. 수량, 근접, 비조직, 이질성 네 가지 유형이 있고, 각각 다른 해결 전략이 필요합니다."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 11 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">11</span>
+        <span class="slide-title">주의 유도 자동화 단서</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">사람이 못 찾으니 시스템이 "여기 봐!" 알려준다. 단서에는 중심 단서와 주변부 단서 두 종류.</div>
+        <div class="bridge">
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"그 두 종류가 구체적으로 <strong>어떻게 다를까?</strong> 먼저 중심 단서부터."</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"인간은 변화맹 때문에 당연히 놓칠 수 있습니다. 그래서 시스템이 단서를 줍니다. 화면 중앙에서 가리키는 중심 단서와, 목표물 옆에서 반짝이는 주변부 단서가 있습니다."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 12 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">12</span>
+        <span class="slide-title">중심 단서 (Central Cue)</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">화면 가운데 화살표로 방향을 알려줌. 맞으면 이득, 틀리면 손해. 양날의 검.</div>
+        <div class="bridge">
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"그러면 <strong>목표물 바로 옆에서</strong> 직접 알려주면 더 빠르지 않을까?"</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"중심 단서는 화살표처럼 방향을 가리킵니다. 머리로 해석해야 해서 약간 느리지만, 목표물을 가리지 않는다는 장점이 있습니다."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 13 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">13</span>
+        <span class="slide-title">주변부 단서 (Peripheral Cue)</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">목표물 옆에서 직접 번쩍! 반사적으로 시선이 가서 매우 빠름. 해석 불필요.</div>
+        <div class="bridge">
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"근데 이렇게 빛이 번쩍이면 <strong>목표물을 가려버리는</strong> 부작용은 없을까?"</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"주변부 단서는 목표물 근처에서 직접 반짝여서 반사적으로 눈이 갑니다. 생각할 필요가 없으니 중심 단서보다 빠릅니다."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 14 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">14</span>
+        <span class="slide-title">마스킹 효과 (부작용)</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="oneliner">주변부 단서가 너무 강하면 목표물의 세부 특징을 가려버린다. 식별이 필요한 상황에서는 치명적.</div>
+        <div class="bridge">
+          <div class="bridge-label">마무리</div>
+          <p>"따라서 상황에 따라 <strong>중심 단서와 주변부 단서를 적절히 선택</strong>해야 합니다."</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"주변부 단서의 빛이 목표물을 덮어버리면 '이게 뭔지' 식별이 안 됩니다. 탐지만 하면 되는 상황과 식별까지 해야 하는 상황에 따라 단서 유형을 선택해야 합니다."</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
