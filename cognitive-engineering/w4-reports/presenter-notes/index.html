@@ -177,6 +177,35 @@
       display: inline-block;
     }
 
+    /* Slide image */
+    .slide-img {
+      width: 100%;
+      border-radius: 10px;
+      margin: 12px 0 8px;
+      border: 1px solid var(--border);
+      cursor: zoom-in;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.92);
+      z-index: 500;
+      justify-content: center;
+      align-items: center;
+      cursor: zoom-out;
+      padding: 10px;
+    }
+    .lightbox.show { display: flex; }
+    .lightbox img {
+      max-width: 98vw;
+      max-height: 92vh;
+      border-radius: 8px;
+    }
+
     @media (max-width: 600px) {
       body { font-size: 16px; }
       .slide-header { padding: 12px 14px; }
@@ -205,6 +234,7 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-01.png" alt="Slide 1" loading="lazy">
         <div class="oneliner">우리 눈은 한 번에 모든 걸 못 본다. 볼 수 있는 범위(UFOV)로 화면을 차례차례 훑는 과정이 시각적 탐색이다.</div>
         <div class="bridge">
           <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
@@ -225,6 +255,7 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-02.png" alt="Slide 2" loading="lazy">
         <div class="oneliner">찾는 시간 = 준비 시간 + (하나 확인하는 시간 x 물건 개수의 절반). 물건이 많을수록 정직하게 느려진다.</div>
         <div class="bridge">
           <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
@@ -245,6 +276,7 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-03.png" alt="Slide 3" loading="lazy">
         <div class="oneliner">없는 걸 찾으면 전부 다 뒤져봐야 하므로 시간이 2배. 점선이 더 가파른 이유.</div>
         <div class="bridge">
           <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
@@ -265,6 +297,7 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-04.png" alt="Slide 4" loading="lazy">
         <div class="oneliner">X-ray에서 종양 3개를 찾아야 하면 하나 찾고 멈추면 안 된다. 전수 검사가 필요.</div>
         <div class="bridge">
           <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
@@ -285,6 +318,7 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-05.png" alt="Slide 5" loading="lazy">
         <div class="oneliner">색이나 모양이 확 다르면 하나씩 안 봐도 한눈에 보인다. 이때 기울기 b=0.</div>
         <div class="bridge">
           <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
@@ -305,6 +339,7 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-06.png" alt="Slide 6" loading="lazy">
         <div class="oneliner">특징 2개가 합쳐진 걸 찾을 땐 팝아웃 불가. 다시 하나씩 봐야 하고, 방해물이 제각각이면 더 어렵다.</div>
         <div class="bridge">
           <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
@@ -325,6 +360,7 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-07.png" alt="Slide 7" loading="lazy">
         <div class="oneliner">항상 같은 걸 찾는 훈련을 하면 자동화 가능. 하지만 매번 달라지면 영원히 느리다.</div>
         <div class="bridge">
           <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
@@ -345,6 +381,7 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-08.png" alt="Slide 8" loading="lazy">
         <div class="oneliner">뇌는 깔때기처럼 필터링한다: 전체 시야 &rarr; 특징 필터 &rarr; 위치 지식 &rarr; 좁혀진 영역에서 순차 탐색.</div>
         <div class="bridge">
           <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
@@ -365,6 +402,7 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-09.png" alt="Slide 9" loading="lazy">
         <div class="oneliner">"어차피 없겠지" 하면 진짜 있어도 못 본다. 출현율 1%면 놓침률 30%까지 치솟는다.</div>
         <div class="bridge">
           <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
@@ -385,6 +423,7 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-10.png" alt="Slide 10" loading="lazy">
         <div class="oneliner">화면이 복잡한 이유 4가지: 너무 많거나 / 너무 가깝거나 / 정리 안 되었거나 / 모양이 다 다르거나.</div>
         <div class="bridge">
           <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
@@ -405,6 +444,7 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-11.png" alt="Slide 11" loading="lazy">
         <div class="oneliner">사람이 못 찾으니 시스템이 "여기 봐!" 알려준다. 단서에는 중심 단서와 주변부 단서 두 종류.</div>
         <div class="bridge">
           <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
@@ -425,6 +465,7 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-12.png" alt="Slide 12" loading="lazy">
         <div class="oneliner">화면 가운데 화살표로 방향을 알려줌. 맞으면 이득, 틀리면 손해. 양날의 검.</div>
         <div class="bridge">
           <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
@@ -445,6 +486,7 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-13.png" alt="Slide 13" loading="lazy">
         <div class="oneliner">목표물 옆에서 직접 번쩍! 반사적으로 시선이 가서 매우 빠름. 해석 불필요.</div>
         <div class="bridge">
           <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
@@ -465,10 +507,11 @@
         <span class="slide-toggle">&#9654;</span>
       </div>
       <div class="slide-body">
+        <img class="slide-img" src="slides/slide-14.png" alt="Slide 14" loading="lazy">
         <div class="oneliner">주변부 단서가 너무 강하면 목표물의 세부 특징을 가려버린다. 식별이 필요한 상황에서는 치명적.</div>
         <div class="bridge">
-          <div class="bridge-label">마무리</div>
-          <p>"따라서 상황에 따라 <strong>중심 단서와 주변부 단서를 적절히 선택</strong>해야 합니다."</p>
+          <div class="bridge-label">Bridge &rarr; 다음 슬라이드로</div>
+          <p>"근데 만약 단서를 <strong>너무 믿어서</strong> 단서가 가리키는 곳만 보면 어떻게 될까?"</p>
         </div>
         <div class="mic">
           <div class="mic-label">발표 멘트</div>
@@ -477,6 +520,42 @@
       </div>
     </div>
 
+    <!-- Slide 15 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">15</span>
+        <span class="slide-title">주의 터널링 (Attentional Tunneling)</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <img class="slide-img" src="slides/slide-15.png" alt="Slide 15" loading="lazy">
+        <div class="oneliner">단서를 과신하면 단서가 가리키는 곳만 뚫어지게 보고 나머지를 전부 놓친다. 터널 속처럼 시야가 좁아지는 현상.</div>
+        <div class="bridge">
+          <div class="bridge-label">마무리</div>
+          <p>"결국 좋은 디스플레이란 <strong>단서의 장점은 살리되, 터널링을 유발하지 않는</strong> 균형 잡힌 설계입니다."</p>
+        </div>
+        <div class="mic">
+          <div class="mic-label">발표 멘트</div>
+          <p>"단서가 정확하면 도움이 되지만, 운전자가 HUD만 뚫어지게 보면 옆에서 끼어드는 차를 놓칩니다. 이걸 주의 터널링이라 하고, 단서 설계의 최대 함정입니다."</p>
+        </div>
+      </div>
+    </div>
+
   </div>
+
+  <!-- Lightbox for slide images -->
+  <div class="lightbox" id="lightbox" onclick="this.classList.remove('show')">
+    <img id="lightboxImg" src="" alt="">
+  </div>
+  <script>
+    // Lightbox for slide images
+    document.querySelectorAll('.slide-img').forEach(img => {
+      img.addEventListener('click', () => {
+        const lb = document.getElementById('lightbox');
+        document.getElementById('lightboxImg').src = img.src;
+        lb.classList.add('show');
+      });
+    });
+  </script>
 </body>
 </html>
