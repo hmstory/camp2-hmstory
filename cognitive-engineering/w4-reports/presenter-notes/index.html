@@ -179,11 +179,18 @@
 
     /* Slide image */
     .slide-img {
+      display: block;
       width: 100%;
+      max-width: 100%;
+      height: auto;
       border-radius: 10px;
       margin: 12px 0 8px;
       border: 1px solid var(--border);
       cursor: zoom-in;
+      transition: transform 0.2s;
+    }
+    .slide-img:hover {
+      transform: scale(1.01);
     }
 
     /* Lightbox */
@@ -210,6 +217,7 @@
       body { font-size: 16px; }
       .slide-header { padding: 12px 14px; }
       .slide-body { padding: 0 14px 14px; }
+      .slide-img { border-radius: 8px; margin: 8px 0 6px; }
     }
   </style>
 </head>
