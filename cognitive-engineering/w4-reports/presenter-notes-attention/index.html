@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>W4 발표자 노트 - Visual Attention Dynamics</title>
+  <style>
+    :root {
+      --bg: #0f0f1a;
+      --surface: #1a1a2e;
+      --card: #1e2a4a;
+      --text: #d4d4d8;
+      --heading: #ffffff;
+      --accent: #fbbf24;
+      --accent2: #f97316;
+      --bridge: #34d399;
+      --mic: #60a5fa;
+      --glossary: #f87171;
+      --graph: #c084fc;
+      --pointing: #f472b6;
+      --toss: #9ca3af;
+      --border: #333;
+      --dim: #888;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 17px;
+    }
+    .header {
+      background: var(--surface);
+      border-bottom: 2px solid var(--accent);
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .header h1 { font-size: 1.1rem; color: var(--accent); font-weight: 700; }
+    .header p { font-size: 0.8rem; color: var(--dim); margin-top: 2px; }
+    .container { max-width: 620px; margin: 0 auto; padding: 16px 16px 100px; }
+
+    /* Act divider */
+    .act {
+      text-align: center;
+      padding: 20px 0 8px;
+      margin: 24px 0 8px;
+      border-top: 2px solid var(--accent);
+    }
+    .act-num { color: var(--accent); font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+    .act-title { color: var(--heading); font-size: 1.05rem; font-weight: 700; margin-top: 4px; }
+    .act-sub { color: var(--dim); font-size: 0.8rem; margin-top: 2px; }
+
+    /* Slide card */
+    .slide { background: var(--surface); border-radius: 14px; margin: 16px 0; overflow: hidden; border: 1px solid var(--border); }
+    .slide-header { background: var(--card); padding: 14px 18px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .slide-num { background: var(--accent); color: #000; font-weight: 800; font-size: 0.85rem; padding: 4px 10px; border-radius: 8px; white-space: nowrap; }
+    .slide-title { color: var(--heading); font-weight: 600; font-size: 0.95rem; flex: 1; }
+    .slide-toggle { color: var(--dim); font-size: 1.2rem; transition: transform 0.2s; }
+    .slide.open .slide-toggle { transform: rotate(90deg); }
+    .slide-body { display: none; padding: 0 18px 18px; }
+    .slide.open .slide-body { display: block; }
+
+    /* Slide image */
+    .slide-img { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; margin: 12px 0 8px; border: 1px solid var(--border); cursor: zoom-in; }
+
+    /* Textbook figure */
+    .textbook-fig { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 8px; margin: 8px 0; background: #fff; padding: 8px; border: 2px solid var(--graph); cursor: zoom-in; }
+    .textbook-fig-label { color: var(--graph); font-size: 0.75rem; font-weight: 700; margin-top: 8px; letter-spacing: 0.5px; }
+
+    /* Section styles */
+    .glossary { background: rgba(248,113,113,0.08); border-left: 3px solid var(--glossary); padding: 10px 14px; margin: 12px 0; border-radius: 0 8px 8px 0; }
+    .glossary-label { color: var(--glossary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .glossary ul { list-style: none; padding: 0; }
+    .glossary li { font-size: 0.88rem; margin: 4px 0; line-height: 1.5; }
+    .glossary .term { color: var(--glossary); font-weight: 700; }
+
+    .oneliner { background: rgba(251,191,36,0.1); border-left: 3px solid var(--accent); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; font-size: 0.95rem; color: var(--accent); font-weight: 600; }
+
+    .graph-guide { background: rgba(192,132,252,0.08); border-left: 3px solid var(--graph); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+    .graph-label { color: var(--graph); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .graph-guide p { font-size: 0.9rem; }
+
+    .pointing { background: rgba(244,114,182,0.08); border-left: 3px solid var(--pointing); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+    .pointing-label { color: var(--pointing); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .pointing p { font-size: 0.9rem; }
+
+    .bridge { background: rgba(52,211,153,0.1); border-left: 3px solid var(--bridge); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+    .bridge-label { color: var(--bridge); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .bridge p { font-size: 0.9rem; }
+
+    .mic { background: rgba(96,165,250,0.1); border-left: 3px solid var(--mic); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+    .mic-label { color: var(--mic); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .mic p { font-size: 0.9rem; font-style: italic; }
+
+    .prof-toss { background: rgba(156,163,175,0.08); border-left: 3px solid var(--toss); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+    .prof-label { color: var(--toss); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .prof-toss p { font-size: 0.9rem; color: var(--toss); }
+
+    /* Legend */
+    .legend { display: flex; gap: 10px; flex-wrap: wrap; padding: 12px 0; font-size: 0.75rem; color: var(--dim); border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+    .legend span { display: flex; align-items: center; gap: 3px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+
+    /* Lightbox */
+    .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.92); z-index: 500; justify-content: center; align-items: center; cursor: zoom-out; padding: 10px; }
+    .lightbox.show { display: flex; }
+    .lightbox img { max-width: 98vw; max-height: 92vh; border-radius: 8px; }
+
+    /* Story card */
+    .story-card { background: var(--card); border-radius: 14px; padding: 24px; margin: 12px 0; line-height: 1.9; }
+    .story-card.intro { border: 2px solid var(--accent); }
+    .story-card.outro { border: 2px solid var(--bridge); }
+    .story-situation { font-size: 1.05rem; color: var(--text); margin-bottom: 12px; }
+    .story-question { font-size: 1.1rem; color: var(--accent); font-weight: 700; margin-bottom: 12px; }
+    .story-guide { font-size: 0.95rem; color: var(--dim); }
+    .story-callback { font-size: 0.95rem; color: var(--dim); margin-bottom: 16px; }
+    .story-lessons { list-style: none; padding: 0; }
+    .story-lessons li { font-size: 1rem; margin: 10px 0; padding: 8px 14px; border-left: 3px solid var(--bridge); background: rgba(52,211,153,0.06); border-radius: 0 8px 8px 0; }
+    .story-closing { font-size: 1.1rem; color: var(--bridge); font-weight: 700; margin-top: 20px; }
+
+    /* Desktop: parallel layout */
+    @media (min-width: 768px) {
+      .container { max-width: 1200px; }
+      .slide.open .slide-body { display: flex; gap: 24px; padding: 16px 18px; }
+      .slide-visual {
+        flex: 0 0 55%;
+        position: sticky;
+        top: 70px;
+        align-self: flex-start;
+        max-height: calc(100vh - 90px);
+        overflow-y: auto;
+      }
+      .slide-notes { flex: 1; min-width: 0; }
+      .slide-img { margin: 0 0 8px; }
+    }
+
+    /* Mobile */
+    @media (max-width: 767px) {
+      .slide-visual { margin-bottom: 8px; }
+    }
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      .slide-header { padding: 12px 14px; }
+      .slide-body { padding: 0 14px 14px; }
+      .slide-img { border-radius: 8px; margin: 8px 0 6px; }
+      .legend { gap: 6px; font-size: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>W4 Slide Bridge - Visual Attention Dynamics</h1>
+    <p><a href="../presenter-notes/" style="color:var(--accent);text-decoration:underline;">&larr; Visual Search</a> &nbsp;|&nbsp; 주교재 3장: 주의력과 감독 통제 | CCTV 관제센터 요원 스토리</p>
+  </div>
+
+  <div class="container">
+    <div class="legend">
+      <span><span class="legend-dot" style="background:var(--glossary)"></span> 용어</span>
+      <span><span class="legend-dot" style="background:var(--accent)"></span> 요약</span>
+      <span><span class="legend-dot" style="background:var(--graph)"></span> 그래프</span>
+      <span><span class="legend-dot" style="background:var(--pointing)"></span> 포인팅</span>
+      <span><span class="legend-dot" style="background:var(--bridge)"></span> 브릿지</span>
+      <span><span class="legend-dot" style="background:var(--mic)"></span> 멘트</span>
+      <span><span class="legend-dot" style="background:var(--toss)"></span> 교수 토스</span>
+    </div>
+
+    <!-- ==================== SLIDE 00: INTRO ==================== -->
+    <div class="slide open">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">00</span>
+        <span class="slide-title">오늘의 이야기</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <div class="story-card intro">
+            <p class="story-situation">CCTV 관제센터에 신입 요원이 첫 출근합니다. 앞에는 16개 화면이 있고, 편의점·주차장·골목을 동시에 감시해야 합니다.</p>
+            <p class="story-question">그런데 한 화면에 집중하면 다른 화면을 놓치고, 8시간 근무 중 화면이 서서히 바뀌어도 알아차리지 못합니다. 심지어 화면 한가운데 침입자가 지나가도 50%는 못 봅니다. 왜 사람의 눈은 이렇게 한계가 있을까요?</p>
+            <p class="story-guide">지금부터 이 관제요원의 하루를 따라가며, 어디를 봐야 하고, 왜 놓치고, 어떻게 하면 덜 놓치는지 알아보겠습니다.</p>
+          </div>
+        </div>
+        <div class="slide-notes">
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"여러분 CCTV 관제센터 가보신 적 있으세요? 화면이 16개 이상 있는데, 한 사람이 이걸 다 봐야 합니다. 근데 실제로 침입자가 지나가도 절반은 못 봅니다. 오늘 이 관제요원의 눈으로 들어가 보겠습니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; Act 1</div>
+            <p>"먼저, 사람의 주의력이 어떤 종류가 있고 어떤 한계가 있는지부터 알아보겠습니다."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== ACT 1 ==================== -->
+    <div class="act">
+      <div class="act-num">Act 1</div>
+      <div class="act-title">관제요원의 눈 — 어디를 볼 것인가</div>
+      <div class="act-sub">주의의 종류, SEEV 모델, 최적 스캔 패턴</div>
+    </div>
+
+    <!-- SLIDE 01 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">01</span>
+        <span class="slide-title">주의력 실패와 운전</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-01.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Selective Attention</span> = 선택적 주의. 여러 정보 중 하나만 골라서 보는 것. 관제센터에서 특정 화면 하나에 집중하는 것.</li>
+              <li><span class="term">Divided Attention</span> = 분할 주의. 여러 화면을 동시에 보려는 것. 넓은 빔의 손전등.</li>
+              <li><span class="term">Focused Attention</span> = 초점 주의. 방해물을 차단하고 한 곳에 집중. 좁은 빔의 손전등.</li>
+              <li><span class="term">Sustained Attention</span> = 지속적 주의. 오랜 시간 경계를 유지하는 것. 배터리 용량.</li>
+              <li><span class="term">Attentional Narrowing</span> = 주의 협착. 과도한 집중 시 시야가 좁아지는 현상.</li>
+            </ul>
+          </div>
+          <div class="oneliner">관제요원의 손전등은 4가지 모드가 있다 — 하나만 비추기, 여러 개 동시에, 방해 차단, 오래 켜두기</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>손전등 아이콘 4개를 차례로 가리키며 → "이 네 가지가 관제요원이 화면을 보는 네 가지 방식입니다. 왼쪽 위부터 시계 방향으로 보시면..."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"미국 자동차 사고 사망자의 50% 이상이 운전자 주의 산만 때문입니다. 관제센터 요원도 마찬가지예요. 화면 하나에 집중하면 나머지를 놓치고, 여러 개를 보려면 다 흐릿해집니다. 이 4가지 주의력 모드를 이해하는 게 출발점입니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 02</div>
+            <p>주의력이 4가지 모드가 있다면, 관제요원이 실제로 하는 '시각적 선택 주의' 과제에는 어떤 것들이 있을까?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 02 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">02</span>
+        <span class="slide-title">시각적 선택 주의의 6대 과제</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-02.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Supervisory Control</span> = 감독 통제. 여러 화면을 돌아가며 확인하는 업무. 관제요원의 핵심 업무.</li>
+              <li><span class="term">Noticing</span> = 알아차림. 예기치 않은 변화를 감지하는 것. 화면에서 갑자기 사람이 나타나는 걸 알아채는 것.</li>
+              <li><span class="term">Visual Search</span> = 시각 탐색. 특정 목표물을 찾는 것. 전 슬라이드(Visual Search Dynamics)에서 다룬 내용.</li>
+            </ul>
+          </div>
+          <div class="oneliner">관제요원의 업무 목록 = 화면 순찰(감독 통제), 이상 감지(알아차림), 목표 찾기(시각 탐색) 외 3가지</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>6개 박스를 위→아래 순서로 가리키며 → "오늘은 이 중에서 2번 감독 통제와 3번 알아차림을 집중적으로 다룹니다"</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"관제요원이 하는 일을 정리하면 크게 6가지입니다. 지난번에 '시각 탐색'을 다뤘고, 오늘은 '감독 통제'와 '알아차림'에 집중합니다. 화면을 어떤 순서로 돌아보느냐, 그리고 갑자기 생긴 변화를 어떻게 알아채느냐의 문제입니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 03</div>
+            <p>감독 통제가 뭔지 알겠는데, 관제요원이 화면을 볼 때 실제로 눈은 어떻게 움직이나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 03 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">03</span>
+        <span class="slide-title">감독 통제와 관심 영역(AOI)</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-03.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">AOI (Area of Interest)</span> = 관심 영역. 작업에 필요한 정보가 있는 물리적 위치. 관제센터의 각 화면 = 각각의 AOI.</li>
+              <li><span class="term">Fixation</span> = 고정. 눈이 한 곳에 머무는 것. 최대 초당 3회.</li>
+              <li><span class="term">Dwell</span> = 체류. 한 AOI에 시선이 머무는 시간. 기본 1/3초, 정보 밀도 높으면 더 길어짐.</li>
+            </ul>
+          </div>
+          <div class="oneliner">관제요원의 눈은 초당 3번밖에 화면을 옮길 수 없다 — 16개 화면을 한 바퀴 도는 데만 최소 5초</div>
+          <div class="graph-guide">
+            <div class="graph-label">그래프 읽기</div>
+            <p>자동차 대시보드 이미지 → 앞유리(AOI 1)와 속도계(AOI 2)를 번갈아 보는 것이 감독 통제의 기본 원리. 관제센터에서는 이 AOI가 16개 이상.</p>
+          </div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>대시보드 이미지의 앞유리와 계기판을 번갈아 가리키며 → "이렇게 두 곳을 왔다 갔다 하는 게 감독 통제의 기본입니다. 관제센터에서는 이게 16개 화면이 되는 거죠"</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"우리 눈은 초당 3번 정도 고정할 수 있고, 한 번 볼 때 최소 1/3초가 걸립니다. 관제센터 화면이 16개면 한 바퀴 도는 데만 5초 넘게 걸리는 거예요. 그 5초 동안 다른 화면에서 뭔가 벌어지면? 놓칩니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 04</div>
+            <p>16개 화면을 전부 볼 수 없다면, 어떤 화면을 먼저 봐야 할까? 그 우선순위를 정하는 기준이 있나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 04 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">04</span>
+        <span class="slide-title">SEEV 모델: 상향식(Bottom-up)</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-04.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">SEEV</span> = Salience + Effort + Expectancy + Value. 어디를 볼지 예측하는 모델. 이번 슬라이드는 S와 E만.</li>
+              <li><span class="term">Salience (S, 현저성)</span> = 눈에 확 띄는 정도. 깜빡이는 화면, 빨간 경고등. 관제센터에서 경보 알림이 현저성.</li>
+              <li><span class="term">Effort (E, 노력)</span> = 시선을 옮기는 물리적 비용. 바로 옆 화면 vs 뒤돌아봐야 하는 화면.</li>
+            </ul>
+          </div>
+          <div class="oneliner">관제요원이 먼저 보는 화면 = 깜빡이는 화면(현저성↑) + 가까운 화면(노력↓)</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>경광등 아이콘 가리키며 → "이게 현저성입니다. 알람이 울리면 저절로 눈이 갑니다." 그다음 오른쪽 → "가까운 화면은 눈만 굴리면 되지만, 먼 화면은 고개를 돌려야 해서 노력이 큽니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"관제센터에서 빨간 경보가 깜빡이면, 우리 눈은 의지와 상관없이 그쪽으로 갑니다. 이게 현저성이에요. 그리고 바로 옆 화면은 눈만 굴리면 되지만, 뒤쪽 화면은 의자를 돌려야 하죠. 이게 노력입니다. 이 두 가지가 '상향식' — 환경이 강제로 주의를 끄는 요인이에요."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 05</div>
+            <p>노력(E)이 중요하다면, 화면 거리에 따라 노력이 얼마나 달라지나? 단순히 멀수록 비례해서 힘든 걸까?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 05 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">05</span>
+        <span class="slide-title">정보 접근 노력(IAE)의 비선형성</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-05.png" loading="lazy">
+          <div class="textbook-fig-label">교재 원본 FIGURE 3.1 — IAE 비선형 그래프</div>
+          <img class="textbook-fig" src="textbook-figures/figure3.1-IAE.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">IAE (Information Access Effort)</span> = 정보 접근 노력. 다른 AOI로 시선을 옮기는 데 드는 신체적 비용.</li>
+              <li><span class="term">Foveal (0°~4°)</span> = 안구 영역. 눈만 살짝 움직이면 되는 범위. 비용 거의 0.</li>
+              <li><span class="term">Eye field (~20°)</span> = 안구 운동 영역. 눈동자만 돌리면 닿는 범위. 약간의 비용.</li>
+              <li><span class="term">Head field (20°~30°)</span> = 머리 영역. 목을 돌려야 하는 범위. 비용이 급격히 올라감.</li>
+              <li><span class="term">Full body (90°+)</span> = 전신 회전 영역. 몸을 돌려야 하는 범위. 비용 극도로 높아 사람이 기피함.</li>
+            </ul>
+          </div>
+          <div class="oneliner">관제요원의 화면 배치 = 가까우면 공짜, 고개 돌리면 비용 급등, 뒤돌아보기는 거의 안 함</div>
+          <div class="graph-guide">
+            <div class="graph-label">그래프 읽기</div>
+            <p>X축 = 시각도(Visual Angle), 두 AOI 사이 각도. Y축 = IAE, 접근 노력. 핵심: 곡선이 20°~30° 이후 급격히 올라감. 비선형(계단식)이라 멀수록 기하급수적으로 힘들어짐. 관제센터에서 뒤쪽 화면을 거의 안 보는 이유.</p>
+          </div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>그래프 곡선의 급등 구간(20°~30°)을 가리키며 → "여기가 '목 돌리기 장벽'입니다. 이 장벽 때문에 관제요원은 정면 화면만 주로 봅니다." 교재 그래프의 Foveal/Eye field/Head field 구간도 가리키기.</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"관제센터 화면이 정면에 8개, 옆에 4개, 뒤에 4개 있다고 합시다. 이 그래프를 보면 정면 화면은 눈만 돌리면 되니까 비용이 거의 없어요. 그런데 옆 화면은 고개를 돌려야 하고, 뒤 화면은 의자를 돌려야 합니다. 비용이 갑자기 확 올라가요. 그래서 사람은 본능적으로 뒤쪽 화면을 안 봅니다. 이걸 '노력 보존 성향'이라고 해요."</p>
+          </div>
+          <div class="prof-toss">
+            <div class="prof-label">교수 토스</div>
+            <p>"Sanders & Houtmans(1985)의 원래 실험 설계에 대해 교수님께서 보충해주실 겁니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 06</div>
+            <p>환경(현저성+노력)이 '상향식'으로 주의를 끈다면, 관제요원 본인의 판단이나 경험은 영향을 안 미치나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 06 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">06</span>
+        <span class="slide-title">SEEV 모델: 하향식(Top-down)</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-06.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Expectancy (E, 기대)</span> = 변화가 자주 일어날 것으로 예상하는 정도. 관제요원이 "저 골목은 밤에 사건이 잦다"고 아는 것.</li>
+              <li><span class="term">Value (V, 가치)</span> = 그 정보가 업무에 얼마나 중요한지. 금은방 화면 vs 빈 주차장 화면.</li>
+              <li><span class="term">Expected Value</span> = 기대 × 가치. 이 두 가지를 곱한 것이 해당 AOI의 우선순위.</li>
+            </ul>
+          </div>
+          <div class="oneliner">관제요원의 경험 = "저 골목은 사건이 잦고(기대↑), 금은방이라 중요하다(가치↑)"</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>뇌 이미지 좌우의 Expectancy와 Value 박스를 각각 가리키며 → "기대는 '얼마나 자주 변하나', 가치는 '변하면 얼마나 중요하나'입니다." 하단 공식 가리키며 → "이 둘을 곱한 게 기대 가치입니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"베테랑 관제요원은 '저 골목은 금요일 밤에 사건이 잦아'라고 알고 있어요. 이게 기대입니다. 그리고 '저건 금은방 앞이니까 중요해' — 이게 가치예요. 기대 곱하기 가치, 이게 '하향식' 요인입니다. 경험과 판단이 어디를 먼저 볼지를 결정하는 거죠."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 07</div>
+            <p>S, E, E, V를 다 합치면 관제요원의 최적 순찰 루트를 예측할 수 있나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 07 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">07</span>
+        <span class="slide-title">S+E+E+V = 최적 스캔 패턴</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-07.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">SEEV 가산적 모델</span> = S+E+E+V 네 요인을 합산하여 각 AOI의 시선 배분을 예측하는 모델.</li>
+              <li><span class="term">Periods of Neglect</span> = 무시 기간. 가치(V)가 높아도 노력(E)이 너무 크거나 기대(E)가 낮으면 안 보는 시간이 생기는 현상.</li>
+            </ul>
+          </div>
+          <div class="oneliner">SEEV = 관제요원의 최적 화면 순찰 루트 공식. 하지만 "무시 기간"이 생기면 변화맹의 원인이 됨.</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>왼쪽 "SEEV 가산적 스캐닝 모델" 박스 → "네 요인을 합쳐서 최적 스캔 패턴을 계산합니다." 가운데 "무시 기간" 박스 → "이게 핵심 문제입니다. 가치가 높아도 노력이 크면 안 보게 돼요." 오른쪽 "디스플레이 설계 가이드라인" → "설계자가 이걸 알면 화면 배치를 최적화할 수 있습니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"SEEV 모델을 다 합치면 관제요원이 어디를 봐야 하는지 예측할 수 있어요. 운전, 비행, 수술 환경 전부 적용됩니다. 근데 문제가 있어요. '무시 기간'이라는 게 생깁니다. 가치가 높은 화면이라도 너무 멀거나 변화가 드물면 한참 동안 안 보게 돼요. 이 빈틈에서 사고가 납니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; Act 2</div>
+            <p>"무시 기간" 동안 화면이 바뀌면 어떻게 될까? 관제요원이 정말로 변화를 놓칠까?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== ACT 2 ==================== -->
+    <div class="act">
+      <div class="act-num">Act 2</div>
+      <div class="act-title">놓치는 화면 — 왜 못 보는가</div>
+      <div class="act-sub">변화맹, 현실 사례, 인지적 요인, Black Swan, N-SEEV</div>
+    </div>
+
+    <!-- SLIDE 08 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">08</span>
+        <span class="slide-title">알아차림(Noticing) 실패와 변화맹</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-08.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Change Blindness (변화맹)</span> = 시각적 과도기에 의해 마스킹되면 명백한 환경 변화를 눈치채지 못하는 현상.</li>
+              <li><span class="term">Masking (마스킹)</span> = 변화를 감추는 시각적 방해. 깜빡임, 화면 전환, 물리적 차단 등.</li>
+              <li><span class="term">Saccade (안구 급속 운동)</span> = 눈이 빠르게 이동할 때 시각 정보가 차단되는 순간. 자연적 마스킹 원인.</li>
+            </ul>
+          </div>
+          <div class="oneliner">관제요원이 화면 A를 보다가 B로 눈을 옮기는 순간, A가 바뀌면? → 변화맹 발생</div>
+          <div class="graph-guide">
+            <div class="graph-label">그래프 읽기</div>
+            <p>흐름도: 정상 시야(과도기 존재) → 시각적 방해(마스킹) → 변화맹 발생. 핵심은 "과도기가 차단되면" 변화를 인지할 수 없다는 것.</p>
+          </div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>왼쪽 "변화맹 정의" 박스의 핵심 문장 가리키며 → "자연스러운 과도기가 마스킹되면 명백한 변화도 못 봅니다." 오른쪽 4대 시각적 방해 가리키며 → "이 네 가지가 마스킹의 원인입니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"관제요원이 1번 화면을 보다가 5번으로 눈을 옮기죠. 그 순간 1번 화면에서 사람이 나타나면? 못 봅니다. 눈이 움직이는 동안 시각 정보가 차단되거든요. 이걸 변화맹이라고 합니다. 우리 눈이 화면을 '사진'처럼 찍어두지 않기 때문에 생기는 현상이에요."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 09</div>
+            <p>실험실 얘기 같은데, 현실에서도 정말 변화맹이 일어나나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 09 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">09</span>
+        <span class="slide-title">현실 세계 변화맹 사례</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-09.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Door 실험</span> = Simons & Levin(1998). 길에서 대화 중 문이 지나가는 사이에 상대방이 바뀌어도 50%가 모름.</li>
+              <li><span class="term">2008 브라질 항공사고</span> = 관제 시스템 변화 미인지 → 공중 충돌. 변화맹의 치명적 사례.</li>
+            </ul>
+          </div>
+          <div class="oneliner">관제요원도 교대 인수인계 때 화면 상황이 바뀌면 50%는 모른다 — 문 실험과 같은 원리</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>왼쪽 문 실험 그림 가리키며 → "대화 중에 문이 지나가고, 상대방이 완전히 다른 사람으로 바뀝니다. 절반이 못 알아챕니다." 오른쪽 항공사고 → "실제로 관제 시스템에서도 이런 일이 벌어져서 비행기가 충돌했습니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"가장 유명한 실험이 '문 실험'입니다. 길에서 누군가와 대화하는데, 큰 문을 든 인부들이 사이를 지나갑니다. 그 순간 대화 상대가 완전히 다른 사람으로 바뀌어요. 놀랍게도 참가자의 절반이 못 알아챘습니다. 관제센터에서도 교대 시 인수인계하면서 화면 상태가 바뀌면 같은 일이 벌어집니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 10</div>
+            <p>변화맹이 일어나는 건 알겠는데, 어떤 조건에서 더 심해지나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">10</span>
+        <span class="slide-title">변화맹 발생 확률을 높이는 인지적 요인</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-10.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Task Load (과제 부하)</span> = 동시에 처리해야 할 일의 양. 관제요원이 무전 받으면서 화면도 봐야 할 때.</li>
+              <li><span class="term">Low Salience (낮은 현저성)</span> = 변화가 눈에 안 띄는 정도. 숫자가 100→99로 바뀌는 건 현저성이 낮음.</li>
+              <li><span class="term">Peripheral Eccentricity (주변부 편심도)</span> = 고정점에서 먼 곳일수록 감지 확률 급감. 시각도가 1° 넘으면 감지율이 급격히 떨어짐.</li>
+            </ul>
+          </div>
+          <div class="oneliner">관제요원이 변화를 놓치는 3대 조건: 바쁠 때(과제 부하↑), 작은 변화(현저성↓), 화면 가장자리(편심도↑)</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>3개 박스를 왼쪽 위(과제 부하) → 오른쪽 위(편심도) → 왼쪽 아래(현저성) 순서로 가리키며 → "이 세 가지가 겹치면 변화맹은 거의 확정입니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"변화맹을 악화시키는 요인은 세 가지입니다. 첫째, 관제요원이 무전 받으면서 동시에 화면을 볼 때 — 과제 부하가 올라가면 변화 감지가 떨어져요. 둘째, 변화가 너무 작으면 — 숫자가 100에서 99로 바뀌는 건 안 보입니다. 셋째, 시선 가장자리에서 변화가 일어나면 — 정면에서 1도만 벗어나도 감지율이 급감합니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 11</div>
+            <p>평소 변화도 놓치는데, 만약 예상 밖의 사건이 벌어지면 어떻게 될까?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 11 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">11</span>
+        <span class="slide-title">Black Swan과 변화맹</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-11.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Black Swan</span> = 예상치 못한 극히 드문 사건. 관제센터에서 한 번도 없던 유형의 침입.</li>
+              <li><span class="term">Completed Change</span> = 완료된 변화. 동적 과정이 아닌 이미 완료된 변화는 기억 비교가 필요해서 감지가 더 어려움.</li>
+              <li><span class="term">변화맹 맹시 (CB Blindness)</span> = 자신이 변화맹에 취약하다는 것을 모르는 현상. 과신.</li>
+            </ul>
+          </div>
+          <div class="oneliner">관제요원이 "여기서는 절대 사건 안 일어나"라고 생각할수록, 실제 사건 때 40%를 놓침</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>Black Swan 이미지 가리키며 → "예상 밖 사건입니다." 가운데 "40%" 수치 가리키며 → "비행 시뮬레이션에서 예측 불가 이벤트의 변화 누락 비율이 40%입니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"관제센터에서 10년 동안 한 번도 강도가 없었던 골목이 있어요. 요원은 '저긴 안전해'라고 생각합니다. 기대(E)가 0에 가까워요. 그런데 실제로 강도가 발생하면? 40%가 놓칩니다. 이게 Black Swan입니다. 더 무서운 건 '변화맹 맹시' — 자기가 놓치고 있다는 것조차 모르는 거예요."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 12</div>
+            <p>변화맹이 이렇게 위험하다면, 이걸 예측하는 모델은 없을까?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 12 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">12</span>
+        <span class="slide-title">N-SEEV 모델</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-12.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">N-SEEV</span> = Noticeability-SEEV. SEEV 모델에 "알아차림 정도(N)"를 추가한 확장 모델.</li>
+              <li><span class="term">Noticeability (N)</span> = 특정 변화를 알아차릴 확률. 기대(E) + 현저성(S) + 특징 조율(Tuning)로 결정.</li>
+              <li><span class="term">Tuning (특징 조율)</span> = 작업자가 현재 주의를 기울이는 특징과 변화의 특징이 일치하는 정도.</li>
+            </ul>
+          </div>
+          <div class="oneliner">N-SEEV = SEEV에 "알아차림 예측"을 추가한 업그레이드. 관제요원이 어디를 보고 뭘 놓칠지까지 예측.</div>
+          <div class="graph-guide">
+            <div class="graph-label">그래프 읽기</div>
+            <p>흐름도: 왼쪽(기초 탐지력 산출 — SEEV 기반) → 가운데(3대 조절 변수: 기대, 현저성, 특징 조율) → 오른쪽(N-SEEV 산출치: 이벤트 발생~최초 안구 고정까지 지연 시간 예측). 돋보기가 N(Noticeability)을 조절하는 필터 역할.</p>
+          </div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>돋보기 안의 3대 조절 변수를 가리키며 → "기대, 현저성, 특징 조율 — 이 세 가지가 알아차림을 결정합니다." 오른쪽 화살표 → "최종 출력은 '이벤트 발생 후 몇 초 만에 눈이 가느냐'입니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"SEEV가 '어디를 보느냐'를 예측했다면, N-SEEV는 '변화를 알아차리느냐'까지 예측합니다. 관제센터 시스템에 이걸 적용하면, 어떤 화면의 변화를 요원이 놓칠 확률이 높은지 미리 계산할 수 있어요. 그러면 위험한 화면에 알람을 추가하는 식으로 설계를 개선할 수 있죠."</p>
+          </div>
+          <div class="prof-toss">
+            <div class="prof-label">교수 토스</div>
+            <p>"N-SEEV 모델의 수학적 공식과 검증 실험에 대해서는 교수님께서 보충해주실 겁니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; Act 3</div>
+            <p>변화맹은 "변화를 안 봐서" 놓치는 거다. 그런데 화면을 "보고 있는데도" 못 보는 경우가 있다면?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== ACT 3 ==================== -->
+    <div class="act">
+      <div class="act-num">Act 3</div>
+      <div class="act-title">보이지 않는 침입자 — 보고도 못 보는 이유</div>
+      <div class="act-sub">무주의 맹시, 고릴라 실험, 개인차</div>
+    </div>
+
+    <!-- SLIDE 13 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">13</span>
+        <span class="slide-title">무주의 맹시(Inattentional Blindness)</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-13.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Inattentional Blindness (무주의 맹시)</span> = 뚜렷하게 보이는 것도, 다른 곳에 주의를 쏟고 있으면 인지하지 못하는 현상. "Look, but fail to see."</li>
+              <li><span class="term">변화맹 vs 무주의 맹시</span> = 변화맹은 "안 보고 있던 곳"의 변화를 놓침. 무주의 맹시는 "보고 있는 곳"인데도 놓침. 더 무서운 현상.</li>
+            </ul>
+          </div>
+          <div class="oneliner">관제요원이 화면을 "보고 있는데도" 침입자를 못 본다 — 눈은 향해 있지만 뇌가 처리 안 함</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>왼쪽 눈 아이콘(Physical Gaze) → "눈은 화면을 향하고 있습니다." 오른쪽 과녁 아이콘(Mental Failure) → "하지만 뇌가 그 정보를 처리하지 못합니다." 아래 박스 → "이게 무주의 맹시입니다. 1도 이내에서도 40% 이상 놓칩니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"변화맹보다 더 무서운 게 무주의 맹시입니다. 변화맹은 '안 보고 있어서' 놓친 거예요. 그런데 무주의 맹시는 '화면을 보고 있는데도' 못 봅니다. 관제요원이 3번 화면을 쳐다보고 있는데, 화면에 침입자가 지나가도 40%가 못 봅니다. 눈은 향해 있는데 뇌가 처리를 안 하는 거예요."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 14</div>
+            <p>정말 보고 있는데도 못 본다고? 어떤 실험으로 이걸 증명했나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 14 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">14</span>
+        <span class="slide-title">고릴라 실험</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-14.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">고릴라 실험</span> = Simons & Chabris(1999). 농구 패스 세기 과제 중 고릴라가 지나가도 50%+ 못 봄.</li>
+              <li><span class="term">공유 단서 효과</span> = 과제 대상(농구 선수)과 이벤트(고릴라)가 비슷한 시각적 특징(같은 색 셔츠)을 공유하면 감지율이 올라감.</li>
+              <li><span class="term">사회적 맥락 개입</span> = Rattan & Eberhardt(2010). 이벤트가 사회적 기대와 맞으면(흑인+범죄) 더 잘 감지. 편견이 주의에 영향.</li>
+            </ul>
+          </div>
+          <div class="oneliner">관제요원이 특정 인물을 추적 중이면, 화면에 고릴라가 걸어 다녀도 50%는 못 봄</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>고릴라 이미지 가리키며 → "이 유명한 실험입니다. 농구 선수 패스 세는 데 집중하면 고릴라를 절반이 못 봅니다." 오른쪽 "공유 단서 효과" 가리키며 → "검은 셔츠 팀 패스를 세면 검은 고릴라를 더 잘 발견합니다. 같은 특징을 공유하니까요."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"고릴라 실험 아시는 분? 농구 영상에서 흰 셔츠 선수의 패스 횟수를 세는 데 집중하면, 화면 한가운데를 가로지르는 고릴라를 절반 이상이 못 봅니다. 관제센터에서 비유하면, 빨간 옷 입은 용의자를 추적하는 데 집중하면, 파란 옷 입은 침입자는 눈앞에 지나가도 못 보는 거예요."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 15</div>
+            <p>모든 관제요원이 똑같이 놓치나? 아니면 어떤 사람은 더 잘 알아차리나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 15 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">15</span>
+        <span class="slide-title">무주의 맹시 개인차와 요인</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-15.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Residual Cognitive Capacity (잔여 인지 용량)</span> = 주 과제를 처리하고 남는 뇌의 여유 자원. 이게 있어야 예상 밖 이벤트를 감지 가능.</li>
+              <li><span class="term">WMC (Working Memory Capacity)</span> = 작업 기억 용량. 동시에 처리할 수 있는 정보의 양. 높을수록 고릴라를 더 잘 발견.</li>
+            </ul>
+          </div>
+          <div class="oneliner">관제요원의 배터리 잔량 = 전문가는 90% 남아서 다 보이고, 신입은 15%라 놓침</div>
+          <div class="graph-guide">
+            <div class="graph-label">그래프 읽기</div>
+            <p>배터리 비유: 왼쪽 = 고용량(High Capacity, 90%) → 전문가, 과제가 자동화되어 잔여 용량 풍부. 오른쪽 = 저용량(Low Capacity, 15%) → 신입 or 과부하 상태, 잔여 용량 부족. 고릴라 목격 비율이 67% vs 낮음.</p>
+          </div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>왼쪽 초록 배터리(90%) 가리키며 → "전문가는 과제가 자동화되어서 뇌에 여유가 있습니다." 오른쪽 빨간 배터리(15%) 가리키며 → "신입이거나 술 취한 상태면 뇌 여유가 없어서 놓칩니다." 오른쪽 박스 → "술 취한 상태에서 고릴라 목격률이 36%로 급감합니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"무주의 맹시가 모든 사람에게 똑같이 일어나지는 않습니다. 핵심은 '잔여 인지 용량'이에요. 베테랑 관제요원은 화면 감시가 몸에 배어서 뇌에 90%의 여유가 있습니다. 그래서 이상한 것이 나타나면 바로 알아채요. 하지만 첫 출근한 신입은 화면 보는 것 자체가 어려워서 뇌 여유가 15%밖에 없어요. 그래서 침입자가 눈앞에 있어도 놓칩니다."</p>
+          </div>
+          <div class="prof-toss">
+            <div class="prof-label">교수 토스</div>
+            <p>"WMC의 신경과학적 기반과 Memmert(2006)의 실험 세부사항은 교수님께서 보충해주실 겁니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; END</div>
+            <p>이제 처음에 던진 질문으로 돌아가 봅시다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE END: OUTRO ==================== -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">END</span>
+        <span class="slide-title">What I Learned</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <div class="story-card outro">
+            <p class="story-callback">처음에 관제요원이 16개 화면을 감시하는데, 화면 한가운데 침입자가 지나가도 50%는 못 본다고 했습니다. 왜 그런지 이제 답할 수 있습니다.</p>
+            <ul class="story-lessons">
+              <li><strong>Act 1:</strong> 사람의 눈은 초당 3번밖에 화면을 못 옮기고, 먼 화면은 고개를 돌려야 해서 본능적으로 안 봅니다(SEEV). "무시 기간"이 빈틈을 만듭니다.</li>
+              <li><strong>Act 2:</strong> 안 보는 사이에 화면이 바뀌면 변화맹이 발생합니다. 과제 부하, 낮은 현저성, 드문 사건(Black Swan)이 겹치면 40%를 놓칩니다.</li>
+              <li><strong>Act 3:</strong> 더 무서운 건, 화면을 보고 있어도 다른 것에 집중하면 뇌가 처리를 안 합니다(무주의 맹시). 전문가는 잔여 인지 용량이 많아 덜 놓치지만, 신입은 취약합니다.</li>
+            </ul>
+            <p class="story-closing">결국 좋은 관제 시스템은 사람의 한계를 아는 설계(SEEV) + 변화 알림(N-SEEV) + 충분한 훈련(잔여 용량 확보)의 조합입니다.</p>
+          </div>
+        </div>
+        <div class="slide-notes">
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"처음에 관제요원이 왜 침입자를 놓치냐고 물었습니다. Act 1에서 — 눈이 물리적으로 한계가 있고, SEEV 공식으로 예측 가능하다는 것, Act 2에서 — 안 보는 사이에 변화맹이 생기고 드문 사건일수록 더 놓친다는 것, Act 3에서 — 보고 있어도 뇌가 처리 안 하는 무주의 맹시가 있다는 것을 배웠습니다. 결국 관제 시스템은 사람의 한계를 전제로 설계해야 합니다."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <img id="lightboxImg" src="" alt="">
+  </div>
+
+  <script>
+    // Lightbox
+    document.addEventListener('click', e => {
+      const img = e.target.closest('.slide-img, .textbook-fig');
+      if (img) {
+        const lb = document.getElementById('lightbox');
+        document.getElementById('lightboxImg').src = img.src;
+        lb.classList.add('show');
+      }
+    });
+    document.getElementById('lightbox').addEventListener('click', () => {
+      document.getElementById('lightbox').classList.remove('show');
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') document.getElementById('lightbox').classList.remove('show');
+    });
+  </script>
+</body>
+</html>
