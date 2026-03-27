@@ -111,6 +111,18 @@
     .lightbox.show { display: flex; }
     .lightbox img { max-width: 98vw; max-height: 92vh; border-radius: 8px; }
 
+    /* Story card (첫장/마지막장) */
+    .story-card { background: var(--card); border-radius: 14px; padding: 24px; margin: 12px 0; line-height: 1.9; }
+    .story-card.intro { border: 2px solid var(--accent); }
+    .story-card.outro { border: 2px solid var(--bridge); }
+    .story-situation { font-size: 1.05rem; color: var(--text); margin-bottom: 12px; }
+    .story-question { font-size: 1.1rem; color: var(--accent); font-weight: 700; margin-bottom: 12px; }
+    .story-guide { font-size: 0.95rem; color: var(--dim); }
+    .story-callback { font-size: 0.95rem; color: var(--dim); margin-bottom: 16px; }
+    .story-lessons { list-style: none; padding: 0; }
+    .story-lessons li { font-size: 1rem; margin: 10px 0; padding: 8px 14px; border-left: 3px solid var(--bridge); background: rgba(52,211,153,0.06); border-radius: 0 8px 8px 0; }
+    .story-closing { font-size: 1.1rem; color: var(--bridge); font-weight: 700; margin-top: 20px; }
+
     /* Desktop: parallel layout */
     @media (min-width: 768px) {
       .container { max-width: 1200px; }
@@ -157,6 +169,34 @@
       <span><span class="legend-dot" style="background:var(--toss)"></span> 교수 토스</span>
     </div>
 
+    <!-- ==================== SLIDE 00: INTRO ==================== -->
+    <div class="slide open">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">00</span>
+        <span class="slide-title">오늘의 이야기</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <div class="story-card intro">
+            <p class="story-situation">공항 보안 검색원이 하루에 약 1,000개의 가방을 X-ray로 검사합니다. 옷, 노트북, 충전기 사이에 숨겨진 칼이나 폭발물을 찾아야 합니다.</p>
+            <p class="story-question">그런데 실제로 무기가 있는 가방은 거의 없습니다. 그래도 검색원은 무기가 있을 때 약 30%나 놓칩니다. 왜 사람의 눈은 이렇게 못 찾을까요? AI가 "여기 의심!"하고 알려주면 해결될까요?</p>
+            <p class="story-guide">지금부터 검색원의 눈을 빌려서, 사람이 왜 못 찾고, 환경이 어떻게 방해하고, 기계가 도와주면 어떤 새 문제가 생기는지 알아보겠습니다.</p>
+          </div>
+        </div>
+        <div class="slide-notes">
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"여러분 공항 가면 보안 검색대 지나시죠? 그 검색원이 하루에 천 개 가방을 봅니다. 근데 무기가 있어도 30%나 놓친다고 합니다. 왜 그런지, 오늘 그 검색원의 눈으로 직접 들어가 보겠습니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; Act 1</div>
+            <p>"먼저, 사람의 눈이 가진 근본적인 한계부터 알아보겠습니다."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ==================== ACT 1 ==================== -->
     <div class="act">
       <div class="act-num">Act 1</div>
@@ -165,7 +205,7 @@
     </div>
 
     <!-- Slide 1 -->
-    <div class="slide open">
+    <div class="slide">
       <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="slide-num">01</span>
         <span class="slide-title">시각적 탐색과 UFOV</span>
@@ -807,13 +847,41 @@
           <p>VR 기기에서의 터널링 연구는 &rarr; "이 부분은 교수님께서 추가 설명해주실 겁니다."</p>
         </div>
         <div class="bridge">
-          <div class="bridge-label">마무리</div>
-          <p>"결국 좋은 보안 시스템이란, AI 단서의 장점은 살리되 터널링은 유발하지 않는 균형 잡힌 설계입니다."</p>
+          <div class="bridge-label">Bridge &rarr; 마무리</div>
+          <p>"이제 처음에 던졌던 질문으로 돌아가서 정리해보겠습니다."</p>
         </div>
         <div class="mic">
-          <div class="mic-label">발표 멘트 (클로징)</div>
-          <p>"AI가 '여기!'라고 표시하면 검색원이 거기만 봅니다. 나머지는 아예 확인을 안 합니다. 이게 3막의 결론입니다. 정리하면 &mdash; 1막에서 사람의 한계, 2막에서 환경의 방해, 3막에서 기계의 도움과 새로운 함정을 봤습니다. 결국 사람과 기계의 균형이 핵심입니다."</p>
+          <div class="mic-label">발표 멘트</div>
+          <p>"AI가 '여기!'라고 표시하면 검색원이 거기만 봅니다. 나머지는 아예 확인을 안 합니다. 이게 3막의 마지막 함정이고, 다음 장에서 전체를 정리하겠습니다."</p>
         </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE END: WHAT I LEARNED ==================== -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num" style="background:var(--bridge)">END</span>
+        <span class="slide-title">What I Learned</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <div class="story-card outro">
+            <p class="story-callback">처음에 물었습니다 &mdash; 공항 보안 검색원이 하루 1,000개 가방을 보는데, 왜 무기가 있어도 30%나 놓칠까?</p>
+            <ul class="story-lessons">
+              <li><strong>Act 1 &mdash; 인간의 한계:</strong> 사람의 눈은 좁은 범위만 선명하게 보고(UFOV), 물건을 하나씩 확인해야 합니다. 물건이 많으면 정직하게 느려지고, 거의 안 나오면 대충 봅니다.</li>
+              <li><strong>Act 2 &mdash; 환경의 방해:</strong> 가방 속이 복잡하면(클러터) 아무리 뛰어난 검색원도 한계가 있습니다. 너무 많거나, 다닥다닥이거나, 뒤죽박죽이거나, 제각각이면 못 찾습니다.</li>
+              <li><strong>Act 3 &mdash; 기계의 도움과 함정:</strong> AI가 "여기 의심!"하고 알려줄 수 있지만, 물건을 가리거나(마스킹), 거기만 뚫어지게 보게 만드는(터널링) 새로운 문제가 생깁니다.</li>
+            </ul>
+            <p class="story-closing">결국 좋은 보안 시스템은 사람과 기계의 균형입니다.</p>
+          </div>
+        </div>
+        <div class="slide-notes">
+          <div class="mic">
+            <div class="mic-label">발표 멘트 (클로징)</div>
+            <p>"처음에 검색원이 왜 30%나 놓치는지 물었는데요. 사람의 눈 자체가 좁고, 환경이 복잡하면 더 힘들고, 기계가 도와줘도 새로운 함정이 생깁니다. 결국 사람과 기계가 서로의 약점을 보완하는 균형이 핵심입니다. 감사합니다."</p>
+          </div>
         </div>
       </div>
     </div>
