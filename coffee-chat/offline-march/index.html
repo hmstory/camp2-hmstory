@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>먼슬리 커피챗 — 오프라인 (2026.03)</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0c0a09;
+      --bg-card: #1c1917;
+      --text: #fafaf9;
+      --text-sub: #a8a29e;
+      --accent: #d97706;
+      --accent-warm: #f59e0b;
+      --accent-soft: #fbbf24;
+      --accent-glow: rgba(217, 119, 6, 0.25);
+      --green: #34d399;
+      --purple: #a78bfa;
+      --pink: #f472b6;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .deck { width: 100vw; height: 100vh; position: relative; }
+
+    .slide {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 80px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .slide.active .anim {
+      animation: fadeUp 0.5s ease forwards;
+      opacity: 0;
+    }
+    .slide.active .anim:nth-child(1) { animation-delay: 0.1s; }
+    .slide.active .anim:nth-child(2) { animation-delay: 0.25s; }
+    .slide.active .anim:nth-child(3) { animation-delay: 0.4s; }
+    .slide.active .anim:nth-child(4) { animation-delay: 0.55s; }
+    .slide.active .anim:nth-child(5) { animation-delay: 0.7s; }
+    .slide.active .anim:nth-child(6) { animation-delay: 0.85s; }
+    .slide.active .anim:nth-child(7) { animation-delay: 1.0s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-number {
+      position: absolute;
+      top: 40px;
+      right: 60px;
+      font-size: 14px;
+      color: #44403c;
+      font-weight: 300;
+    }
+
+    .tag {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1.3;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 20px;
+      color: var(--text-sub);
+      font-weight: 300;
+      line-height: 1.8;
+      text-align: center;
+      max-width: 680px;
+    }
+
+    .highlight { color: var(--accent-warm); font-weight: 700; }
+    .hl-green { color: var(--green); font-weight: 700; }
+    .hl-purple { color: var(--purple); font-weight: 700; }
+    .hl-pink { color: var(--pink); font-weight: 700; }
+
+    /* Statements */
+    .statements {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 24px;
+      max-width: 600px;
+      width: 100%;
+    }
+    .statement {
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--text-sub);
+      padding-left: 20px;
+      border-left: 2px solid #292524;
+    }
+    .statement.em {
+      color: var(--text);
+      border-left-color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* Topics */
+    .topics {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 24px;
+      max-width: 600px;
+      width: 100%;
+    }
+    .topic {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--text-sub);
+    }
+    .topic-dash {
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+      font-size: 20px;
+    }
+
+    /* ABC Table */
+    .abc-table {
+      border-collapse: collapse;
+      margin-top: 20px;
+      width: 100%;
+      max-width: 720px;
+      font-size: 16px;
+    }
+    .abc-table th {
+      background: var(--bg-card);
+      color: var(--accent);
+      font-weight: 700;
+      padding: 10px 16px;
+      text-align: left;
+      border-bottom: 2px solid var(--accent);
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+    .abc-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid #292524;
+      color: var(--text-sub);
+      vertical-align: top;
+    }
+    .abc-table tr:hover td { background: rgba(217, 119, 6, 0.04); }
+    .abc-table .row-label {
+      color: var(--text);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .abc-table .group-header td {
+      padding-top: 18px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--accent);
+      border-bottom: 1px solid #44403c;
+    }
+
+    /* ABC Flow */
+    .abc-flow {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .abc-box {
+      background: var(--bg-card);
+      border: 1px solid #292524;
+      border-radius: 12px;
+      padding: 16px 24px;
+      text-align: center;
+      min-width: 160px;
+    }
+    .abc-box .abc-letter {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--accent-warm);
+      margin-bottom: 4px;
+    }
+    .abc-box .abc-kr {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+    }
+    .abc-box .abc-example {
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .abc-arrow {
+      font-size: 24px;
+      color: #44403c;
+      font-weight: 300;
+    }
+
+    /* Source */
+    .source {
+      font-size: 12px;
+      color: #57534e;
+      margin-top: 20px;
+      text-align: center;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+    .source a { color: #78716c; text-decoration: none; }
+    .source a:hover { text-decoration: underline; }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 700;
+      background: rgba(217, 119, 6, 0.12);
+      color: var(--accent-warm);
+    }
+
+    /* Coffee icon */
+    .coffee-icon {
+      font-size: 64px;
+      margin-bottom: 24px;
+      animation: steam 3s ease-in-out infinite;
+    }
+    @keyframes steam {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* Closing */
+    .closing-quote {
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--text-sub);
+      text-align: center;
+      max-width: 600px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .closing-quote em {
+      color: var(--accent-warm);
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    .since {
+      font-size: 13px;
+      color: #57534e;
+      margin-top: 16px;
+      letter-spacing: 1px;
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 100;
+    }
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #44403c;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .nav-dot.active {
+      background: var(--accent);
+      width: 28px;
+      border-radius: 5px;
+    }
+    .nav-hint {
+      position: fixed;
+      bottom: 30px;
+      right: 40px;
+      font-size: 12px;
+      color: #44403c;
+      z-index: 100;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .slide { padding: 40px 20px; overflow-y: auto; justify-content: flex-start; padding-top: 60px; }
+      .slide-number { top: 20px; right: 20px; font-size: 12px; }
+      h1 { font-size: 28px; }
+      h2 { font-size: 22px; }
+      .tag { font-size: 11px; letter-spacing: 2px; margin-bottom: 16px; }
+      .subtitle { font-size: 15px; line-height: 1.6; }
+      .statement { font-size: 15px; }
+      .topic { font-size: 15px; }
+      .abc-table { font-size: 13px; }
+      .abc-table th, .abc-table td { padding: 8px 10px; }
+      .abc-flow { gap: 10px; }
+      .abc-box { min-width: 100px; padding: 12px 16px; }
+      .abc-box .abc-letter { font-size: 22px; }
+      .abc-box .abc-example { font-size: 13px; }
+      .abc-arrow { font-size: 18px; }
+      .closing-quote { font-size: 22px; }
+      .coffee-icon { font-size: 48px; }
+      .nav-hint { display: none; }
+      .source { font-size: 11px; }
+    }
+
+    @media (max-width: 380px) {
+      .slide { padding: 32px 14px; padding-top: 50px; }
+      h1 { font-size: 24px; }
+      h2 { font-size: 20px; }
+      .abc-flow { flex-direction: column; }
+      .abc-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+
+    <!-- Slide 1: Title -->
+    <div class="slide active" data-index="0">
+      <span class="slide-number">01 / 10</span>
+      <div class="anim coffee-icon">&#9749;</div>
+      <div class="anim tag">Monthly Coffee Chat — Offline</div>
+      <h1 class="anim">드디어 내일<br>만나게 됩니다!</h1>
+      <p class="anim subtitle">먼슬리 커피챗 — 오프라인</p>
+      <div class="anim badge" style="margin-top: 28px;">연세대 심리과학이노베이션대학원 디지털 혁신트랙</div>
+      <div class="anim since">2026. 03</div>
+    </div>
+
+    <!-- Slide 2: 1-2기 회고 -->
+    <div class="slide" data-index="1">
+      <span class="slide-number">02 / 10</span>
+      <div class="anim tag">1-2기</div>
+      <h2 class="anim">간단한 회고를 준비해 주세요</h2>
+      <div class="anim topics">
+        <div class="topic">
+          <span class="topic-dash">—</span>
+          <span><span class="highlight">What I Learned</span> — 이 트랙에서 배운 것</span>
+        </div>
+        <div class="topic">
+          <span class="topic-dash">—</span>
+          <span><span class="highlight">Unlearning</span> — 기존에 알던 것 중 바꿔야 했던 것</span>
+        </div>
+      </div>
+      <div class="anim statements" style="margin-top: 28px;">
+        <div class="statement">배운 것만큼, 버린 것도 중요합니다.</div>
+        <div class="statement em">새로운 걸 담으려면 기존 컵을 좀 비워야 하니까요.</div>
+        <div class="statement">한두 문장이면 충분합니다.</div>
+      </div>
+      <div class="anim source">
+        참고: <a href="https://www.mk.co.kr/news/contributors/11407102" target="_blank">매일경제 — 언러닝</a>
+      </div>
+    </div>
+
+    <!-- Slide 3: 3기 기대 -->
+    <div class="slide" data-index="2">
+      <span class="slide-number">03 / 10</span>
+      <div class="anim tag">3기</div>
+      <h2 class="anim"><span class="highlight">What I Expect</span>를<br>준비해 주세요</h2>
+      <div class="anim statements" style="margin-top: 20px;">
+        <div class="statement">어떤 기대를 갖고 들어오셨는지,</div>
+        <div class="statement">저희와 비슷한 것과 다른 것 —</div>
+        <div class="statement em">편하게 이야기 나눠봐요.</div>
+      </div>
+    </div>
+
+    <!-- Slide 4: 왜? -->
+    <div class="slide" data-index="3">
+      <span class="slide-number">04 / 10</span>
+      <div class="anim tag">Why</div>
+      <h2 class="anim">이렇게 하는 이유?</h2>
+      <div class="anim statements" style="margin-top: 20px;">
+        <div class="statement">신생 트랙이라 아직 갖춰진 게 많이 없습니다.</div>
+        <div class="statement">그만큼 우리가 직접 채울 수 있는 것도 많다는 뜻이에요.</div>
+        <div class="statement em">서로 이야기하면서 같이 만들어가봐요.</div>
+      </div>
+    </div>
+
+    <!-- Slide 5: ABC 소개 -->
+    <div class="slide" data-index="4">
+      <span class="slide-number">05 / 10</span>
+      <div class="anim tag">Skinner Box</div>
+      <h2 class="anim">남는 시간에는<br>심리학 안경을 잠깐 써봅시다</h2>
+      <p class="anim subtitle" style="margin-bottom: 8px;">
+        혹시 <span class="highlight">스키너 상자(Skinner Box)</span> 들어보셨나요?<br>
+        상자 안에 레버가 있고, 쥐가 레버를 누르면 먹이가 나오는 실험입니다.
+      </p>
+      <div class="anim abc-flow">
+        <div class="abc-box">
+          <div class="abc-letter">A</div>
+          <div class="abc-kr">Antecedent · 선행자극</div>
+          <div class="abc-example">레버가 눈에 들어옴</div>
+        </div>
+        <div class="abc-arrow">&rarr;</div>
+        <div class="abc-box">
+          <div class="abc-letter">B</div>
+          <div class="abc-kr">Behavior · 행동</div>
+          <div class="abc-example">레버 누름</div>
+        </div>
+        <div class="abc-arrow">&rarr;</div>
+        <div class="abc-box">
+          <div class="abc-letter">C</div>
+          <div class="abc-kr">Consequence · 결과</div>
+          <div class="abc-example">먹이 획득</div>
+        </div>
+      </div>
+      <div class="anim source">
+        출처: B.F. Skinner (1938), <em>The Behavior of Organisms</em><br>
+        참고: <a href="https://en.wikipedia.org/wiki/Three-term_contingency" target="_blank">Wikipedia — Three-term contingency</a>
+      </div>
+    </div>
+
+    <!-- Slide 6: 일상 속 ABC -->
+    <div class="slide" data-index="5">
+      <span class="slide-number">06 / 10</span>
+      <div class="anim tag">Daily Life</div>
+      <h2 class="anim">이 구조, 우리 일상에도<br>숨어 있어요</h2>
+      <table class="anim abc-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>A (선행자극)</th>
+            <th>B (행동)</th>
+            <th>C (결과)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">&#9749; 카페</td>
+            <td>커피 향기가 풍겨옴</td>
+            <td>주문</td>
+            <td>한 모금의 행복</td>
+          </tr>
+          <tr>
+            <td class="row-label">&#128244; SNS</td>
+            <td>알림 빨간 점</td>
+            <td>앱 열기</td>
+            <td>좋아요 확인</td>
+          </tr>
+          <tr>
+            <td class="row-label">&#127979; 학교</td>
+            <td>수업 종료 벨</td>
+            <td>짐 싸기</td>
+            <td>쉬는 시간</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="anim source">
+        참고: <a href="https://www.mastermindbehavior.com/post/understanding-the-abcs-of-behavior-antecedent-behavior-consequence" target="_blank">Mastermind Behavior — Understanding the ABCs</a>
+      </div>
+    </div>
+
+    <!-- Slide 7: 접속 유도 -->
+    <div class="slide" data-index="6">
+      <span class="slide-number">07 / 10</span>
+      <div class="anim tag">Game Design — 접속 유도</div>
+      <h2 class="anim">게임 만드는 사람들도<br>이 구조를 아주 잘 알고 있어요</h2>
+      <p class="anim subtitle" style="margin-bottom: 8px; font-size: 17px;">게임을 <span class="highlight">켜게 만드는</span> A</p>
+      <table class="anim abc-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>A (선행자극)</th>
+            <th>B (행동)</th>
+            <th>C (결과)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">로그인 보상</td>
+            <td>푸시 알림 "오늘의 보상"</td>
+            <td>게임 접속</td>
+            <td>보상 획득</td>
+          </tr>
+          <tr>
+            <td class="row-label">배틀패스</td>
+            <td>시즌 카운트다운 타이머</td>
+            <td>게임 접속</td>
+            <td>새 시즌 콘텐츠</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="anim source">
+        출처: <a href="https://medium.com/@milijanakomad/product-design-and-psychology-the-mechanism-of-skinner-box-techniques-in-video-game-design-5b7315e2d7b4" target="_blank">Medium — Skinner Box in Video Game Design</a>
+      </div>
+    </div>
+
+    <!-- Slide 8: 플레이 유지 -->
+    <div class="slide" data-index="7">
+      <span class="slide-number">08 / 10</span>
+      <div class="anim tag">Game Design — 플레이 유지</div>
+      <h2 class="anim" style="font-size: 30px;">게임을 <span class="highlight">끄지 못하게 만드는</span> A</h2>
+      <table class="anim abc-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>A (선행자극)</th>
+            <th>B (행동)</th>
+            <th>C (결과)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">가챠/뽑기</td>
+            <td>"한정 픽업 배너" + 카운트다운</td>
+            <td>뽑기 실행</td>
+            <td>레어 캐릭터 (또는 꽝)</td>
+          </tr>
+          <tr>
+            <td class="row-label">루트박스</td>
+            <td>반짝이는 상자 이펙트 + 사운드</td>
+            <td>상자 열기</td>
+            <td>랜덤 아이템</td>
+          </tr>
+          <tr>
+            <td class="row-label">레벨업</td>
+            <td>경험치 바 99% 차오름</td>
+            <td>전투 한 판 더</td>
+            <td>레벨업 연출 + 보상</td>
+          </tr>
+          <tr>
+            <td class="row-label">퀘스트</td>
+            <td>"!" 느낌표 NPC 표시</td>
+            <td>NPC 대화 + 수행</td>
+            <td>장비/골드 획득</td>
+          </tr>
+          <tr>
+            <td class="row-label">랭크전</td>
+            <td>"승급전까지 1승" 알림</td>
+            <td>매치 시작</td>
+            <td>승급 (또는 좌절)</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="anim source">
+        참고: <a href="https://thegamearchives.com/2025/03/04/loot-boxes-battle-passes-and-bonus-rewards-how-gamification-keeps-players-hooked/" target="_blank">The Game Archives — How Gamification Keeps Players Hooked</a>
+      </div>
+    </div>
+
+    <!-- Slide 9: 게임 토크 -->
+    <div class="slide" data-index="8">
+      <span class="slide-number">09 / 10</span>
+      <div class="anim tag">Your Turn</div>
+      <h2 class="anim">이제 여러분 차례입니다</h2>
+      <div class="anim statements" style="margin-top: 20px;">
+        <div class="statement em">내가 좋아하는 게임 하나를 골라서,</div>
+        <div class="statement em">나를 붙잡아두는 <span class="highlight">A-B-C</span>가 뭔지<br>다른 사람에게 설명해 주세요.</div>
+      </div>
+      <p class="anim subtitle" style="margin-top: 28px; font-size: 17px;">
+        <span class="highlight">접속 유도</span>인지, <span class="highlight">플레이 유지</span>인지도<br>
+        같이 생각해 보면 더 재밌습니다.
+      </p>
+      <p class="anim subtitle" style="margin-top: 20px; font-size: 18px; color: var(--text);">
+        정답은 없고, 분석 자체가 재밌습니다.
+      </p>
+    </div>
+
+    <!-- Slide 10: 엔딩 -->
+    <div class="slide" data-index="9">
+      <span class="slide-number">10 / 10</span>
+      <div class="anim coffee-icon">&#9749;</div>
+      <div class="anim closing-quote">
+        그러면
+      </div>
+      <h1 class="anim">
+        <span class="highlight">내일 봐요!</span>
+      </h1>
+      <div class="anim since">Monthly Coffee Chat · 2026. 03</div>
+    </div>
+
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav" id="nav"></div>
+  <div class="nav-hint">&larr; &rarr; 키로 이동</div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const nav = document.getElementById('nav');
+    let current = 0;
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => goTo(i));
+      nav.appendChild(dot);
+    });
+
+    function goTo(index) {
+      if (index < 0 || index >= slides.length) return;
+      slides[current].classList.remove('active');
+      nav.children[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      nav.children[current].classList.add('active');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+    });
+
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) { diff > 0 ? goTo(current + 1) : goTo(current - 1); }
+    });
+  </script>
+</body>
+</html>
