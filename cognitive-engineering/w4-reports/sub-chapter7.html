@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>W4 주교재 3장 요약 및 보고서 - 김형모</title>
+  <title>W4 부교재 7장 Aesthetic-Usability Effect - 김형모</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <style>
     :root {
-      --bg: #1a1a2e;
-      --surface: #16213e;
-      --card: #1e2a4a;
-      --text: #d4d4d8;
+      --bg: #1a2e1a;
+      --surface: #162e21;
+      --card: #1e3a2a;
+      --text: #d4d8d4;
       --heading: #ffffff;
-      --accent: #6c63ff;
-      --accent2: #e94560;
-      --accent-soft: #a8a4ff;
-      --highlight-bg: rgba(108,99,255,0.15);
-      --code-bg: #0f3460;
-      --border: #333;
+      --accent: #2ecc71;
+      --accent2: #e67e22;
+      --accent-soft: #81ecb0;
+      --highlight-bg: rgba(46,204,113,0.15);
+      --code-bg: #0f3020;
+      --border: #2a4a2a;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -333,8 +333,8 @@
     <a href="../w3-reports/prompt.html">프롬프트</a>
     <a href="../w3-reports/index.html">W3 주교재 2장</a>
     <a href="../w3-reports/sub-chapter8.html">W3 부교재 8장</a>
-    <a href="index.html" class="active">W4 주교재 3장</a>
-    <a href="sub-chapter7.html">W4 부교재 7장</a>
+    <a href="index.html">W4 주교재 3장</a>
+    <a href="sub-chapter7.html" class="active">W4 부교재 7장</a>
   </nav>
   <div class="container">
     <div id="content"><div class="loading">Loading...</div></div>
@@ -355,7 +355,7 @@
   <script>
     marked.setOptions({ gfm: true, breaks: true });
 
-    fetch('w4-chapter4.md')
+    fetch('w4-sub-chapter7.md')
       .then(r => r.text())
       .then(md => {
         document.getElementById('content').innerHTML = marked.parse(md);
