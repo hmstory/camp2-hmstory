@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>W4 발표자 노트 - Auditory Attention Engineering</title>
+  <style>
+    :root {
+      --bg: #0f0f1a;
+      --surface: #1a1a2e;
+      --card: #1e2a4a;
+      --text: #d4d4d8;
+      --heading: #ffffff;
+      --accent: #fbbf24;
+      --accent2: #f97316;
+      --bridge: #34d399;
+      --mic: #60a5fa;
+      --glossary: #f87171;
+      --graph: #c084fc;
+      --pointing: #f472b6;
+      --toss: #9ca3af;
+      --border: #333;
+      --dim: #888;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 17px; }
+    .header { background: var(--surface); border-bottom: 2px solid var(--accent); padding: 16px 20px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+    .header h1 { font-size: 1.1rem; color: var(--accent); font-weight: 700; }
+    .header p { font-size: 0.8rem; color: var(--dim); margin-top: 2px; }
+    .header a { color: var(--accent); text-decoration: underline; }
+    .container { max-width: 620px; margin: 0 auto; padding: 16px 16px 100px; }
+    .act { text-align: center; padding: 20px 0 8px; margin: 24px 0 8px; border-top: 2px solid var(--accent); }
+    .act-num { color: var(--accent); font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+    .act-title { color: var(--heading); font-size: 1.05rem; font-weight: 700; margin-top: 4px; }
+    .act-sub { color: var(--dim); font-size: 0.8rem; margin-top: 2px; }
+    .slide { background: var(--surface); border-radius: 14px; margin: 16px 0; overflow: hidden; border: 1px solid var(--border); }
+    .slide-header { background: var(--card); padding: 14px 18px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .slide-num { background: var(--accent); color: #000; font-weight: 800; font-size: 0.85rem; padding: 4px 10px; border-radius: 8px; white-space: nowrap; }
+    .slide-title { color: var(--heading); font-weight: 600; font-size: 0.95rem; flex: 1; }
+    .slide-toggle { color: var(--dim); font-size: 1.2rem; transition: transform 0.2s; }
+    .slide.open .slide-toggle { transform: rotate(90deg); }
+    .slide-body { display: none; padding: 0 18px 18px; }
+    .slide.open .slide-body { display: block; }
+    .slide-img { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; margin: 12px 0 8px; border: 1px solid var(--border); cursor: zoom-in; }
+    .textbook-fig { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 8px; margin: 8px 0; background: #fff; padding: 8px; border: 2px solid var(--graph); cursor: zoom-in; }
+    .textbook-fig-label { color: var(--graph); font-size: 0.75rem; font-weight: 700; margin-top: 8px; letter-spacing: 0.5px; }
+    .glossary { background: rgba(248,113,113,0.08); border-left: 3px solid var(--glossary); padding: 10px 14px; margin: 12px 0; border-radius: 0 8px 8px 0; }
+    .glossary-label { color: var(--glossary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .glossary ul { list-style: none; padding: 0; }
+    .glossary li { font-size: 0.88rem; margin: 4px 0; line-height: 1.5; }
+    .glossary .term { color: var(--glossary); font-weight: 700; }
+    .oneliner { background: rgba(251,191,36,0.1); border-left: 3px solid var(--accent); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; font-size: 0.95rem; color: var(--accent); font-weight: 600; }
+    .graph-guide { background: rgba(192,132,252,0.08); border-left: 3px solid var(--graph); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+    .graph-label { color: var(--graph); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .graph-guide p { font-size: 0.9rem; }
+    .pointing { background: rgba(244,114,182,0.08); border-left: 3px solid var(--pointing); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+    .pointing-label { color: var(--pointing); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .pointing p { font-size: 0.9rem; }
+    .bridge { background: rgba(52,211,153,0.1); border-left: 3px solid var(--bridge); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+    .bridge-label { color: var(--bridge); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .bridge p { font-size: 0.9rem; }
+    .mic { background: rgba(96,165,250,0.1); border-left: 3px solid var(--mic); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+    .mic-label { color: var(--mic); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .mic p { font-size: 0.9rem; font-style: italic; }
+    .prof-toss { background: rgba(156,163,175,0.08); border-left: 3px solid var(--toss); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+    .prof-label { color: var(--toss); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .prof-toss p { font-size: 0.9rem; color: var(--toss); }
+    .legend { display: flex; gap: 10px; flex-wrap: wrap; padding: 12px 0; font-size: 0.75rem; color: var(--dim); border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+    .legend span { display: flex; align-items: center; gap: 3px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+    .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.92); z-index: 500; justify-content: center; align-items: center; cursor: zoom-out; padding: 10px; }
+    .lightbox.show { display: flex; }
+    .lightbox img { max-width: 98vw; max-height: 92vh; border-radius: 8px; }
+    .story-card { background: var(--card); border-radius: 14px; padding: 24px; margin: 12px 0; line-height: 1.9; }
+    .story-card.intro { border: 2px solid var(--accent); }
+    .story-card.outro { border: 2px solid var(--bridge); }
+    .story-situation { font-size: 1.05rem; color: var(--text); margin-bottom: 12px; }
+    .story-question { font-size: 1.1rem; color: var(--accent); font-weight: 700; margin-bottom: 12px; }
+    .story-guide { font-size: 0.95rem; color: var(--dim); }
+    .story-callback { font-size: 0.95rem; color: var(--dim); margin-bottom: 16px; }
+    .story-lessons { list-style: none; padding: 0; }
+    .story-lessons li { font-size: 1rem; margin: 10px 0; padding: 8px 14px; border-left: 3px solid var(--bridge); background: rgba(52,211,153,0.06); border-radius: 0 8px 8px 0; }
+    .story-closing { font-size: 1.1rem; color: var(--bridge); font-weight: 700; margin-top: 20px; }
+    @media (min-width: 768px) {
+      .container { max-width: 1200px; }
+      .slide.open .slide-body { display: flex; gap: 24px; padding: 16px 18px; }
+      .slide-visual { flex: 0 0 55%; position: sticky; top: 70px; align-self: flex-start; max-height: calc(100vh - 90px); overflow-y: auto; }
+      .slide-notes { flex: 1; min-width: 0; }
+      .slide-img { margin: 0 0 8px; }
+    }
+    @media (max-width: 767px) { .slide-visual { margin-bottom: 8px; } }
+    @media (max-width: 600px) { body { font-size: 16px; } .slide-header { padding: 12px 14px; } .slide-body { padding: 0 14px 14px; } .slide-img { border-radius: 8px; margin: 8px 0 6px; } .legend { gap: 6px; font-size: 0.7rem; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>W4 Slide Bridge - Auditory Attention Engineering</h1>
+    <p><a href="../presenter-notes/">Visual Search</a> &nbsp;|&nbsp; <a href="../presenter-notes-attention/">Visual Attention</a> &nbsp;|&nbsp; 주교재 3장: 청각적 주의와 음향 설계 | 개방형 사무실 신입사원 스토리</p>
+  </div>
+
+  <div class="container">
+    <div class="legend">
+      <span><span class="legend-dot" style="background:var(--glossary)"></span> 용어</span>
+      <span><span class="legend-dot" style="background:var(--accent)"></span> 요약</span>
+      <span><span class="legend-dot" style="background:var(--graph)"></span> 그래프</span>
+      <span><span class="legend-dot" style="background:var(--pointing)"></span> 포인팅</span>
+      <span><span class="legend-dot" style="background:var(--bridge)"></span> 브릿지</span>
+      <span><span class="legend-dot" style="background:var(--mic)"></span> 멘트</span>
+      <span><span class="legend-dot" style="background:var(--toss)"></span> 교수 토스</span>
+    </div>
+
+    <!-- SLIDE 00: INTRO -->
+    <div class="slide open">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">00</span>
+        <span class="slide-title">오늘의 이야기</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <div class="story-card intro">
+            <p class="story-situation">개방형 사무실에 신입사원이 첫 출근합니다. 옆자리 동료의 전화 통화, 뒤쪽 회의 소리, 프린터 소음이 동시에 쏟아집니다. 눈은 감을 수 있지만, 귀는 닫을 수 없습니다.</p>
+            <p class="story-question">그런데 이 소음 속에서도 누군가 자기 이름을 부르면 바로 알아챕니다. 반면, 음악을 들으면서 일하면 기분은 좋은데 실수가 늘어납니다. 왜 귀는 이렇게 모순적일까요?</p>
+            <p class="story-guide">지금부터 이 신입사원의 하루를 따라가며, 귀가 어떻게 소리를 골라듣고, 왜 소음에 무너지고, 어떤 설계가 도움이 되는지 알아보겠습니다.</p>
+          </div>
+        </div>
+        <div class="slide-notes">
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"여러분 개방형 사무실에서 일해보신 적 있으세요? 카페에서 공부해본 적은요? 옆 테이블 대화가 신경 쓰이는데, 이상하게 누가 내 이름을 말하면 바로 들립니다. 오늘은 이 모순을 풀어보겠습니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; Act 1</div>
+            <p>"먼저, 귀가 눈과 근본적으로 다른 점 세 가지부터 알아보겠습니다."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACT 1 -->
+    <div class="act">
+      <div class="act-num">Act 1</div>
+      <div class="act-title">귀는 닫을 수 없다 — 청각의 특성과 선택적 주의</div>
+      <div class="act-sub">청각 3특성, 분할 주의, 단기 저장소, 어텐서, 칵테일 파티</div>
+    </div>
+
+    <!-- SLIDE 01 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">01</span>
+        <span class="slide-title">청각 양상의 3가지 고유 특성</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-01.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Omnidirectional (전방위성)</span> = 모든 방향에서 수신. 눈은 앞만 보지만 귀는 360° 다 들음. 사무실에서 뒤에서 하는 대화도 들리는 이유.</li>
+              <li><span class="term">Always-on (상시 수신)</span> = 잠잘 때도 꺼지지 않음. "귀 깜빡임(Earblink)"이 없음. 눈 감아도 소리는 계속 들어옴.</li>
+              <li><span class="term">Transient (일회성/순간성)</span> = 소리는 즉시 사라짐. 글자처럼 남아있지 않아서 놓치면 끝.</li>
+            </ul>
+          </div>
+          <div class="oneliner">신입사원의 귀 = 360° 안테나 + 전원 OFF 불가 + 녹화 없는 라이브 방송</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>왼쪽 시각 3개 아이콘(눈 스캐닝, 깜빡임, 지속) → "시각은 이렇게 통제할 수 있습니다." 오른쪽 귀 3개 특성 → "청각은 세 가지 모두 반대입니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"신입사원이 사무실에 앉으면, 눈은 모니터만 보면 되지만 귀는 다릅니다. 뒤에서 하는 대화, 옆에서 울리는 전화, 위에서 나오는 에어컨 소리 — 전부 다 들립니다. 눈은 감을 수 있지만 귀는 닫을 수 없어요. 그리고 방금 한 말은 사라집니다. 이 세 가지가 청각의 근본적인 특성입니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 02</div>
+            <p>귀가 닫을 수 없다면, 여러 소리가 동시에 들어올 때 어떻게 되나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 02 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">02</span>
+        <span class="slide-title">청각적 분할 주의의 한계와 주파수 분리</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-02.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Clutter (혼란 상태)</span> = 여러 소리가 뒤섞여서 구분 불가능한 상태. 개방형 사무실에서 여러 명이 동시에 말할 때.</li>
+              <li><span class="term">주파수 분리</span> = 음높이(Pitch)가 다른 소리는 구분 가능. 남성 목소리(저주파)와 여성 목소리(고주파)는 섞여도 분리됨.</li>
+            </ul>
+          </div>
+          <div class="oneliner">사무실에서 남녀 동료가 동시에 말하면 구분 가능 — 주파수가 다르니까. 같은 성별이면? 혼란.</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>왼쪽 혼란 상태(빨간 파형 충돌) → "이게 개방형 사무실의 현실입니다." 오른쪽 주파수 분리(파란+남색 파형 분리) → "하지만 주파수가 다르면 뇌가 분리할 수 있습니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"사무실에서 3명이 동시에 말하면 인지 과부하가 옵니다. 모든 소리에 동시에 집중하는 건 불가능해요. 그런데 한 가지 탈출구가 있어요 — 주파수 분리입니다. 남성 팀장과 여성 동료가 동시에 말해도, 음높이가 다르니까 뇌가 두 개의 흐름으로 분리합니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 03</div>
+            <p>주의를 기울이지 않은 소리는 그냥 사라지나? 아니면 어딘가에 남아있나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 03 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">03</span>
+        <span class="slide-title">단기 청각 저장소와 의미 분석</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-03.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">전주의적 단기 청각 저장소 (Buffer)</span> = 주의를 안 기울여도 3~6초간 소리가 임시 보관되는 곳. 시각에는 없는 청각만의 특성.</li>
+              <li><span class="term">사후 인지</span> = "뭐라고?" 하면서 돌아보는 순간, 저장소에 남은 마지막 내용을 끄집어내는 것.</li>
+            </ul>
+          </div>
+          <div class="oneliner">동료가 말했는데 못 들은 것 같다가 "아, 뭐라고?" 하면 떠오르는 것 = 3~6초 버퍼 덕분</div>
+          <div class="graph-guide">
+            <div class="graph-label">그래프 읽기</div>
+            <p>흐름도: 무주의 채널 → 버퍼(3-6초 유지) → 의미 분석 → 장기 기억. 핵심: 주의를 안 기울여도 "의미 수준까지" 처리됨(무의미한 덩어리가 아님). 이것이 칵테일 파티 효과의 기반.</p>
+          </div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>스톱워치(3-6초) 가리키며 → "이 버퍼가 핵심입니다." 아래쪽 화살표(주의 전환 시 사후 인지) → "돌아보면 마지막 내용이 아직 남아있어요." 윗쪽 "무의미한 덩어리가 아님" 태그 → "의미까지 처리됩니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"사무실에서 일하다가 동료가 뭐라고 했는데, '어?' 하면서 돌아보면 방금 한 말이 머릿속에 떠오르죠? 이게 단기 청각 저장소 덕분입니다. 3~6초 동안 임시로 저장돼 있거든요. 시각에는 이런 게 없어요. 눈은 안 보면 끝인데, 귀는 안 들으려 해도 3~6초간 보관합니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 04</div>
+            <p>귀가 이렇게 항상 열려있고 버퍼까지 있다면, 중요한 소리로 주의를 끄는 최적의 방법은 뭘까?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 04 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">04</span>
+        <span class="slide-title">주의 환기음 '어텐서(Attensors)' 설계</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-04.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Attensors (어텐서)</span> = 주의를 끌기 위해 최적화된 청각 경고 신호. 큰 소리가 아닌 "낮은 역치"를 활용한 설계.</li>
+              <li><span class="term">Low Threshold (낮은 역치)</span> = 자기 이름처럼 작은 소리로도 즉각 주의가 전환되는 것. 볼륨이 아니라 의미가 핵심.</li>
+            </ul>
+          </div>
+          <div class="oneliner">사무실에서 사이렌보다 내 이름 한 마디가 더 효과적 — 볼륨이 아니라 의미가 주의를 끈다</div>
+          <div class="graph-guide">
+            <div class="graph-label">그래프 읽기</div>
+            <p>X축 = 볼륨, Y축 = 주의력. 실선(곡선) = 볼륨 높이면 주의는 올라가지만 금방 포화. 점선 = 볼륨에 비례해서 스트레스도 올라감. 핵심: 곡선 왼쪽 위에 "낮은 역치 어텐서" 포인트 — 작은 소리로도 주의를 확 끌 수 있는 최적점.</p>
+          </div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>그래프 왼쪽 상단의 어텐서 포인트 가리키며 → "여기가 핵심입니다. 작은 소리로도 주의를 끄는 최적점." 오른쪽 "과도한 볼륨 경고의 한계" → "크게 울리면 주의는 끌지만 스트레스로 수행이 떨어집니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"사무실에서 화재 경보가 울리면 다 듣지만, 스트레스도 급등합니다. 반면 동료가 조용히 내 이름을 부르면? 작은 소리인데도 바로 돌아봅니다. 볼륨이 아니라 '의미적 관련성'이 주의를 끄는 거예요. 이걸 활용한 게 어텐서 설계입니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 05</div>
+            <p>낮은 역치로 주의를 끈다면, 소음 속에서 특정 소리만 골라듣는 건 어떻게 가능한가?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 05 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">05</span>
+        <span class="slide-title">청각적 객체 병렬 처리와 칵테일 파티 효과</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-05.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Auditory Object (청각적 객체)</span> = 음높이, 음량, 음색 등을 가진 하나의 통합된 소리 덩어리. 동료의 목소리 = 하나의 객체.</li>
+              <li><span class="term">Parallel Processing (병렬 처리)</span> = 여러 청각 객체의 차원을 동시에 처리하는 능력.</li>
+              <li><span class="term">Earcons (이어콘)</span> = 차원의 병렬 처리를 활용한 청각 아이콘. 짧고 독특한 소리로 긴급성을 전달.</li>
+              <li><span class="term">Cocktail Party Effect</span> = 시끄러운 파티에서도 대화 상대의 목소리만 골라들을 수 있는 능력.</li>
+            </ul>
+          </div>
+          <div class="oneliner">사무실 소음 속에서 팀장 목소리만 골라듣는 것 = 칵테일 파티 효과. 뇌의 돋보기가 하나의 객체만 확대.</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>돋보기 안의 파란 파형(선택된 화자) 가리키며 → "뇌가 이 하나의 목소리만 확대합니다." 배경 회색 파형 → "나머지는 배경으로 밀려납니다." 하단 4개 박스 순서대로 → "청각 객체, 병렬 처리, 이어콘, 칵테일 파티 — 이 네 개가 연결됩니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"회식 자리에서 10명이 동시에 말해도, 여러분은 옆 사람 말만 골라들을 수 있죠? 이게 칵테일 파티 효과입니다. 뇌가 음높이, 음색, 위치를 조합해서 '하나의 청각 객체'를 만들고, 그것만 확대하는 겁니다. 이 원리를 응용한 게 이어콘 — 짧은 알림음으로 긴급성을 전달하는 설계입니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; Act 2</div>
+            <p>칵테일 파티 효과가 어떻게 작동하는지, 그 물리적 원리를 더 깊이 파보겠습니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACT 2 -->
+    <div class="act">
+      <div class="act-num">Act 2</div>
+      <div class="act-title">소리를 분리하는 기술 — 뇌의 필터링과 공간 오디오</div>
+      <div class="act-sub">청각 스트리밍, 모노/양이, 3D 오디오, 교차 양상 통합</div>
+    </div>
+
+    <!-- SLIDE 06 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">06</span>
+        <span class="slide-title">청각 스트리밍의 원리와 인지적 분열</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-06.png" loading="lazy">
+          <div class="textbook-fig-label">교재 원본 FIGURE 3.14 — 청각 스트리밍 (Fusion/Fission)</div>
+          <img class="textbook-fig" src="textbook-figures/figure3.14-streaming.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Auditory Streaming</span> = 여러 소리를 물리적 특성(주파수, 속도)에 따라 별개의 흐름으로 조직화하는 현상.</li>
+              <li><span class="term">Fusion (융합)</span> = 주파수 차이가 작으면 하나의 스트림으로 합쳐짐. (a) 그래프.</li>
+              <li><span class="term">Fission (분열)</span> = 주파수 차이가 크면 두 개의 스트림으로 분리됨. (b) 그래프. 사무실에서 남녀 목소리가 분리되는 원리.</li>
+            </ul>
+          </div>
+          <div class="oneliner">사무실에서 두 대화가 합쳐지나(fusion) 분리되나(fission)는 음높이 차이가 결정한다</div>
+          <div class="graph-guide">
+            <div class="graph-label">그래프 읽기</div>
+            <p>(a) 주파수 차이 최소 → 한 줄기(fusion). (b) 주파수 차이 확대 → 두 줄기로 분열(fission). (c) 제시 속도 증가 → 물리적으로 같아도 빠르면 강제 분할. 교재 FIGURE 3.14도 같은 원리: 원 간격이 넓으면 두 줄기로 지각됨.</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"사무실에서 두 명이 동시에 말할 때, 남녀면 구분되고 같은 성별이면 안 되는 이유가 여기 있어요. 주파수 차이가 크면 뇌가 두 개의 스트림으로 '분열'시킵니다. 재밌는 건, 빠르게 말하면 주파수가 같아도 강제로 분리된다는 거예요."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 07</div>
+            <p>주파수로 분리된다면, 물리적으로 소리가 오는 방향도 도움이 될까?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 07 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">07</span>
+        <span class="slide-title">모노 vs 양이(Dichotic) 청취</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-07.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Monaural (모노 청취)</span> = 두 귀에 같은 소리. 정면에서 두 명이 동시에 말하는 상황. 필터링 매우 어려움.</li>
+              <li><span class="term">Dichotic (양이 청취)</span> = 좌우 귀에 다른 소리. 한쪽에서 팀장, 다른 쪽에서 동료. 공간 분리로 필터링 쉬움.</li>
+            </ul>
+          </div>
+          <div class="oneliner">사무실에서 팀장이 왼쪽, 동료가 오른쪽에 있으면 분리 가능(양이). 둘 다 정면이면 혼란(모노).</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>왼쪽 모노 그림(두 화자 → 하나의 머리에 합쳐짐) → "정면 동시 발화 = 필터링 실패." 오른쪽 양이 그림(좌우 분리) → "공간적으로 분리되면 스트림이 형성되어 필터링 성공."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"사무실 회의에서 정면에 앉은 두 명이 동시에 말하면 뒤섞입니다. 이게 모노입니다. 하지만 한 명이 왼쪽, 한 명이 오른쪽에 있으면? 좌우 귀가 다른 소리를 받아서 분리가 쉬워져요. 이게 양이 청취, 공간 분리의 힘입니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 08</div>
+            <p>자연적 공간 분리가 있다면, 기술로 인위적으로 3D 공간을 만들면 더 좋아지지 않을까?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 08 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">08</span>
+        <span class="slide-title">3D 오디오와 360° 공간 주의 유도</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-08.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">3D 오디오 / Spatial Audio</span> = 스테레오 헤드폰으로 360° 공간에 소리를 배치하는 기술. 조종석에서 엔진 경고가 "왼쪽 뒤"에서 들리게.</li>
+              <li><span class="term">이동형 경고 궤적</span> = 경고음이 좌→우로 이동하며 제시. 주의 산만 최소화.</li>
+            </ul>
+          </div>
+          <div class="oneliner">신입사원에게 팀장 메시지는 "왼쪽"에서, 시스템 알림은 "위"에서 들리면 혼란 감소 — 3D 오디오</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>360° 구체 그림에서 "엔진 고장 경고(좌측 후방)" 가리키며 → "실제 고장 위치에서 소리가 납니다." "관제탑(정면)" → "시각적으로 안 보이는 뒤쪽도 소리로 방향을 알려줍니다." 오른쪽 "주의 전환의 즉각성" → "청각은 시각과 달리 거리에 상관없이 즉각 전환됩니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"사무실에 3D 오디오를 적용하면 어떻게 될까요? 팀장 알림은 왼쪽에서, 메일 알림은 오른쪽에서, 긴급 경고는 위에서 들립니다. 눈을 돌리지 않아도 '어디서 온 정보인지' 즉각 알 수 있어요. 시각적 주의(IAE)와 달리, 청각적 주의 전환은 거리와 무관하게 즉각적입니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 09</div>
+            <p>청각이 이렇게 강력하다면, 시각과 합쳐지면 어떻게 되나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 09 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">09</span>
+        <span class="slide-title">교차 양상(Cross-Modality) 주의 통합</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-09.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Sensory Integration</span> = 시각+청각+촉각이 하나로 통합되는 프로세스. 뇌가 동일 공간 지점의 감각을 합침.</li>
+              <li><span class="term">Redundant Coding (중복 코딩)</span> = 같은 정보를 여러 감각으로 동시 전달. 경고를 소리+빨간 불+진동으로 동시에.</li>
+              <li><span class="term">Obligatory (의무적 연결)</span> = 소리가 나면 자동으로 그쪽을 보게 됨. 의식적 통제 불가. 자석 효과.</li>
+            </ul>
+          </div>
+          <div class="oneliner">사무실에서 "팀장님!" 소리 → 자동으로 고개 돌림 = 의무적 연결. 소리가 시각을 강제로 끌어감.</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>중앙 구체(Common Spatial Point) 가리키며 → "시각, 청각, 촉각이 같은 공간 지점에서 만나면 통합됩니다." 빨간 화살표(의무적 강제 견인) → "소리가 시선을 강제로 끌어갑니다 — 의지와 무관합니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"사무실에서 누가 '팀장님!' 하고 부르면, 팀장은 의지와 상관없이 고개를 돌립니다. 이게 의무적 연결이에요. 청각 경고가 시각적 주의를 강제로 끌어가는 자석 효과입니다. 그래서 중요한 경고를 설계할 때, 소리+화면+진동을 동시에 쓰면 놓칠 확률이 비약적으로 줄어듭니다."</p>
+          </div>
+          <div class="prof-toss">
+            <div class="prof-label">교수 토스</div>
+            <p>"교차 양상 통합의 신경과학적 메커니즘에 대해 교수님께서 보충해주실 겁니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; Act 3</div>
+            <p>귀의 필터링 능력과 기술을 배웠는데, 그렇다면 왜 사무실 소음은 여전히 문제인가? 필터링이 안 되는 소리가 있나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACT 3 -->
+    <div class="act">
+      <div class="act-num">Act 3</div>
+      <div class="act-title">소음과의 전쟁 — 피할 수 없는 방해와 설계의 타협</div>
+      <div class="act-sub">무관음 효과, 음향 변동성, 탈습관화, 음향 설계, 음악 트레이드오프, 프라이버시 딜레마</div>
+    </div>
+
+    <!-- SLIDE 10 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">10</span>
+        <span class="slide-title">무관음 효과(ISE)의 파괴력</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-10.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">ISE (Irrelevant Sound Effect)</span> = 무관한 배경 소음이 인지 수행을 최대 60%까지 파괴하는 현상. 무시하려 해도 안 됨.</li>
+              <li><span class="term">순서 유지(Maintenance of Order)</span> = 전화번호 외우기, 암산 같은 순서가 중요한 작업. ISE에 가장 취약.</li>
+            </ul>
+          </div>
+          <div class="oneliner">신입사원이 전화번호를 외우는데 옆 동료 대화가 들리면 → 수행 능력 60% 파괴. 무시 불가.</div>
+          <div class="graph-guide">
+            <div class="graph-label">그래프 읽기</div>
+            <p>왼쪽 작업 기억 블록 1-2-3-4-5(순서 유지) → 오른쪽에서 빨간 파형(무관한 외부 소음)이 충돌 → 블록이 깨짐. "60% 파괴"가 핵심 수치.</p>
+          </div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>왼쪽 "주의 포착의 양날의 검" → "귀가 항상 열려있는 특성(Act 1)이 여기서 독이 됩니다." 블록이 깨지는 이미지 → "순서 기억이 가장 심하게 타격받습니다." "60%" 수치 강조.</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"Act 1에서 귀는 닫을 수 없다고 했죠? 여기서 그게 독이 됩니다. 신입사원이 전화번호를 외우는데, 옆에서 동료가 전화하면 — 무시하려 해도 안 됩니다. 수행 능력이 최대 60%까지 떨어져요. 이게 무관음 효과입니다. 특히 순서를 기억해야 하는 작업에 치명적이에요."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 11</div>
+            <p>60%나 파괴된다면, 소리의 어떤 특성이 이렇게 강한 방해를 만드나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 11 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">11</span>
+        <span class="slide-title">음향적 변화량과 인지 처리 중단</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-11.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Acoustic Variation (음향적 변동성)</span> = 소리의 음높이, 크기, 리듬이 변하는 정도. 핵심: 볼륨이 아니라 변동성이 방해의 원인.</li>
+              <li><span class="term">Disruption (끊김)</span> = 변동성 높은 소음(말소리)이 순차적 정보 처리 파이프라인을 물리적으로 끊는 현상.</li>
+            </ul>
+          </div>
+          <div class="oneliner">사무실 에어컨 소음(변동성 낮음) = 방해 안 됨. 동료 대화(변동성 극심) = 인지 파이프라인 끊김.</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>위쪽(평탄한 배경음 → 매끄러운 파이프라인) → "에어컨, 선풍기는 괜찮습니다." 아래쪽(변동 심한 발화 → 파이프라인 끊김) → "사람 말소리가 최악입니다." Insight 1 → "볼륨이 아니라 변동성이 핵심." Insight 3 → "무시하려 해도 근본적으로 불가."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"에어컨 소리는 오래 들어도 괜찮은데, 동료 대화는 30초만 들어도 집중이 깨지죠? 볼륨은 비슷한데 왜 다를까요? 핵심은 '변동성'입니다. 에어컨은 항상 같은 소리(변동성 낮음), 대화는 음높이와 리듬이 계속 변합니다(변동성 극심). 이 변화가 뇌의 정보 처리 파이프라인을 물리적으로 끊습니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 12</div>
+            <p>그러면 오래 일하다 보면 소음에 적응(습관화)되지 않을까?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 12 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">12</span>
+        <span class="slide-title">소음 피해와 탈습관화 현상</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-12.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">Habituation (습관화)</span> = "익숙해지면 괜찮아질 거야"라는 믿음. 실제로는 소음의 파괴력은 감소하지 않음.</li>
+              <li><span class="term">Dishabituation (탈습관화)</span> = 미세한 습관화가 생겨도, 짧은 침묵 후 소음이 재개되면 파괴력이 완전히 리셋되는 현상.</li>
+            </ul>
+          </div>
+          <div class="oneliner">신입사원: "며칠 지나면 적응되겠지" → 틀림. 잠깐 조용했다가 다시 시끄러우면 리셋됨.</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>사무실 평면도에서 빨간 방사형(소음 전파) 가리키며 → "개방형 사무실의 소음은 전방위로 퍼집니다." 오른쪽 "적응의 환상 타파" 박스 → "핵심 메시지입니다. 적응은 일어나지 않아요." 세 번째 글머리 → "탈습관화 = 리셋."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"'나는 소음에 익숙해졌어'라고 말하는 사람 많죠? 연구 결과, 그건 환상입니다. 개방형 사무실에서 작업 수행 손실은 개인 사무실 대비 2배예요. 더 문제는 탈습관화입니다. 점심시간에 잠깐 조용했다가 오후에 다시 시끄러워지면? 파괴력이 완전히 리셋돼요. 매일 처음부터 다시 당하는 겁니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 13</div>
+            <p>적응이 안 된다면, 공학적으로 소음을 줄이는 방법은 뭐가 있나?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 13 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">13</span>
+        <span class="slide-title">소음 변동성 통제를 위한 음향 설계</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-13.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">White Noise Masking</span> = 지속적 백색 소음으로 배경 발화를 물리적으로 덮어씌우는 방법. 변동성 있는 말소리를 균일한 소음으로 마스킹.</li>
+              <li><span class="term">Sound-absorbing (흡음재)</span> = 천장/칸막이에 다공성 소재를 설치하여 잔향 시간을 줄이고 말소리 명료도를 떨어뜨리는 방법.</li>
+            </ul>
+          </div>
+          <div class="oneliner">사무실 소음 해결의 핵심 = 볼륨을 줄이는 게 아니라 "변동성"을 줄이는 것</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>파란 마스킹 바 가리키며 → "백색 소음이 배경 발화를 덮어씌웁니다." 흡음 패널 → "천장에 이걸 설치하면 말소리가 퍼지지 않아요." 왼쪽 "설계 목표" 박스 → "핵심: 데시벨이 아니라 변동성 축소가 목표."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"해결책은 두 가지입니다. 첫째, 백색 소음 — '쉬이이이' 하는 균일한 소리를 깔면, 동료 대화가 물리적으로 묻힙니다. 변동성이 사라지니까요. 둘째, 흡음재 — 천장에 소리를 흡수하는 패널을 달면 대화가 멀리 퍼지지 않습니다. 핵심은 볼륨을 줄이는 게 아니라 '변동성'을 줄이는 겁니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 14</div>
+            <p>백색 소음 대신 음악을 들으면 안 될까? 사람들은 백색 소음보다 음악을 선호하는데...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 14 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">14</span>
+        <span class="slide-title">음악 선호도 vs 인지 수행 트레이드오프</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-14.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">인간 공학적 모순</span> = 음악 청취 시 만족도/선호도는 올라가는데, 순서 유지 작업의 인지 수행은 떨어지는 현상. 사용자가 해로운 환경을 오히려 선호.</li>
+              <li><span class="term">순서 의존도 분석</span> = 음악의 방해 정도는 작업 종류에 따라 다름. 순서 중요한 작업(코딩, 암산) = 방해됨. 읽기 이해 = 방해 안 됨.</li>
+            </ul>
+          </div>
+          <div class="oneliner">신입사원: "음악 들으면서 일하면 좋아요!" → 기분은 좋지만 순서 기억 작업의 실수는 늘어남. 모순.</div>
+          <div class="graph-guide">
+            <div class="graph-label">그래프 읽기</div>
+            <p>X축 = 음악 청취 활성화, Y축(파랑↗) = 선호도/만족도 상승, Y축(빨강↘) = 인지 수행 하락. 빨간 원(교차점) = 인간 공학적 모순점. 이 교차점이 설계자의 딜레마.</p>
+          </div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>빨간 교차점 가리키며 → "여기가 모순점입니다. 기분은 좋아지는데 실수는 늘어납니다." 오른쪽 "작업 성격에 따른 분석" → "순서가 필요한 코딩 = 음악 금지, 단순 읽기 = 음악 괜찮음."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"사무실에서 이어폰 끼고 음악 듣는 분 많죠? 만족도는 올라갑니다. 하지만 코딩이나 계산처럼 순서가 중요한 작업에서는 실수가 늘어요. 이게 인간 공학적 모순입니다 — 해로운 환경을 사용자가 오히려 선호하는 거예요. 그래서 음향 설계 전에 '이 업무가 순서 의존적인가?'를 먼저 분석해야 합니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; 15</div>
+            <p>결국 사무실 음향 설계의 최종 난제는 뭘까?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 15 -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">15</span>
+        <span class="slide-title">프라이버시 vs 명료도 딜레마</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <img class="slide-img" src="slides/slide-15.png" loading="lazy">
+        </div>
+        <div class="slide-notes">
+          <div class="glossary">
+            <div class="glossary-label">용어 사전</div>
+            <ul>
+              <li><span class="term">소음 프라이버시</span> = 배경 소음을 차단하여 개인의 인지 집중을 보호하는 것. 마스킹+흡음재.</li>
+              <li><span class="term">음성 명료도 (Speech Intelligibility)</span> = 동료 간 의사소통 시 명확하게 들리는 환경. 소리가 잘 전달되어야 함.</li>
+              <li><span class="term">Competing Goals</span> = 두 목표의 완벽한 동시 충족은 물리적으로 불가능. 타협과 절충이 필수.</li>
+            </ul>
+          </div>
+          <div class="oneliner">소음 차단(집중) ↔ 소리 전달(소통) — 사무실 음향의 궁극적 딜레마. 양쪽 다 완벽은 불가.</div>
+          <div class="pointing">
+            <div class="pointing-label">포인팅 가이드</div>
+            <p>저울 왼쪽(소음 프라이버시/칸막이) → "소음을 차단하면 집중은 좋지만..." 저울 오른쪽(음성 명료도/협업 공간) → "동료와 대화가 안 됩니다." 아래 박스 → "'완벽한 차단'과 '완벽한 전달'은 공존 불가, 설계자는 반드시 타협해야 합니다."</p>
+          </div>
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"결국 사무실 음향 설계의 궁극적 딜레마입니다. 소음을 완벽히 차단하면 집중은 좋지만 동료와 대화가 안 됩니다. 소리를 잘 전달하면 소통은 좋지만 집중이 깨져요. 이 두 목표의 '완벽한 동시 충족'은 물리적으로 불가능합니다. 설계자는 시스템의 목적에 따라 타협점을 찾아야 합니다."</p>
+          </div>
+          <div class="bridge">
+            <div class="bridge-label">Bridge &rarr; END</div>
+            <p>처음에 던진 질문으로 돌아가 봅시다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE END: OUTRO -->
+    <div class="slide">
+      <div class="slide-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="slide-num">END</span>
+        <span class="slide-title">What I Learned</span>
+        <span class="slide-toggle">&#9654;</span>
+      </div>
+      <div class="slide-body">
+        <div class="slide-visual">
+          <div class="story-card outro">
+            <p class="story-callback">처음에 개방형 사무실 신입사원이 소음 속에서도 자기 이름은 바로 알아채지만, 음악을 들으며 일하면 실수가 늘어난다고 했습니다. 왜 귀가 이렇게 모순적인지 이제 답할 수 있습니다.</p>
+            <ul class="story-lessons">
+              <li><strong>Act 1:</strong> 귀는 360° 상시 수신 안테나라 닫을 수 없지만, 칵테일 파티 효과로 특정 소리를 골라들을 수 있습니다. 이름처럼 의미적 관련성이 높은 소리는 낮은 역치로 즉각 주의를 끕니다.</li>
+              <li><strong>Act 2:</strong> 뇌는 주파수 분리(스트리밍)와 공간 분리(3D 오디오)로 소리를 필터링하고, 시각+청각의 교차 양상 통합으로 정보를 중복 코딩합니다.</li>
+              <li><strong>Act 3:</strong> 하지만 무관음 효과는 필터링 불가능하고 수행을 60% 파괴합니다. 핵심 원인은 볼륨이 아니라 변동성이며, 적응(습관화)도 환상입니다. 음악은 기분만 좋게 할 뿐이고, 프라이버시와 명료도는 영원한 딜레마입니다.</li>
+            </ul>
+            <p class="story-closing">결국 좋은 사무실 음향 설계는 '변동성 통제(백색 소음+흡음재)' + '작업 분석(순서 의존도)' + '목적에 맞는 타협'의 조합입니다.</p>
+          </div>
+        </div>
+        <div class="slide-notes">
+          <div class="mic">
+            <div class="mic-label">발표 멘트</div>
+            <p>"처음에 신입사원이 왜 소음 속에서 이름은 듣고, 음악 들으면 실수하냐고 물었습니다. Act 1에서 — 귀는 닫을 수 없지만 칵테일 파티 효과로 골라들을 수 있다는 것, Act 2에서 — 주파수와 공간으로 분리하고 시각과 통합된다는 것, Act 3에서 — 그럼에도 무관음 효과는 막을 수 없고, 핵심은 볼륨이 아니라 변동성이라는 것을 배웠습니다. 사무실 설계의 답은 '완벽한 차단'이 아니라 '영리한 타협'입니다."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <img id="lightboxImg" src="" alt="">
+  </div>
+  <script>
+    document.addEventListener('click', e => {
+      const img = e.target.closest('.slide-img, .textbook-fig');
+      if (img) { const lb = document.getElementById('lightbox'); document.getElementById('lightboxImg').src = img.src; lb.classList.add('show'); }
+    });
+    document.getElementById('lightbox').addEventListener('click', () => { document.getElementById('lightbox').classList.remove('show'); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') document.getElementById('lightbox').classList.remove('show'); });
+  </script>
+</body>
+</html>
