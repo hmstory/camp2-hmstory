@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>피해자전담경찰 접수면담 챗봇 — 발표 기획</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0f0f;
+      --bg-card: #0f1a1a;
+      --bg-card2: #142222;
+      --text: #e8f4f4;
+      --text-sub: #7aa8a8;
+      --teal: #2dd4bf;
+      --gold: #f59e0b;
+      --gold-light: #fcd34d;
+      --red: #f87171;
+      --green: #34d399;
+      --border: #1e3535;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* ── 슬라이드 컨테이너 ── */
+    .deck { width: 100vw; height: 100vh; position: relative; }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 48px 64px;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .slide.active { display: flex; }
+    .slide.visible { opacity: 1; }
+
+    /* ── 공통 레이아웃 ── */
+    .slide-inner { width: 100%; max-width: 960px; }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      border: 1px solid var(--teal);
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.2;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    h2 {
+      font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .sub {
+      font-size: 1rem;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+    .link-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card2);
+      border: 1px solid var(--teal);
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 0.8rem;
+      color: var(--teal);
+      margin-top: 20px;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    /* ── 카드 / 테이블 ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+    .card.gold { border-color: var(--gold); }
+    .card.teal { border-color: var(--teal); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    th {
+      background: var(--bg-card2);
+      color: var(--teal);
+      font-weight: 700;
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── 배지 / 칩 ── */
+    .badge {
+      display: inline-block;
+      background: rgba(45,212,191,0.12);
+      color: var(--teal);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin: 3px 3px 3px 0;
+    }
+    .badge.gold {
+      background: rgba(245,158,11,0.12);
+      color: var(--gold);
+    }
+
+    /* ── 인용구 ── */
+    blockquote {
+      border-left: 3px solid var(--gold);
+      padding: 10px 16px;
+      background: rgba(245,158,11,0.06);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+      color: var(--gold-light);
+      line-height: 1.7;
+      margin: 12px 0;
+    }
+    blockquote cite {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      margin-top: 6px;
+      font-style: normal;
+    }
+
+    /* ── 흐름도 ── */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+    }
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+    }
+    .flow-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-card2);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      flex-shrink: 0;
+    }
+    .flow-dot.highlight {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: #000;
+      width: 40px;
+      height: 40px;
+      font-size: 0.8rem;
+    }
+    .flow-text { font-size: 0.9rem; color: var(--text-sub); }
+    .flow-text.highlight { color: var(--text); font-weight: 700; font-size: 1rem; }
+    .flow-arrow {
+      margin-left: 15px;
+      color: var(--border);
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: 2px 0;
+    }
+
+    /* ── 2컬럼 ── */
+    .cols { display: grid; gap: 16px; }
+    .cols-2 { grid-template-columns: 1fr 1fr; }
+    .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+    /* ── 하이라이트 박스 ── */
+    .highlight-box {
+      background: rgba(45,212,191,0.08);
+      border: 1px solid rgba(45,212,191,0.3);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+    .highlight-box .label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--teal);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    /* ── 슬라이드별 배경 강조 ── */
+    .slide-1 { background: radial-gradient(ellipse at 70% 30%, rgba(45,212,191,0.06) 0%, transparent 60%), var(--bg); }
+    .slide-2 { background: radial-gradient(ellipse at 30% 60%, rgba(245,158,11,0.05) 0%, transparent 60%), var(--bg); }
+
+    /* ── 네비게이션 ── */
+    .nav {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 100;
+    }
+    .nav-btn {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .nav-counter {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      min-width: 48px;
+      text-align: center;
+    }
+    .dots {
+      display: flex;
+      gap: 6px;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .dot.active { background: var(--teal); width: 18px; border-radius: 3px; }
+
+    /* ── 슬라이드 번호 (우상단) ── */
+    .slide-num-badge {
+      position: fixed;
+      top: 24px;
+      right: 32px;
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      z-index: 100;
+    }
+
+    @media (max-width: 768px) {
+      .slide { padding: 24px 20px; }
+      .cols-2, .cols-3 { grid-template-columns: 1fr; }
+      h1 { font-size: 1.6rem; }
+      h2 { font-size: 1.2rem; }
+      table { font-size: 0.78rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- ── SLIDE 1: 표지 ── -->
+  <div class="slide slide-1 active">
+    <div class="slide-inner">
+      <div class="tag">심리학기반 AI 수업 기획안</div>
+      <h1>피해자전담경찰<br>접수면담 챗봇</h1>
+      <p class="sub" style="font-size:1.1rem; margin-top:8px;">PFA 기반 위기개입 도구 설계</p>
+
+      <div style="margin-top: 32px; display:flex; gap:12px; flex-wrap:wrap;">
+        <span class="badge">EBT: PFA</span>
+        <span class="badge">OARS</span>
+        <span class="badge gold">서명희(2020) 근거</span>
+        <span class="badge gold">WHO(2011)</span>
+      </div>
+
+      <div style="margin-top:24px; font-size:0.85rem; color:var(--text-sub); line-height:2;">
+        연세대학교 심리이노베이션대학원 디지털 트랙<br>
+        <span style="color:var(--text);">김명덕 &nbsp;·&nbsp; 김성언 &nbsp;·&nbsp; 박연서 &nbsp;·&nbsp; 손지영 &nbsp;·&nbsp; 김형모</span>
+      </div>
+
+      <a class="link-box" href="https://hmstory.github.io/psycinno/psychology-ai/victim-police-bot-report-v2.html" target="_blank">
+        📄 리포트 전문 → victim-police-bot-report-v2.html
+      </a>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 2: 피해자전담경찰이란? ── -->
+  <div class="slide slide-2">
+    <div class="slide-inner">
+      <div class="tag">Background</div>
+      <h2>피해자전담경찰이란?</h2>
+
+      <div class="cols cols-2" style="margin-bottom:16px;">
+        <div class="card">
+          <div style="font-size:0.75rem; font-weight:700; color:var(--teal); margin-bottom:10px; letter-spacing:1px;">제13조 필수사건 의무 개입</div>
+          <div style="font-size:0.88rem; line-height:2;">
+            살인 &nbsp;·&nbsp; 강도 &nbsp;·&nbsp; 방화<br>
+            체포·감금 &nbsp;·&nbsp; 약취·유인<br>
+            중상해 <span style="color:var(--text-sub)">(2개월 이상)</span>
+          </div>
+        </div>
+        <div class="card gold">
+          <div style="font-size:0.75rem; font-weight:700; color:var(--gold); margin-bottom:10px; letter-spacing:1px;">심리학 전문성 요구</div>
+          <div style="font-size:0.85rem; line-height:1.8; color:var(--text-sub);">
+            2006년 4월 5일 —<br>
+            <span style="color:var(--text); font-weight:600;">심리학 분야 석사 이상</span> 학위 취득자를<br>
+            <span style="color:var(--gold-light); font-weight:700;">'피해자심리전문요원'</span>으로 채용<br>
+            <span style="font-size:0.75rem; color:var(--text-sub);">— 서명희(2020), p.8</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <div class="label">→ 이 수업과의 연결</div>
+        피해자 지원 시스템은 처음 설계부터 <strong>심리학 전문 역량</strong>을 전제로 구축됨.
+        그 도구를 <strong>AI로 만드는 것</strong>이 이 수업(심리학기반AI)의 정확한 맥락.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 3: 접수면담 위치 ── -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="tag">Service Design</div>
+      <h2>접수면담, 어디 위치하는가?</h2>
+
+      <div class="cols cols-2">
+        <div>
+          <div class="flow">
+            <div class="flow-step">
+              <div class="flow-dot">①</div>
+              <div class="flow-text">피해 발생</div>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+              <div class="flow-dot">②</div>
+              <div class="flow-text">112 신고</div>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+              <div class="flow-dot">③</div>
+              <div class="flow-text">KICS 입력<br><span style="font-size:0.75rem; color:var(--text-sub);">형사사법정보시스템</span></div>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+              <div class="flow-dot">④</div>
+              <div class="flow-text">전담경찰관 배정</div>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+              <div class="flow-dot highlight">★</div>
+              <div class="flow-text highlight">챗봇 PFA 사전면담<br><span style="color:var(--teal); font-size:0.8rem;">← 여기</span></div>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+              <div class="flow-dot">⑥</div>
+              <div class="flow-text">대면 면담</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <blockquote>
+            "전담경찰관은 KICS 입력 후에야 피해자를 인지한다"
+            <cite>— 서명희(2020), p.11</cite>
+          </blockquote>
+          <div class="highlight-box" style="background:rgba(245,158,11,0.06); border-color:rgba(245,158,11,0.3);">
+            <div class="label" style="color:var(--gold);">왜 이 위치인가?</div>
+            신고 전 → 트리거 없음<br>
+            신고 후~대면 전 → <strong>공백 구간</strong><br>
+            심리 안정화 개입 최적 시점
+          </div>
+          <div class="card" style="font-size:0.85rem;">
+            <div style="color:var(--teal); font-weight:700; margin-bottom:8px; font-size:0.75rem; letter-spacing:1px;">챗봇 역할 3가지</div>
+            1. 심리 안정화 (재피해 방지)<br>
+            2. 면담 준비 (리허설)<br>
+            3. 면담 요약서 자동 생성 → 전담경찰관 전달
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 4: EBT — PFA ── -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="tag">EBT</div>
+      <h2>근거기반치료: PFA (심리적 응급처치)</h2>
+
+      <div class="cols cols-2" style="margin-bottom:16px; gap:14px;">
+        <blockquote style="margin:0;">
+          "전문 심리치료가 아닌, 비전문가도 제공할 수 있는 초기 안정화 기법"
+          <cite>— WHO(2011). Psychological First Aid: Guide for Field Workers</cite>
+        </blockquote>
+        <div class="highlight-box" style="font-size:0.82rem;">
+          <div class="label">어디서 쓰이나?</div>
+          자연재해 · 테러 · 전쟁 등 <strong>대규모 재난 현장</strong>의 국제 표준 프로토콜.<br>
+          UN, WHO, 적십자 등이 전 세계 채택.<br>
+          군대 · 경찰 · 응급의료진 · 재난구호팀에서 활용.<br>
+          <span style="color:var(--teal); font-weight:600;">전문 심리 면허 없이도 적용 가능</span>한 것이 핵심 강점.
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>PFA 8대 핵심 활동</th>
+            <th>챗봇 턴</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>①</td><td>접촉 — 비침습적 첫 접근, 관계 형성</td><td style="color:var(--teal);">턴 1</td></tr>
+          <tr><td>②</td><td>안전 — 즉각적 안전 확인·확보</td><td style="color:var(--teal);">턴 1, 6</td></tr>
+          <tr><td>③</td><td>안정화 — 감정 수용, 심리적 진정</td><td style="color:var(--teal);">턴 2</td></tr>
+          <tr><td>④</td><td>정보수집 — 현재 필요와 걱정 파악</td><td style="color:var(--teal);">턴 3~5</td></tr>
+          <tr><td>⑤</td><td>실질적 도움 — 즉각적 필요 해결 지원</td><td style="color:var(--teal);">턴 7</td></tr>
+          <tr><td>⑥</td><td>사회적 지지 연결</td><td style="color:var(--teal);">턴 7</td></tr>
+          <tr><td>⑦</td><td>대처 정보 — 스트레스 대처법 안내</td><td style="color:var(--teal);">턴 7~8</td></tr>
+          <tr><td>⑧</td><td>후속 연계 — 전문기관·후속 지원 연결</td><td style="color:var(--teal);">턴 9~10</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 5: OARS ── -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="tag">Communication</div>
+      <h2>의사소통 기법: OARS</h2>
+
+      <div class="highlight-box" style="font-size:0.82rem; margin-bottom:16px;">
+        <div class="label">OARS란?</div>
+        Miller &amp; Rollnick이 개발한 <strong>동기강화상담(MI)</strong>의 핵심 의사소통 기법.
+        의료 · 상담 · 사회복지 · 코칭 전 분야에서 광범위하게 활용되는 국제 표준.
+        <span style="color:var(--teal); font-weight:600;">지시 없이 상대가 스스로 말하게 만드는</span> 비지시적 공감 대화법.
+      </div>
+
+      <div class="cols cols-2" style="gap:14px;">
+        <div class="card teal">
+          <div style="font-size:1.6rem; font-weight:900; color:var(--teal); margin-bottom:4px;">O</div>
+          <div style="font-weight:700; margin-bottom:6px;">Open Questions — 열린 질문</div>
+          <div style="font-size:0.83rem; color:var(--text-sub); line-height:1.6;">자기 말로 이야기하도록 유도</div>
+          <blockquote style="margin-top:10px; font-size:0.8rem;">"편하신 만큼 말씀해 주실 수 있을까요?"</blockquote>
+        </div>
+        <div class="card teal">
+          <div style="font-size:1.6rem; font-weight:900; color:var(--teal); margin-bottom:4px;">A</div>
+          <div style="font-weight:700; margin-bottom:6px;">Affirmation — 강점 인정</div>
+          <div style="font-size:0.83rem; color:var(--text-sub); line-height:1.6;">용기와 강점을 인정</div>
+          <blockquote style="margin-top:10px; font-size:0.8rem;">"신고해 주신 것만으로도 큰 용기를 내신 거예요"</blockquote>
+        </div>
+        <div class="card teal">
+          <div style="font-size:1.6rem; font-weight:900; color:var(--teal); margin-bottom:4px;">R</div>
+          <div style="font-weight:700; margin-bottom:6px;">Reflective Listening — 감정 반영</div>
+          <div style="font-size:0.83rem; color:var(--text-sub); line-height:1.6;">감정과 의미를 반영</div>
+          <blockquote style="margin-top:10px; font-size:0.8rem;">"얼마나 억울하고 황당하셨을지 짐작됩니다"</blockquote>
+        </div>
+        <div class="card teal">
+          <div style="font-size:1.6rem; font-weight:900; color:var(--teal); margin-bottom:4px;">S</div>
+          <div style="font-weight:700; margin-bottom:6px;">Summarizing — 요약 정리</div>
+          <div style="font-size:0.83rem; color:var(--text-sub); line-height:1.6;">대화 내용 정리 → 면담 요약서</div>
+          <blockquote style="margin-top:10px; font-size:0.8rem;">"지금까지 말씀해 주신 내용을 정리하면..."</blockquote>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 6: 논문 근거 ── -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="tag">References</div>
+      <h2>논문 근거</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>논문 / 기관</th>
+            <th>적용</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span style="color:var(--gold-light); font-weight:700;">서명희(2020)</span><br>
+              <span style="color:var(--text-sub); font-size:0.78rem;">경찰의 피해자 위기개입에 관한 연구. 경남대 석사논문</span>
+            </td>
+            <td>전담경찰관 법적 근거(p.8) · KICS 진입점(p.11) · 사전정보 부족 문제(p.45~46)</td>
+          </tr>
+          <tr>
+            <td>
+              <span style="color:var(--gold-light); font-weight:700;">WHO(2011)</span><br>
+              <span style="color:var(--text-sub); font-size:0.78rem;">Psychological First Aid: Guide for Field Workers</span>
+            </td>
+            <td>PFA 8대 핵심 활동 · 5대 원칙</td>
+          </tr>
+          <tr>
+            <td>
+              <span style="color:var(--gold-light); font-weight:700;">NCTSN & NCPTSD(2006)</span><br>
+              <span style="color:var(--text-sub); font-size:0.78rem;">PFA Field Operations Guide (2nd ed.)</span>
+            </td>
+            <td>PFA 현장 적용 프로토콜</td>
+          </tr>
+          <tr>
+            <td>
+              <span style="color:var(--gold-light); font-weight:700;">Gilliland & James(2013)</span><br>
+              <span style="color:var(--text-sub); font-size:0.78rem;">Crisis Intervention Strategies (7th ed.). Brooks/Cole</span>
+            </td>
+            <td>6단계 위기개입 모형</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 7: 마무리 ── -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="tag">Summary</div>
+      <h2>마무리</h2>
+
+      <blockquote style="font-size:1rem; margin-bottom:24px;">
+        "치료인 척 하지 않는 정직한 위기개입 도구 —<br>
+        심리 안정화, 정보 수집, 연계까지 <strong style="color:var(--teal);">10턴으로 완결</strong>"
+      </blockquote>
+
+      <div class="cols cols-2" style="margin-bottom:20px;">
+        <div class="card">
+          <div style="font-size:0.75rem; font-weight:700; color:var(--teal); margin-bottom:8px; letter-spacing:1px;">설계 구조</div>
+          <div style="font-size:0.85rem; line-height:1.9; color:var(--text-sub);">
+            EBT <span style="color:var(--text);">PFA 8대 활동</span> 전부 매핑<br>
+            의사소통 기법 <span style="color:var(--text);">OARS</span> 적용<br>
+            총 <span style="color:var(--text);">10턴 · 약 10~15분</span>
+          </div>
+        </div>
+        <div class="card gold">
+          <div style="font-size:0.75rem; font-weight:700; color:var(--gold); margin-bottom:8px; letter-spacing:1px;">테스트 페르소나</div>
+          <div style="font-size:0.85rem; line-height:1.9; color:var(--text-sub);">
+            <span style="color:var(--text);">이정훈(43세, 배달 기사)</span><br>
+            흉기 위협 강도 — 제13조 필수사건<br>
+            PFA 8대 활동 전 항목 통과
+          </div>
+        </div>
+      </div>
+
+      <a class="link-box" href="https://hmstory.github.io/psycinno/psychology-ai/victim-police-bot-report-v2.html" target="_blank">
+        📄 리포트 전문 → hmstory.github.io/psycinno/psychology-ai/victim-police-bot-report-v2.html
+      </a>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- 슬라이드 번호 -->
+<div class="slide-num-badge" id="slideNum">1 / 7</div>
+
+<!-- 네비게이션 -->
+<div class="nav">
+  <button class="nav-btn" id="prevBtn" onclick="move(-1)">&#8592;</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="nextBtn" onclick="move(1)">&#8594;</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  const numEl  = document.getElementById('slideNum');
+  let cur = 0;
+
+  // 점 생성
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[cur].classList.remove('visible');
+    setTimeout(() => {
+      slides[cur].classList.remove('active');
+      cur = (n + slides.length) % slides.length;
+      slides[cur].classList.add('active');
+      requestAnimationFrame(() => slides[cur].classList.add('visible'));
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+      numEl.textContent = (cur + 1) + ' / ' + slides.length;
+    }, 200);
+  }
+
+  function move(dir) { goTo(cur + dir); }
+
+  // 키보드
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); move(1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp') { e.preventDefault(); move(-1); }
+  });
+
+  // 터치 스와이프
+  let tx = 0;
+  document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+  document.addEventListener('touchend',   e => {
+    const dx = tx - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 40) move(dx > 0 ? 1 : -1);
+  });
+
+  // 첫 슬라이드 표시
+  requestAnimationFrame(() => slides[0].classList.add('visible'));
+</script>
+</body>
+</html>
