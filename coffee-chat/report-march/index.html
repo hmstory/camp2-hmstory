@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3월 커피챗 회의 보고서</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #fafaf9;
+      --bg-card: #ffffff;
+      --text: #1c1917;
+      --text-sub: #57534e;
+      --border: #e7e5e4;
+      --accent: #0d9488;
+      --accent-warm: #0f766e;
+      --accent-bg: rgba(13, 148, 136, 0.06);
+      --red: #dc2626;
+      --red-bg: rgba(220, 38, 38, 0.04);
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .report {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 60px 40px 80px;
+    }
+
+    /* Header */
+    .report-header {
+      text-align: center;
+      padding-bottom: 32px;
+      border-bottom: 2px solid var(--text);
+      margin-bottom: 40px;
+    }
+
+    .report-header .org {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+
+    .report-header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .report-header .meta {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.8;
+    }
+
+    /* Sections */
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .section-subtitle {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 20px 0 10px;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: var(--text-sub);
+    }
+
+    /* Key decision box */
+    .decision-box {
+      background: var(--accent-bg);
+      border: 1px solid rgba(13, 148, 136, 0.2);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+    }
+
+    .decision-box .label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .decision-box h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .decision-box p {
+      color: var(--text-sub);
+      margin-bottom: 0;
+    }
+
+    /* Flow diagram */
+    .flow {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin: 24px 0;
+    }
+
+    .flow-box {
+      flex: 1;
+      padding: 16px 18px;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    .flow-box.as-is {
+      background: var(--red-bg);
+      border: 1px solid rgba(220, 38, 38, 0.15);
+    }
+
+    .flow-box.action {
+      background: var(--accent-bg);
+      border: 1px solid rgba(13, 148, 136, 0.2);
+    }
+
+    .flow-box.to-be {
+      background: var(--accent-bg);
+      border: 1px solid rgba(13, 148, 136, 0.3);
+    }
+
+    .flow-box .flow-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+    }
+
+    .flow-box.as-is .flow-label { color: var(--red); }
+    .flow-box.action .flow-label { color: var(--accent); }
+    .flow-box.to-be .flow-label { color: var(--accent-warm); }
+
+    .flow-box .flow-body {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.6;
+    }
+
+    .flow-box.to-be .flow-body {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      font-size: 18px;
+      color: var(--accent);
+    }
+
+    /* Problem list */
+    .problem-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+
+    .problem-table th {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .problem-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--text-sub);
+    }
+
+    .problem-table td:first-child {
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      width: 180px;
+    }
+
+    /* Good / Pain cards */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+
+    .col-card {
+      padding: 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .col-card.good {
+      background: var(--accent-bg);
+      border: 1px solid rgba(13, 148, 136, 0.15);
+    }
+
+    .col-card.pain {
+      background: var(--red-bg);
+      border: 1px solid rgba(220, 38, 38, 0.1);
+    }
+
+    .col-card .col-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+    }
+
+    .col-card.good .col-label { color: var(--accent); }
+    .col-card.pain .col-label { color: var(--red); }
+
+    .col-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .col-card li {
+      padding-left: 16px;
+      position: relative;
+      margin-bottom: 6px;
+      color: var(--text-sub);
+    }
+
+    .col-card li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+
+    .col-card.good li::before { background: var(--accent); }
+    .col-card.pain li::before { background: var(--red); }
+
+    .col-card li strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Bullet list */
+    .bullet-list {
+      list-style: none;
+      padding: 0;
+      margin: 12px 0;
+    }
+
+    .bullet-list li {
+      padding-left: 18px;
+      position: relative;
+      margin-bottom: 8px;
+      color: var(--text-sub);
+    }
+
+    .bullet-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .bullet-list li strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Action table */
+    .action-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+
+    .action-table th {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-warm);
+    }
+
+    .action-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--text-sub);
+    }
+
+    .action-table td:first-child {
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      width: 140px;
+    }
+
+    /* CTA box */
+    .cta-box {
+      background: var(--accent-bg);
+      border: 1px solid rgba(13, 148, 136, 0.2);
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin: 24px 0;
+      text-align: center;
+    }
+
+    .cta-box h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .cta-dates {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .cta-date {
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 700;
+      background: white;
+      border: 1px solid rgba(13, 148, 136, 0.3);
+      color: var(--accent-warm);
+    }
+
+    .cta-box p {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
+
+    /* Footer */
+    .report-footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: #a8a29e;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    /* Page Nav */
+    .page-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px 20px;
+      background: rgba(250, 250, 249, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-nav a {
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-sub);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .page-nav a:hover {
+      background: rgba(13, 148, 136, 0.08);
+      color: var(--accent);
+    }
+
+    .page-nav a.current {
+      background: var(--accent);
+      color: white;
+    }
+
+    .report { padding-top: 80px; }
+
+    /* Print */
+    @media print {
+      body { font-size: 12px; }
+      .report { padding: 20px; max-width: 100%; }
+      .flow { gap: 0; }
+      .two-col { gap: 12px; }
+      .cta-box, .decision-box, .col-card { break-inside: avoid; }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .report { padding: 32px 20px 60px; }
+      .report-header h1 { font-size: 22px; }
+      .two-col { grid-template-columns: 1fr; }
+      .flow { flex-direction: column; align-items: center; }
+      .flow-arrow { transform: rotate(90deg); padding: 4px 0; }
+      .flow-box { width: 100%; }
+      .problem-table td:first-child { white-space: normal; width: auto; }
+      .cta-dates { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="page-nav">
+    <a href="../offline-march/">3월 커피챗 공지</a>
+    <a href="../minutes-march/">3월 커피챗 회의록</a>
+    <a href="./" class="current">보고서</a>
+  </nav>
+
+  <div class="report">
+
+    <!-- Header -->
+    <div class="report-header">
+      <div class="org">연세대학교 심리과학이노베이션대학원 디지털 혁신트랙</div>
+      <h1>먼슬리 커피챗 3월 회의 보고서</h1>
+      <div class="meta">
+        일시: 2026. 03. 29. | 장소: 오프라인<br>
+        참석자: 김성언, 오경민, 이태석, 임수연, 김형모, 김선우, 이지민, 조휘연 (8명, 1·2·3기 합석)<br>
+        작성: 김형모
+      </div>
+    </div>
+
+    <!-- 1. 핵심 결정 -->
+    <div class="section">
+      <div class="section-title"><span class="num">1</span> 핵심 결정</div>
+
+      <div class="decision-box">
+        <div class="label">KEY DECISION</div>
+        <h2>피칭데이 개최</h2>
+        <p>4월 24·25·26일 중 하루, 각자 진행 중이거나 관심 있는 프로젝트를 발표하는 피칭데이를 개최하기로 결정했습니다.</p>
+      </div>
+
+      <div class="flow">
+        <div class="flow-box as-is">
+          <div class="flow-label">AS IS</div>
+          <div class="flow-body">구조도 없고<br>서로도 모르고<br>채널도 없다</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-box action">
+          <div class="flow-label">PITCHING DAY</div>
+          <div class="flow-body">서로 보여주고<br>피드백하고<br>건의사항 모으기</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-box to-be">
+          <div class="flow-label">TO BE</div>
+          <div class="flow-body">각자 하나의 결과물을<br>만들어 나가는 환경을<br>직접 만든다</div>
+        </div>
+      </div>
+
+      <p>피칭데이는 <strong>서로 알기</strong>, <strong>협업·팀 탐색</strong>, <strong>학교 건의 근거 수집</strong>의 세 가지 목적을 동시에 달성하기 위한 수단으로 채택되었습니다. 탑다운 지원을 기다리기보다 바텀업으로 직접 움직이자는 공감대가 배경입니다.</p>
+    </div>
+
+    <!-- 2. AS IS -->
+    <div class="section">
+      <div class="section-title"><span class="num">2</span> 현황 진단 (AS IS)</div>
+      <p>1·2·3기가 함께 현재 트랙의 문제를 공유한 결과, 아래 7가지 공통 이슈가 확인되었습니다.</p>
+
+      <table class="problem-table">
+        <thead>
+          <tr>
+            <th>문제</th>
+            <th>내용</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>논문·프로젝트 구조 없음</td>
+            <td>뭘 해야 졸업하는 건지 모르겠다는 의견이 기수 불문 공통으로 나옴</td>
+          </tr>
+          <tr>
+            <td>서로가 서로를 모름</td>
+            <td>기수 불문, 각자 무슨 프로젝트를 하는지 알 방법이 없음. 행정대학원은 입학 시 동문 DB가 바로 제공되는 것과 대비됨</td>
+          </tr>
+          <tr>
+            <td>협업 창구 없음</td>
+            <td>프로젝트를 하고 싶어도 누구에게 말해야 할지 모름</td>
+          </tr>
+          <tr>
+            <td>교수님 1명</td>
+            <td>트랙 전체를 정경미 교수님 한 분이 담당하여 방향이 좁아지는 구조</td>
+          </tr>
+          <tr>
+            <td>논문 없는 졸업 문화</td>
+            <td>연세대는 학부도 특수대학원도 졸업논문 없이 나오는 경우가 많음. 우리 트랙만의 문제가 아니지만, 그래서 졸업 시 손에 남는 결과물이 없다는 문제가 더 커짐</td>
+          </tr>
+          <tr>
+            <td>학비 대비 지원 부재</td>
+            <td>행정대학원보다 학비가 높은데도 동문 DB, 앱 등 인프라 지원이 전혀 없음</td>
+          </tr>
+          <tr>
+            <td>건의 채널 불명확</td>
+            <td>학교에 말하고 싶어도 누구에게 가야 할지 모름</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 3. 1·2기 회고 -->
+    <div class="section">
+      <div class="section-title"><span class="num">3</span> 1·2기 회고</div>
+      <p>1·2기 재학생들이 지난 학기까지의 경험을 돌아본 결과입니다.</p>
+
+      <div class="two-col">
+        <div class="col-card good">
+          <div class="col-label">GOOD</div>
+          <ul>
+            <li><strong>소수 정예 토론식 수업</strong> — 교수님과 직접 소통 가능했던 초기 분위기</li>
+            <li><strong>가족 같은 분위기</strong> — 종강 후에도 교수님들이 끝까지 남아 이야기</li>
+            <li><strong>IT+심리 융합</strong> 지향점 자체는 명확하고 좋았음</li>
+            <li><strong>현업 적용 사례</strong> — AI 툴, 뇌파 프로젝트, 교수님 컨퍼런스 섭외 등</li>
+          </ul>
+        </div>
+        <div class="col-card pain">
+          <div class="col-label">PAIN POINT</div>
+          <ul>
+            <li><strong>졸업 후 불명확</strong> — 논문도 없고 프로젝트 구조도 없음</li>
+            <li><strong>과목 중복</strong> — 차별성 부족, 비슷한 내용 반복 수강 느낌</li>
+            <li><strong>건의 채널 부재</strong> — 누구에게 말해야 할지 모름</li>
+            <li><strong>선배 없음</strong> — 참고할 롤모델이 없음</li>
+            <li><strong>교수님 1명</strong> — 방향이 좁아지는 구조</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 3기 입학 기대 -->
+    <div class="section">
+      <div class="section-title"><span class="num">4</span> 3기 입학 기대</div>
+      <p>이번 학기 입학한 3기 학생들이 공유한 입학 동기와 기대입니다.</p>
+      <ul class="bullet-list">
+        <li>현업의 막막함에 대한 <strong>돌파구</strong>를 찾아 온 경우가 많음</li>
+        <li>다양한 배경을 가진 사람들과 <strong>교류하며 인사이트</strong>를 얻고 싶었음</li>
+        <li>프로젝트, 서비스, 책 등 <strong>하나 내고 졸업하고 싶은 욕구</strong></li>
+        <li>구체적인 목표보다는 <strong>기대와 불안이 공존</strong>하는 상태로 입학한 경우도 있음</li>
+      </ul>
+    </div>
+
+    <!-- 5. 넥스트 액션 -->
+    <div class="section">
+      <div class="section-title"><span class="num">5</span> 넥스트 액션</div>
+
+      <table class="action-table">
+        <thead>
+          <tr>
+            <th>항목</th>
+            <th>내용</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>피칭데이 일정</td>
+            <td>4월 24·25·26일 중 후보 날짜 공지 예정 (중간고사 4/24 이후)</td>
+          </tr>
+          <tr>
+            <td>참가 형식</td>
+            <td>현재 진행 중이거나 관심 있는 프로젝트를 발표</td>
+          </tr>
+          <tr>
+            <td>이후 단계</td>
+            <td>피칭 결과 정리 &rarr; 학교 지원 필요사항 취합 &rarr; 부원장 이도준 교수님·정경미 교수님 미팅</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="cta-box">
+        <h3>참석 가능한 날짜를 투표해 주세요</h3>
+        <div class="cta-dates">
+          <span class="cta-date">4. 24 (금)</span>
+          <span class="cta-date">4. 25 (토)</span>
+          <span class="cta-date">4. 26 (일)</span>
+        </div>
+        <p><strong>어떤 프로젝트도 좋습니다.</strong> 지금 가장 열정을 쏟고 있는 일을 공유해 주세요.</p>
+        <p>당장 할 게 없어도 괜찮습니다. <strong>다른 사람들이 어떤 걸 하고 있는지 보기만 해도</strong> 충분히 의미 있습니다.</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="report-footer">
+      먼슬리 커피챗 · 2026. 03<br>
+      본 보고서는 Claude를 활용하여 작성되었습니다.
+    </div>
+
+  </div>
+</body>
+</html>
