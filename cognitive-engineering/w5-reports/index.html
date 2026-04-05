@@ -298,6 +298,24 @@
       margin-right: 4px;
     }
 
+    /* Term links */
+    .term-link {
+      color: var(--accent-soft);
+      text-decoration: none;
+      border-bottom: 1px dashed var(--accent-soft);
+      cursor: help;
+      transition: background 0.15s;
+    }
+    .term-link:hover {
+      background: var(--highlight-bg);
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    tr.term-highlight {
+      background: var(--highlight-bg) !important;
+      transition: background 1.5s ease-out;
+    }
+
     @media (max-width: 600px) {
       body { font-size: 16px; }
       .container { padding: 16px 12px 80px; }
@@ -347,6 +365,7 @@
         buildToc();
         renderMath();
         setupLightbox();
+        setupTermLinks();
       })
       .catch(() => {
         document.getElementById('content').innerHTML = '<p style="color:red;">Failed to load content.</p>';
@@ -407,6 +426,81 @@
       document.getElementById('lightboxClose').addEventListener('click', () => lb.classList.remove('show'));
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') lb.classList.remove('show');
+      });
+    }
+
+    function setupTermLinks() {
+      const content = document.getElementById('content');
+
+      // 1. "핵심 용어" h3 바로 아래 TABLE 찾기
+      let termTable = null;
+      content.querySelectorAll('h3').forEach(h3 => {
+        if (termTable) return;
+        if (h3.textContent.includes('핵심 용어')) {
+          let el = h3.nextElementSibling;
+          while (el && el.tagName !== 'TABLE') el = el.nextElementSibling;
+          if (el) termTable = el;
+        }
+      });
+      if (!termTable) return;
+
+      // 2. 각 행에 ID 부여 + 용어 추출 (첫 번째 <td>의 <strong> 텍스트)
+      const terms = [];
+      termTable.querySelectorAll('tbody tr').forEach((row, i) => {
+        const td = row.querySelector('td');
+        if (!td) return;
+        const strong = td.querySelector('strong');
+        const term = strong ? strong.textContent.trim() : td.textContent.trim().split(/[\s(]/)[0];
+        if (!term || term.length < 2) return;
+        const id = 'kterm-' + i;
+        row.id = id;
+        terms.push({ id, term });
+      });
+
+      // 긴 용어 먼저 매칭 (부분 치환 방지)
+      terms.sort((a, b) => b.term.length - a.term.length);
+
+      // 3. 합성 regex 빌드
+      const escaped = terms.map(t => t.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      const re = new RegExp(`(${escaped.join('|')})`, 'gi');
+
+      // 4. 텍스트 노드 순회하며 linkify
+      const SKIP = new Set(['A', 'CODE', 'PRE', 'SCRIPT', 'H1', 'H2', 'H3', 'H4']);
+
+      function processNode(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const val = node.nodeValue;
+          if (!val.trim() || !re.test(val)) return;
+          re.lastIndex = 0;
+          const html = val.replace(re, match => {
+            const t = terms.find(t => t.term.toLowerCase() === match.toLowerCase());
+            return t ? `<a href="#${t.id}" class="term-link">${match}</a>` : match;
+          });
+          if (html !== val) {
+            const span = document.createElement('span');
+            span.innerHTML = html;
+            node.parentNode.replaceChild(span, node);
+          }
+        } else if (node.nodeType === Node.ELEMENT_NODE && !SKIP.has(node.tagName)) {
+          if (termTable.contains(node)) return;
+          Array.from(node.childNodes).forEach(processNode);
+        }
+      }
+
+      content.querySelectorAll('p, li, blockquote').forEach(el => {
+        if (!termTable.contains(el)) processNode(el);
+      });
+
+      // 5. 클릭 시 해당 행으로 smooth scroll + 하이라이트
+      document.addEventListener('click', e => {
+        const link = e.target.closest('.term-link');
+        if (!link) return;
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (!target) return;
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        target.classList.add('term-highlight');
+        setTimeout(() => target.classList.remove('term-highlight'), 2000);
       });
     }
 
