@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 피해자지원 어시스턴트 — 행정안전부 공모전 제안서</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    background: #f0f0f0;
+    color: #1a1a1a;
+  }
+  .page {
+    max-width: 820px;
+    margin: 40px auto;
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 6px 32px rgba(0,0,0,0.13);
+  }
+
+  /* 헤더 */
+  .header {
+    background: linear-gradient(135deg, #c0392b 0%, #8e1f5e 60%, #5a1278 100%);
+    color: white;
+    padding: 44px 52px 36px;
+  }
+  .badge-row { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 20px;
+    padding: 4px 13px;
+    font-size: 12px;
+  }
+  .header h1 { font-size: 26px; font-weight: 800; line-height: 1.35; margin-bottom: 12px; }
+  .header h1 em { color: #FFD700; font-style: normal; }
+  .header .subtitle { font-size: 14px; opacity: 0.85; line-height: 1.7; }
+
+  /* 키워드 행 */
+  .kw-row {
+    display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;
+  }
+  .kw {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 12.5px;
+  }
+  .kw.expert { background: rgba(255,215,0,0.2); border-color: rgba(255,215,0,0.5); color: #FFD700; }
+
+  /* 본문 */
+  .body { padding: 44px 52px; }
+
+  /* 섹션 공통 */
+  .section { margin-bottom: 40px; }
+  .sec-head {
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 2px solid #8e1f5e;
+    padding-bottom: 8px; margin-bottom: 18px;
+  }
+  .sec-num {
+    background: #8e1f5e; color: white;
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .sec-head h2 { font-size: 16px; font-weight: 700; color: #8e1f5e; }
+
+  /* 문제정의 박스 */
+  .def-box {
+    background: #fff4f4;
+    border-left: 4px solid #c0392b;
+    border-radius: 0 8px 8px 0;
+    padding: 18px 22px;
+    font-size: 14.5px;
+    line-height: 1.9;
+  }
+  .def-box strong { color: #c0392b; }
+
+  /* 원인 카드 3개 */
+  .cause-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+  .cause-card {
+    border-radius: 10px;
+    border: 1px solid #e8c5e8;
+    padding: 18px 16px;
+    background: #fdf8ff;
+  }
+  .cause-label {
+    font-size: 11px; font-weight: 700;
+    color: #8e1f5e;
+    background: #f0d8f0;
+    display: inline-block;
+    padding: 2px 10px; border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .cause-title {
+    font-size: 13.5px; font-weight: 700;
+    color: #1a1a1a; margin-bottom: 8px;
+  }
+  .cause-card p {
+    font-size: 12.5px; color: #555; line-height: 1.75;
+  }
+
+  /* 해결책 — 3열 */
+  .solution-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .sol-card {
+    background: #f0f7ff;
+    border: 1px solid #b8d4f5;
+    border-radius: 10px;
+    padding: 18px 16px;
+  }
+  .sol-card .sol-tag {
+    font-size: 11px; font-weight: 700;
+    color: #1a5fcc;
+    background: #d0e6ff;
+    display: inline-block;
+    padding: 2px 10px; border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .sol-card .sol-title {
+    font-size: 13.5px; font-weight: 700;
+    color: #0d3d8a; margin-bottom: 8px;
+  }
+  .sol-card p {
+    font-size: 12.5px; color: #444; line-height: 1.75;
+  }
+  .sol-card .tech {
+    margin-top: 10px; font-size: 11.5px; color: #1a5fcc;
+    background: white; border-radius: 4px;
+    padding: 4px 8px; display: inline-block;
+    border: 1px solid #b8d4f5;
+  }
+
+  /* 서비스 흐름 */
+  .flow {
+    display: flex; align-items: stretch; gap: 0;
+    background: #f8f8f8; border-radius: 10px;
+    overflow: hidden; border: 1px solid #e0e0e0;
+  }
+  .flow-step {
+    flex: 1; text-align: center; padding: 14px 8px;
+    font-size: 12.5px; line-height: 1.5;
+    border-right: 1px solid #e0e0e0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .flow-step:last-child { border-right: none; }
+  .flow-step.hl {
+    background: #8e1f5e; color: white; font-weight: 700;
+  }
+  .flow-step .step-label {
+    font-size: 10px; opacity: 0.6; margin-bottom: 4px;
+  }
+  .flow-step.hl .step-label { opacity: 0.8; }
+
+  /* AI 기능 테이블 */
+  table {
+    width: 100%; border-collapse: collapse; font-size: 13.5px;
+  }
+  th {
+    background: #8e1f5e; color: white;
+    padding: 10px 14px; text-align: left; font-weight: 600;
+  }
+  th:first-child { border-radius: 8px 0 0 0; }
+  th:last-child { border-radius: 0 8px 0 0; }
+  td { padding: 10px 14px; border-bottom: 1px solid #eee; vertical-align: top; line-height: 1.65; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #fafafa; }
+
+  /* 기대효과 */
+  .effect-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .eff {
+    border-radius: 8px; padding: 16px 18px;
+    border-left: 3px solid #8e1f5e;
+    background: #fdf8ff;
+  }
+  .eff .eff-title {
+    font-size: 13px; font-weight: 700; color: #8e1f5e; margin-bottom: 6px;
+  }
+  .eff p { font-size: 13px; color: #555; line-height: 1.7; }
+
+  /* 차별화 */
+  .diff-box {
+    background: linear-gradient(135deg, #f5f0ff, #fff0f8);
+    border: 1px solid #d8b8e8; border-radius: 10px;
+    padding: 22px 26px;
+  }
+  .diff-box ul { list-style: none; font-size: 13.5px; line-height: 2.1; }
+  .diff-box ul li::before { content: '✓ '; color: #8e1f5e; font-weight: 700; }
+
+  /* 개인정보 */
+  .privacy-note {
+    background: #fffbea; border: 1px solid #f0d060;
+    border-radius: 8px; padding: 13px 18px;
+    font-size: 12.5px; color: #7a6000; line-height: 1.7;
+    margin-top: 14px;
+  }
+  .privacy-note strong { color: #b07000; }
+
+  /* 공모전 개요 박스 */
+  .contest-overview {
+    background: #1a1a2e;
+    color: #e8e8e8;
+    padding: 28px 52px;
+    border-top: 3px solid #FFD700;
+  }
+  .contest-overview .ov-title {
+    font-size: 13px; font-weight: 700;
+    color: #FFD700; margin-bottom: 16px;
+    letter-spacing: 0.05em;
+  }
+  .ov-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 32px;
+    font-size: 13px;
+  }
+  .ov-item { display: flex; gap: 10px; line-height: 1.6; }
+  .ov-item .ov-label {
+    color: #aaa; flex-shrink: 0; min-width: 72px;
+    font-size: 12px;
+  }
+  .ov-item .ov-value { color: #e8e8e8; }
+  .ov-item .ov-value strong { color: #FFD700; }
+  .deadline-alert {
+    margin-top: 14px;
+    background: rgba(255, 215, 0, 0.12);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #FFD700;
+    font-weight: 700;
+  }
+
+  .judge-table {
+    width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px;
+  }
+  .judge-table th {
+    background: #5a1278; color: white;
+    padding: 8px 12px; text-align: left; font-weight: 600;
+    font-size: 12.5px;
+  }
+  .judge-table th:first-child { border-radius: 6px 0 0 0; }
+  .judge-table th:last-child { border-radius: 0 6px 0 0; }
+  .judge-table td {
+    padding: 8px 12px; border-bottom: 1px solid #eee;
+    font-size: 13px; vertical-align: top; line-height: 1.6;
+  }
+  .judge-table tr:last-child td { border-bottom: none; }
+  .judge-table tr:nth-child(even) td { background: #fafafa; }
+
+  .schedule-row {
+    display: flex; gap: 0; margin: 4px 0;
+    border-radius: 8px; overflow: hidden;
+    border: 1px solid #ddd; font-size: 12px;
+  }
+  .sch-step {
+    flex: 1; text-align: center; padding: 10px 6px;
+    border-right: 1px solid #ddd;
+    line-height: 1.5;
+  }
+  .sch-step:last-child { border-right: none; }
+  .sch-step.now { background: #FFD700; font-weight: 700; color: #1a1a1a; }
+  .sch-step .sch-label { font-size: 10px; color: #999; margin-bottom: 2px; }
+  .sch-step.now .sch-label { color: #555; }
+
+  /* 푸터 */
+  .footer {
+    background: #1a1a1a; color: #888;
+    text-align: center; padding: 18px;
+    font-size: 12px;
+  }
+  .footer span { color: #FFD700; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 헤더 -->
+  <div class="header">
+    <div class="badge-row">
+      <span class="badge">행정안전부 × 지식재산처 | 모두의 아이디어</span>
+      <span class="badge">대상 서비스: 경찰청 피해자전담경찰관 지원 (행안부 소속 외청)</span>
+    </div>
+    <h1>피해자전담경찰관을 위한<br><em>AI 피해자지원 어시스턴트</em></h1>
+    <p class="subtitle">정보 과부하와 감정 소진에 시달리는 경찰관에게 RAG 기반 AI가 즉각적인 지식 지원과 심리상담 보조를 제공합니다</p>
+    <div class="kw-row">
+      <span class="kw">문제 키워드: 피해자 · 경찰 · 심리상담</span>
+      <span class="kw expert">전문가 추천: 정보 과부하 · 감정 소진</span>
+      <span class="kw">해결: 챗봇 · RAG · 심리상담</span>
+      <span class="kw expert">전문가 추천: 지능형 상황 인지 · 동적 지식 그래프</span>
+    </div>
+  </div>
+
+  <!-- 공모전 개요 -->
+  <div class="contest-overview">
+    <div class="ov-title">공모전 개요 — 제1회 모두의 아이디어 × 행정안전부</div>
+    <div class="ov-grid">
+      <div class="ov-item">
+        <span class="ov-label">주관</span>
+        <span class="ov-value">지식재산처 (공고 제2026-4호)</span>
+      </div>
+      <div class="ov-item">
+        <span class="ov-label">공모 부문</span>
+        <span class="ov-value"><strong>지정공모</strong> — 행정안전부 과제 5번</span>
+      </div>
+      <div class="ov-item">
+        <span class="ov-label">접수 기간</span>
+        <span class="ov-value"><strong>2026.1.8 ~ 2026.4.15(수) 18:00</strong></span>
+      </div>
+      <div class="ov-item">
+        <span class="ov-label">접수 방법</span>
+        <span class="ov-value">www.모두의아이디어.kr 회원가입 후 제출</span>
+      </div>
+      <div class="ov-item">
+        <span class="ov-label">참가 대상</span>
+        <span class="ov-value">대한민국 국민 누구나</span>
+      </div>
+      <div class="ov-item">
+        <span class="ov-label">총 포상</span>
+        <span class="ov-value"><strong>7.8억원 / 1만명</strong> — 금상 1,000만원, 왕중왕전 1위 1억원</span>
+      </div>
+    </div>
+    <div class="deadline-alert">⚠ 마감까지 D-8 (2026년 4월 15일 18:00)</div>
+  </div>
+
+  <!-- 추진 일정 -->
+  <div style="padding: 20px 52px; background: #f8f8f8; border-bottom: 1px solid #e0e0e0;">
+    <div style="font-size: 12px; color: #888; margin-bottom: 8px; font-weight:700;">추진 일정</div>
+    <div class="schedule-row">
+      <div class="sch-step now">
+        <div class="sch-label">지금 ★</div>
+        아이디어 공모<br>~26.4.15
+      </div>
+      <div class="sch-step">
+        <div class="sch-label">STEP 2</div>
+        1차 심사<br>(서면) 26.4~5
+      </div>
+      <div class="sch-step">
+        <div class="sch-label">STEP 3</div>
+        전문가 멘토링<br>26.6~9
+      </div>
+      <div class="sch-step">
+        <div class="sch-label">STEP 4</div>
+        2차 심사<br>(발표) 26.10
+      </div>
+      <div class="sch-step">
+        <div class="sch-label">STEP 5</div>
+        시상식·포상<br>26.11
+      </div>
+    </div>
+  </div>
+
+  <!-- 심사 기준 -->
+  <div style="padding: 20px 52px 24px; background: #f8f8f8; border-bottom: 3px solid #8e1f5e;">
+    <div style="font-size: 12px; color: #888; margin-bottom: 8px; font-weight:700;">심사 기준</div>
+    <table class="judge-table">
+      <thead>
+        <tr><th>항목</th><th>평가 지표</th><th>우리 아이디어의 대응</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>문제해결 가능성</strong></td>
+          <td>제시된 문제를 효과적으로 해결할 수 있는가</td>
+          <td>정보 과부하·감정 소진 → 원인별 AI 솔루션 1:1 대응</td>
+        </tr>
+        <tr>
+          <td><strong>실현 가능성</strong></td>
+          <td>예산·기술 측면에서 실제로 구현 가능한가</td>
+          <td>프로토타입 완성 + AI 국민비서 API 연계 → 즉시 적용 가능</td>
+        </tr>
+        <tr>
+          <td><strong>독창성</strong></td>
+          <td>기존 아이디어와 차별화된 창의적 아이디어인가</td>
+          <td>RAG + 동적 지식 그래프 + 지능형 상황 인지 조합</td>
+        </tr>
+        <tr>
+          <td><strong>활용성</strong></td>
+          <td>후속 활용이 가능할 만큼 효과가 높은가</td>
+          <td>경찰청 전국 확대 적용 가능, 타 공공기관 확장성 보유</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="body">
+
+    <!-- 1. 문제 정의 -->
+    <div class="section">
+      <div class="sec-head">
+        <div class="sec-num">1</div>
+        <h2>문제 정의</h2>
+      </div>
+      <div class="def-box">
+        피해자전담경찰관은 다양한 유형의 피해자를 지원하며 복잡한 심리상담 및 절차를 수행하는 과정에서
+        <strong>정보 과부하</strong>와 <strong>감정 소진</strong>을 겪는다.
+        이는 피해자에 대한 경찰의 신속하고 전문적인 지원 역량을 저해하는 주요 문제로 작용한다.
+      </div>
+    </div>
+
+    <!-- 2. 원인 분석 -->
+    <div class="section">
+      <div class="sec-head">
+        <div class="sec-num">2</div>
+        <h2>원인 분석 — 왜 이 문제가 발생하는가?</h2>
+      </div>
+      <div class="cause-grid">
+        <div class="cause-card">
+          <div class="cause-label">원인 1</div>
+          <div class="cause-title">정보 과부하</div>
+          <p>법률·행정 절차·지원 기관 등 방대한 데이터를 숙지해야 하며, 개별 피해자 상황에 맞는 심리상담 정보를 찾는 데 과도한 시간이 소요됨</p>
+        </div>
+        <div class="cause-card">
+          <div class="cause-label">원인 2</div>
+          <div class="cause-title">감정 소진</div>
+          <p>트라우마 피해자를 직접 마주하며 심리상담·정서 지지를 제공하는 고강도 감정 노동이 직무 만족도 저하와 지원 역량 약화로 이어짐</p>
+        </div>
+        <div class="cause-card">
+          <div class="cause-label">원인 3</div>
+          <div class="cause-title">인력·시간 부족</div>
+          <p>1인당 담당 피해자 수 과다로 충분한 심리상담과 행정 지원이 어려워 초기 대응 공백이 발생, 피해자 회복 지연과 경찰 신뢰도 저하로 이어짐</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 해결책 -->
+    <div class="section">
+      <div class="sec-head">
+        <div class="sec-num">3</div>
+        <h2>해결책 — AI가 각 원인에 어떻게 대응하는가?</h2>
+      </div>
+      <div class="solution-grid">
+        <div class="sol-card">
+          <div class="sol-tag">원인 1 대응</div>
+          <div class="sol-title">RAG 기반 즉시 정보 제공</div>
+          <p>경찰관이 질문하면 법률·지원 기관·절차 정보를 동적 지식 그래프에서 즉시 검색·요약 제공. 최신 정보를 숙지할 필요 없이 AI에게 물으면 됨</p>
+          <span class="tech">RAG + 동적 지식 그래프</span>
+        </div>
+        <div class="sol-card">
+          <div class="sol-tag">원인 2 대응</div>
+          <div class="sol-title">AI 심리상담 보조 & 감정 완충</div>
+          <p>PFA·OARS 기반 AI 챗봇이 피해자 초기 심리 안정을 먼저 담당. 경찰관의 감정 노동을 분산하고 소진을 예방</p>
+          <span class="tech">챗봇 + PFA 심리상담</span>
+        </div>
+        <div class="sol-card">
+          <div class="sol-tag">원인 3 대응</div>
+          <div class="sol-title">지능형 상황 인지 & 자동화</div>
+          <p>AI가 피해 유형·위기 수준을 자동 파악하고 접수 요약본을 생성. 경찰관은 이 요약을 보고 대면 면담에 집중 — 반복 행정 처리 시간 절감</p>
+          <span class="tech">지능형 상황 인지 + 문서 요약</span>
+        </div>
+      </div>
+
+      <!-- 서비스 흐름 -->
+      <div class="flow">
+        <div class="flow-step">
+          <div class="step-label">STEP 1</div>
+          112 신고 접수
+        </div>
+        <div class="flow-step hl">
+          <div class="step-label">★ AI 어시스턴트</div>
+          피해자 초기 대화<br>+ 상황 자동 파악
+        </div>
+        <div class="flow-step hl">
+          <div class="step-label">★ AI 어시스턴트</div>
+          접수 요약·법률정보<br>경찰관에게 전달
+        </div>
+        <div class="flow-step">
+          <div class="step-label">STEP 4</div>
+          전담경찰관<br>대면 면담 집중
+        </div>
+        <div class="flow-step">
+          <div class="step-label">STEP 5</div>
+          지원 기관<br>자동 연계
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. AI 활용 방식 -->
+    <div class="section">
+      <div class="sec-head">
+        <div class="sec-num">4</div>
+        <h2>AI 활용 방식 상세</h2>
+      </div>
+      <table>
+        <thead>
+          <tr><th>AI 기능</th><th>경찰관 혜택</th><th>피해자 혜택</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>RAG 챗봇</strong><br><small style="color:#888">동적 지식 그래프 연결</small></td>
+            <td>법률·지원 절차 즉시 검색, 암기 부담 제로</td>
+            <td>피해 유형별 지원 제도 자동 안내 수령</td>
+          </tr>
+          <tr>
+            <td><strong>지능형 상황 인지</strong><br><small style="color:#888">피해 유형·위기 수준 자동 분류</small></td>
+            <td>사전 파악된 상황 요약으로 면담 준비 시간 단축</td>
+            <td>반복 진술 최소화, 2차 피해 경감</td>
+          </tr>
+          <tr>
+            <td><strong>AI 심리상담 보조</strong><br><small style="color:#888">PFA + OARS 기반</small></td>
+            <td>초기 감정 노동을 AI가 분담, 소진 예방</td>
+            <td>신고 직후 즉시 심리 응급처치 제공</td>
+          </tr>
+          <tr>
+            <td><strong>위기 감지 & 연계</strong><br><small style="color:#888">자동 에스컬레이션</small></td>
+            <td>자해·자살 위험 자동 감지 → 경찰관 즉시 알림</td>
+            <td>1393(자살예방), 117(학대) 즉시 연계</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 5. 기대 효과 -->
+    <div class="section">
+      <div class="sec-head">
+        <div class="sec-num">5</div>
+        <h2>기대 효과</h2>
+      </div>
+      <div class="effect-grid">
+        <div class="eff">
+          <div class="eff-title">처리 시간 단축</div>
+          <p>AI 사전 접수로 대면 면담 준비 시간 30~50% 절감, 1인당 처리 가능 사건 수 증가</p>
+        </div>
+        <div class="eff">
+          <div class="eff-title">경찰관 감정 소진 예방</div>
+          <p>초기 감정 노동을 AI가 분담 → 번아웃 예방, 이직률 감소, 서비스 품질 장기 유지</p>
+        </div>
+        <div class="eff">
+          <div class="eff-title">피해자 즉각 지원</div>
+          <p>신고 직후 골든타임에 AI가 먼저 심리 안정 제공, 2차 피해 및 회복 지연 경감</p>
+        </div>
+        <div class="eff">
+          <div class="eff-title">접근성·정확도 향상</div>
+          <p>24시간 가용, 피해 유형별 맞춤 법률 정보 정확 제공, 고령자·장애인 음성 지원 가능</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. 차별화 & 현실성 -->
+    <div class="section">
+      <div class="sec-head">
+        <div class="sec-num">6</div>
+        <h2>현실성 & 차별화 포인트</h2>
+      </div>
+      <div class="diff-box">
+        <ul>
+          <li>경찰청은 <strong>행정안전부 소속 외청</strong> — 행안부 공공서비스에 직접 해당</li>
+          <li>PFA(심리적 응급처치)는 <strong>WHO 권장 근거기반 개입</strong> — 추상적 아이디어 아님</li>
+          <li>치료가 아닌 <strong>위기개입 도구</strong>로 포지셔닝 — 의료법 위반 리스크 없음</li>
+          <li>프롬프트 설계 + <strong>테스트 완료된 프로토타입 존재</strong> — 즉시 적용 가능성 높음</li>
+          <li>기존 AI 국민비서 인프라와 <strong>API 연계 가능</strong> — 별도 구축 비용 최소화</li>
+        </ul>
+      </div>
+      <div class="privacy-note">
+        <strong>개인정보 보호 방안:</strong> 대화 내용은 담당 경찰관에게만 암호화 전달, 사건 종결 후 즉시 삭제.
+        구현 시 개인정보영향평가(PIA) 시행 예정. 피해자 동의 기반 운영, 비식별화 후 익명 통계만 활용.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <span>모두의 아이디어 × 행정안전부</span> &nbsp;|&nbsp; AI로 더 편리한 공공서비스 만들기
+    <div style="margin-top: 10px; display: flex; justify-content: center; gap: 20px;">
+      <a href="https://www.ipmarket.or.kr/idearo/moduidea/newIdrContestDesignatedDetail.do?styleType=2&challengeId=govt007"
+         target="_blank"
+         style="color: #FFD700; font-size: 12px; text-decoration: none; border: 1px solid rgba(255,215,0,0.4); padding: 4px 14px; border-radius: 14px;">
+        ↗ 공모전 과제 페이지
+      </a>
+      <a href="https://www.moduidea.kr"
+         target="_blank"
+         style="color: #FFD700; font-size: 12px; text-decoration: none; border: 1px solid rgba(255,215,0,0.4); padding: 4px 14px; border-radius: 14px;">
+        ↗ 아이디어 접수 사이트
+      </a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
