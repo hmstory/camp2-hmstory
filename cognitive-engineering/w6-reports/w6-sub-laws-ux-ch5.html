@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>W6 주교재 6장 요약 및 보고서 - 김형모</title>
+  <title>W6 부교재 Laws of UX 5장 (Postel's Law) - 김형모</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <style>
     :root {
-      --bg: #1a1a2e;
-      --surface: #16213e;
-      --card: #1e2a4a;
+      --bg: #1a2e1a;
+      --surface: #162416;
+      --card: #1e3a1e;
       --text: #d4d4d8;
       --heading: #ffffff;
-      --accent: #6c63ff;
-      --accent2: #e94560;
-      --accent-soft: #a8a4ff;
-      --highlight-bg: rgba(108,99,255,0.15);
-      --code-bg: #0f3460;
+      --accent: #2ecc71;
+      --accent2: #e67e22;
+      --accent-soft: #81ecb0;
+      --highlight-bg: rgba(46,204,113,0.15);
+      --code-bg: #0a1f0a;
       --border: #333;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -172,7 +172,7 @@
       max-width: 95vw;
       max-height: 90vh;
       border-radius: 8px;
-      box-shadow: 0 0 40px rgba(108,99,255,0.3);
+      box-shadow: 0 0 40px rgba(46,204,113,0.3);
     }
     .lightbox-close {
       position: fixed;
@@ -298,7 +298,6 @@
       margin-right: 4px;
     }
 
-    /* Term links */
     .term-link {
       color: var(--accent-soft);
       text-decoration: none;
@@ -341,8 +340,8 @@
     <a href="../w5-reports/index.html">W5 주교재 4장</a>
     <a href="../w5-reports/sub-laws-ux-ch2.html">W5 부교재 Laws of UX 2장</a>
     <a href="index.html">W6 주교재 5장</a>
-    <a href="w6-chapter6.html" class="active">W6 주교재 6장</a>
-    <a href="w6-sub-laws-ux-ch5.html">W6 부교재 Laws of UX 5장</a>
+    <a href="w6-chapter6.html">W6 주교재 6장</a>
+    <a href="w6-sub-laws-ux-ch5.html" class="active">W6 부교재 Laws of UX 5장</a>
   </nav>
   <div class="container">
     <div id="content"><div class="loading">Loading...</div></div>
@@ -362,7 +361,7 @@
   <script>
     marked.setOptions({ gfm: true, breaks: true });
 
-    fetch('w6-chapter6.md')
+    fetch('w6-sub-laws-ux-ch5.md')
       .then(r => r.text())
       .then(md => {
         document.getElementById('content').innerHTML = marked.parse(md);
@@ -435,11 +434,10 @@
 
     function setupTermLinks() {
       const content = document.getElementById('content');
-
       let termTable = null;
       content.querySelectorAll('h3').forEach(h3 => {
         if (termTable) return;
-        if (h3.textContent.includes('핵심 용어') || h3.textContent.includes('핵심 전문 용어')) {
+        if (h3.textContent.includes('핵심 전문 용어') || h3.textContent.includes('핵심 개념')) {
           let el = h3.nextElementSibling;
           while (el && el.tagName !== 'TABLE') el = el.nextElementSibling;
           if (el) termTable = el;
@@ -460,7 +458,6 @@
       });
 
       terms.sort((a, b) => b.term.length - a.term.length);
-
       const escaped = terms.map(t => t.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
       const re = new RegExp(`(${escaped.join('|')})`, 'gi');
 
