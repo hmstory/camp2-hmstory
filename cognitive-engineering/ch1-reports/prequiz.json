@@ -1,0 +1,32 @@
+{
+  "chapter": 1,
+  "source": "weekly-textbook knowledge file",
+  "guide": "먼저 머릿속으로 답해보세요. 틀려도 괜찮습니다 — 답을 찾으려 애쓰는 과정에서 본문이 훨씬 잘 박힙니다.",
+  "items": [
+    {
+      "question": "실험심리학과 공학심리학의 연구 방법론에서 가장 큰 차이 3가지는?",
+      "answer": "① 실험 통제 수준(공학은 너무 통제하면 wash out), ② 통계적 유의미성 vs 실용적 유의미성, ③ 과제 설계 시 실세계 관련성 고려 여부.",
+      "num": 1
+    },
+    {
+      "question": "Attention의 \"이중 역할\"이란? 각각 Figure 1.1에서 어떻게 표현되는가?",
+      "answer": "Filter: 감각→지각 통과량 선별 (Figure의 \"Selection\" 화살표, 지각 출력이 입력보다 얇음). Fuel: 각 단계에 자원 공급 (Figure 상단 Attention Resources에서 점선). 자원은 유한 → 동시과제 실패의 원인.",
+      "num": 2
+    },
+    {
+      "question": "\"터치스크린 반응속도를 높였는데 사고율이 감소하지 않았다\"를 HIPM으로 진단하시오.",
+      "answer": "반응속도 개선은 Response Execution 단계의 개선. 그러나 추돌 원인이 시선 분산(attention filter 실패) + 지각(perception) 병목 + 자원 경쟁(fuel 부족) 이라면 Execution 개선만으로는 병목이 해결되지 않음. 병목은 앞 단계(지각·주의)에 있음.",
+      "num": 3
+    },
+    {
+      "question": "카 라디오 조작 오류의 4가지 원인을 HIPM 단계별로 매핑하시오.",
+      "answer": "① 컨트롤 물리 부딪힘 → Response Execution, ② 컨트롤 과민감 → Response Execution, ③ 조작 방향 혼란 → Response Selection / Cognition, ④ 아이콘 이해 불가 → Perception.",
+      "num": 4
+    },
+    {
+      "question": "HIPM을 \"문자 그대로 읽으면 안 되는\" 이유 3가지는?",
+      "answer": "① 뇌 구조와의 대응이 명확하지 않음, ② 엄격한 순차가 아님(병렬 가능), ③ 피드백 때문에 고정된 시작·끝 없음(LTM → WM → Response로 감각입력 없이도 시작 가능).",
+      "num": 5
+    }
+  ]
+}

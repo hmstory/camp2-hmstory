@@ -1,0 +1,117 @@
+{
+  "chapter": 1,
+  "source": "knowledge file",
+  "spine": {
+    "thesis": "공학심리학은 \"목 위(above the neck)\"의 인지 수행을 이론으로 설명하는 응용심리학 분야이며, 그 설명의 공통 프레임이 바로 인간 정보 처리 모델(Human Information Processing Model, HIPM) 이다.",
+    "body": "> **이 챕터의 한 줄 주장**: 공학심리학은 \"목 위(above the neck)\"의 인지 수행을 *이론*으로 설명하는 응용심리학 분야이며, 그 설명의 공통 프레임이 바로 **인간 정보 처리 모델(Human Information Processing Model, HIPM)** 이다.\n\n**왜 이 순서로 개념을 배치했나**\n\n1. 먼저 \"공학심리학\"이라는 분야의 **정체성**을 타 분야(인간공학/인지공학/실험심리학)와 비교하여 좁힌다 (1.1) — 무엇을 다루는가.\n2. 다루는 대상인 \"수행(performance)\"을 **3대 지표**(Speed·Accuracy·Attentional demand)로 조작적 정의한다 (1.2) — 어떻게 평가할 것인가.\n3. 그 수행을 **어떻게 측정하는가** — 연구방법 연속체(lab → field)와 메타분석·계산모델을 제시 (2).\n4. 수행이 *왜* 그렇게 나타나는지 설명할 **이론적 뼈대**로 HIPM을 제시 (3) — Figure 1.1이 책 전체 목차의 설계도다.\n5. 책 읽는 법 안내 (4).\n\n**Spine 아래에서 각 주요 개념의 역할**\n\n- **Engineering Psychology (1.1)**: 분야의 *정의* — 이론 기반 + above the neck + 응용심리학의 하위\n- **3대 지표 (1.2)**: Spine의 *측정축* — 좋은 설계 원칙은 이 세 지표를 동시 개선해야 한다 (그러나 현실에선 trade-off)\n- **Intervening variables (1.2)**: 3대 지표로 직접 잡히지 않는 인지현상(멘탈 모델, 상황인식, 과신)도 결국 수행에 반영된다는 **이론적 다리**\n- **Research methods continuum (2)**: Spine의 *증거수집 도구* — 각 방법의 trade-off 인지 자체가 연구자 역량\n- **HIPM (3, Figure 1.1)**: Spine의 **구조 자체** — 책 전체(Ch2~Ch12)의 조직 프레임. 4단계 + 기억 + 주의(filter/fuel) + 피드백 = 전 챕터 매핑\n- **Attention의 이중 역할 (3)**: filter(선택) + fuel(자원) — 이 두 역할이 Ch3(selective attention)와 Ch10(multi-tasking)로 분기\n\n> 📌 이 챕터는 **책 전체의 조직 원리**이자 얇은 **논증형 챕터**다. 지식 파일이지만 Figure 1.1만은 정확히 외워야 한다 — 중간고사 Q1이 이 모델을 그대로 적용하는 문제다."
+  },
+  "terms": [
+    {
+      "term": "engineering psychology",
+      "definition": "인간요인공학 내 하위 분야로, \"목 위(인지)\" 수행을 이론적으로 설명하는 응용심리학",
+      "section": "1.1"
+    },
+    {
+      "term": "ergonomics",
+      "definition": "작업(work)을 연구하는 학문. 고전적으로 \"목 아래\" (신체·피로·자세) 중심",
+      "section": "1.1"
+    },
+    {
+      "term": "cognitive ergonomics / cognitive engineering",
+      "definition": "인간공학의 인지적 하위 분과. \"목 위\" 작업 연구 (Vicente 1999; Jenkins, Stanton et al. 2009)",
+      "section": "1.1"
+    },
+    {
+      "term": "applied psychology",
+      "definition": "실험실 밖(산업·학교·상담·정신건강·스포츠)에 심리 원리를 적용하는 심리학의 상위 범주",
+      "section": "1.1"
+    },
+    {
+      "term": "experimental control",
+      "definition": "조작 변인 외 모든 변인을 고정하려는 실험심리학의 방법론적 원칙",
+      "section": "1.1"
+    },
+    {
+      "term": "human performance",
+      "definition": "수행의 질 — Speed, Accuracy, Attentional demand \"Big Three\"로 측정",
+      "section": "1.2"
+    },
+    {
+      "term": "meta-analyses",
+      "definition": "다수 연구의 양적 자료를 통합해 집합적 결과를 추출하는 기법",
+      "section": "2"
+    },
+    {
+      "term": "computational models",
+      "definition": "소프트웨어로 인간 행동·인지를 시뮬레이션하는 방법",
+      "section": "2"
+    },
+    {
+      "term": "human information processing (HIPM)",
+      "definition": "감각→지각→작업기억/인지→반응선택→반응실행의 단계 + 기억·주의·피드백을 포함하는 모델 (Figure 1.1)",
+      "section": "3"
+    },
+    {
+      "term": "senses",
+      "definition": "시각·청각·촉각 등 감각 양상",
+      "section": "3"
+    },
+    {
+      "term": "short term sensory store (STSS)",
+      "definition": "감각 정보를 약 1초 이내 짧게 유지하는 저장소",
+      "section": "3"
+    },
+    {
+      "term": "perception",
+      "definition": "감각 신호에 의미를 부여하는 과정 (장기기억의 과거 경험으로 해석)",
+      "section": "3"
+    },
+    {
+      "term": "working memory",
+      "definition": "정보를 일시 저장하며 생각(cognition)하는 시스템. 장기기억으로의 commit 통로",
+      "section": "3"
+    },
+    {
+      "term": "long term memory",
+      "definition": "사실·이미지·세상 작동 방식을 반영구 저장",
+      "section": "3"
+    },
+    {
+      "term": "cognition",
+      "definition": "감각된 자료의 해석 과정 (빠르게: 신호등, 느리게: 강의 아이디어). 지각↔WM 경계는 퍼지",
+      "section": "3"
+    },
+    {
+      "term": "response selection",
+      "definition": "가능한 반응들 중 하나를 선택하는 단계",
+      "section": "3"
+    },
+    {
+      "term": "attention",
+      "definition": "정보처리의 핵심 도구. Filter(선택) + Fuel(자원) 이중 역할 (Wickens & McCarley 2008)",
+      "section": "3"
+    },
+    {
+      "term": "mental resources",
+      "definition": "각 처리 단계에 공급되는 정신 자원(연료). 총량은 유한 → 동시과제 실패 요인",
+      "section": "3"
+    },
+    {
+      "term": "feedback",
+      "definition": "실행된 반응이 환경을 바꿔 새로운 감각 입력을 만드는 순환",
+      "section": "3"
+    }
+  ],
+  "figures": [
+    {
+      "num": "1.1",
+      "title": "A Model of Human Information Processing Stages (★★★ 중간고사 직접 출제)",
+      "body": "- **내용**: 좌에서 우로 Sensory Processing/STSS → Perception → Working Memory·Cognition / Long-term Memory → Response Selection → Response Execution의 단계적 흐름. 상단에 Attention Resources가 점선으로 각 단계에 공급되고, 하단에 System Environment → 감각 입력으로 돌아가는 Feedback 루프가 그려짐. Perception 앞에 \"Selection\"이라는 attention filter가 표시됨.\n- **의미**: \n  1. **단계적 분석의 프레임** — 오류나 병목(bottleneck)이 어느 단계에서 발생하는지 특정 가능\n  2. **주의의 이중 역할** — 점선(fuel)과 Selection 화살표(filter)가 동시에 표현됨\n  3. **피드백의 동적 특성** — 시작·끝이 고정되지 않음\n  4. **책 목차의 설계도** — Ch2~Ch12가 이 모델의 각 요소에 대응\n- **시험 포인트** (중간고사 Q1-1 직접 적용):\n  - 차량 인포테인먼트 터치스크린 추돌 사고의 **병목 단계 특정**\n  - 운전 중 디스플레이 시선 분산은 주로 **Perception 단계의 Attention Filter 실패** + **Response Execution 자원 경쟁** (Ch10 다중자원과 연결)\n  - \"터치 반응속도 향상\"은 Response Execution 개선이지만, 실제 병목이 Perception·Attention이면 효과 없음 → 문제 시나리오의 \"반응 속도 높였는데 사고율 감소 없음\"의 이론적 근거"
+    }
+  ],
+  "links": {
+    "prev": "없음 (첫 장)",
+    "next": "- **Ch2 (Signal Detection & Absolute Judgment)**: HIPM의 \"Sensory Processing + Perception\" 단계를 신호탐지이론(SDT)로 수리화. Mackworth(1948)의 vigilance 연구가 직접 계승됨.",
+    "repeats": "Overconfidence / Intervening variables (멘탈 모델, SA) / Attention 자원의 유한성"
+  }
+}
