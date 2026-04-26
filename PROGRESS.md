@@ -1,5 +1,20 @@
 # PROGRESS.md
 
+## 2026-04-27
+- 인지공학심리학 중간고사 v1.1 문제지 메모리 업데이트 (project_cog_eng_midterm_2026.md)
+  - 교재 범위 Ch1-6 → Ch1-7 정정, Q3-2 대학원생 UX 의견 추가, Q4-1 풀이 프로세스 명시
+- Ch1-3 완독 기준 문항별 가능 여부 분류 (완전 가능 210점: Q1·Q2·Q3)
+- Q1-3 풀이 전략 가이드 작성 + GitHub Pages 배포 (커밋 05c323d)
+  - 배포 URL: https://hmstory.github.io/psycinno/cognitive-engineering/midterm-strategy/
+  - 문제 전문 + HIPM·SDT·SEEV·PCP 이론 전략 + 심성모형 연결 포함
+- 다음: Ch7 읽기(WM·SA·CLT·Automaticity) → Q6 완성 + Q5-2 / 마감 4/28 22:00
+
+## 2026-04-25
+- research-proposal/index.html v0.3 모바일 최적화 배포 (커밋 8179845)
+- CSS 미디어 쿼리 전면 개선, 테이블 6개 .table-wrap 래핑, 다이어그램 flex-wrap+width calc(50%), body padding 모바일 축소
+- 배포 URL: https://hmstory.github.io/psycinno/research-proposal/
+- 다음: 연구 내용 보강 또는 피치덱 연동 검토
+
 ## 2026-04-17
 - W7 주교재 Ch.7 Memory & Training 배포 완료 (knowledge mode 시범)
 - weekly-report 스킬 개조: notebooklm / knowledge 듀얼 모드 지원
