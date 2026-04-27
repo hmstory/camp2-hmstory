@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>중간고사 Q4~6 풀이 전략 - 인지공학심리학</title>
+  <style>
+    :root {
+      --bg: #f8f6f0; --surface: #f0ede6; --card: #e8e4dc;
+      --text: #222; --heading: #000; --accent: #111;
+      --accent2: #444; --accent-soft: #555;
+      --highlight-bg: rgba(0,0,0,0.08); --code-bg: #e8e8e8; --border: #ccc;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); line-height: 1.85; font-size: 17px; }
+    .container { max-width: 820px; margin: 0 auto; padding: 20px 16px 100px; }
+
+    .nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+    .nav a { color: var(--text); text-decoration: none; font-size: 0.85rem; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); transition: all 0.2s; white-space: nowrap; }
+    .nav a:hover { border-color: var(--accent); color: var(--accent); }
+    .nav a.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .nav-label { color: var(--accent-soft); font-size: 0.8rem; font-weight: 600; margin-right: 4px; }
+
+    .page-header { margin: 2rem 0 2.5rem; padding-bottom: 1.2rem; border-bottom: 3px solid var(--accent); }
+    .page-header h1 { font-size: 1.7rem; color: var(--heading); margin-bottom: 0.4rem; }
+    .page-header .meta { color: var(--accent-soft); font-size: 0.88rem; }
+    .score-badge { display: inline-block; background: var(--accent); color: #fff; font-size: 0.78rem; padding: 2px 10px; border-radius: 20px; margin-left: 8px; vertical-align: middle; }
+
+    h2 { font-size: 1.4rem; color: var(--heading); margin: 3rem 0 1rem; padding: 14px 20px; background: var(--accent); color: #fff; border-radius: 10px; }
+    h3 { font-size: 1.15rem; color: var(--accent); margin: 2rem 0 0.8rem; padding: 12px 16px; background: var(--card); border-radius: 8px; border-left: 4px solid var(--accent); }
+    h4 { font-size: 1rem; font-weight: 700; color: var(--accent2); margin: 1.5rem 0 0.5rem; }
+    p { margin: 0.7rem 0; }
+    ul, ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+    li { margin: 0.35rem 0; }
+    strong { color: #000; font-weight: 700; }
+    em { color: var(--accent-soft); font-style: normal; background: var(--highlight-bg); padding: 1px 6px; border-radius: 3px; }
+    blockquote { border-left: 4px solid var(--accent); padding: 10px 18px; margin: 1rem 0; background: var(--surface); border-radius: 0 10px 10px 0; font-size: 0.95em; }
+    code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 0.88em; }
+    pre { background: var(--code-bg); padding: 16px; border-radius: 10px; overflow-x: auto; margin: 1rem 0; font-size: 0.85rem; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; }
+    pre code { background: none; padding: 0; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; display: block; overflow-x: auto; }
+    th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; }
+    th { background: var(--surface); color: var(--accent); font-weight: 600; }
+    tr:nth-child(even) { background: rgba(255,255,255,0.4); }
+    hr { border: none; border-top: 2px solid var(--border); margin: 2.5rem 0; }
+
+    .problem-box { background: #fff; border: 2px solid var(--border); border-radius: 12px; padding: 20px 24px; margin: 1.2rem 0; font-size: 0.93rem; line-height: 1.8; }
+    .problem-box .situation { color: var(--accent2); font-size: 0.88rem; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px dashed var(--border); }
+    .problem-box .q-item { margin: 1rem 0; }
+    .problem-box .q-item strong { color: var(--accent); }
+
+    .strategy-box { background: var(--surface); border-radius: 12px; padding: 20px 24px; margin: 1rem 0; }
+    .alert-box { background: #fff8e1; border-left: 4px solid #e6a817; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 1rem 0; font-size: 0.9rem; }
+    .alert-box::before { content: "⚠ 주의 | "; font-weight: 700; color: #9a6f00; }
+
+    .insight-box { background: linear-gradient(135deg, var(--card), var(--surface)); border: 1px solid var(--accent); border-radius: 12px; padding: 16px 20px; margin: 1.2rem 0; font-size: 0.92rem; }
+    .insight-box .label { font-weight: 700; color: var(--accent); font-size: 0.85rem; margin-bottom: 6px; display: block; letter-spacing: 0.05em; }
+
+    .mental-model { background: #fff3cd; border-left: 4px solid #d4a017; border-radius: 0 10px 10px 0; padding: 12px 18px; margin: 1rem 0; font-size: 0.91rem; }
+    .mental-model::before { content: "💡 심성모형 연결 | "; font-weight: 700; color: #8b6914; }
+
+    .search-guide { background: #e8f4f8; border-left: 4px solid #2196F3; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 1rem 0; font-size: 0.9rem; }
+    .search-guide::before { content: "🔍 논문 탐색 가이드 | "; font-weight: 700; color: #1565C0; }
+
+    .template-box { background: #f0f4e8; border: 1px solid #a5c46a; border-radius: 10px; padding: 16px 20px; margin: 1rem 0; }
+    .template-box .t-label { font-weight: 700; color: #4a6028; font-size: 0.85rem; margin-bottom: 8px; display: block; }
+
+    .checklist { background: var(--card); border-radius: 10px; padding: 16px 20px; margin: 1.5rem 0; }
+    .checklist h4 { margin-top: 0; color: var(--accent); margin-bottom: 0.8rem; }
+    .checklist li { margin: 0.4rem 0; font-size: 0.9rem; }
+
+    .toc { background: var(--surface); border-radius: 12px; padding: 16px 20px; margin: 1.5rem 0 2.5rem; }
+    .toc a { color: var(--accent-soft); text-decoration: none; font-size: 0.9rem; display: block; padding: 3px 0; }
+    .toc a:hover { color: var(--accent); }
+    .toc .toc-label { font-weight: 700; font-size: 0.85rem; color: var(--accent); margin-bottom: 8px; display: block; }
+
+    @media (max-width: 600px) {
+      body { font-size: 15px; }
+      .nav { padding: 8px 10px; gap: 5px; }
+      .nav a { font-size: 0.78rem; padding: 4px 9px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-label">인지공학심리학 |</span>
+  <a href="../w3-reports/prompt.html">프롬프트</a>
+  <a href="../ch1-reports/index.html">주교재 1장</a>
+  <a href="../w3-reports/index.html">W3 주교재 2장</a>
+  <a href="../w3-reports/sub-chapter8.html">W3 부교재 8장</a>
+  <a href="../w4-reports/index.html">W4 주교재 3장</a>
+  <a href="../w4-reports/sub-chapter7.html">W4 부교재 7장</a>
+  <a href="../w5-reports/index.html">W5 주교재 4장</a>
+  <a href="../w5-reports/sub-laws-ux-ch2.html">W5 부교재 Laws of UX 2장</a>
+  <a href="../w6-reports/index.html">W6 주교재 5장</a>
+  <a href="../w6-reports/w6-chapter6.html">W6 주교재 6장</a>
+  <a href="../w6-reports/w6-sub-laws-ux-ch5.html">W6 부교재 Laws of UX 5장</a>
+  <a href="../w7-reports/index.html">W7 주교재 7장</a>
+  <a href="index.html">중간고사 Q1~3</a>
+  <a href="q4-6.html" class="active">중간고사 Q4~6</a>
+</nav>
+
+<div class="container">
+
+  <div class="page-header">
+    <h1>중간고사 Q4~6 풀이 전략 <span class="score-badge">300점</span></h1>
+    <p class="meta">박중희 교수 · 2026-04-23~28 · Ch4-7 기반 · 김형모</p>
+  </div>
+
+  <div class="toc">
+    <span class="toc-label">목차</span>
+    <a href="#q4">
+      문제 4 — 공간 디스플레이 + 공간인지 (100점)
+      <span style="margin-left:8px; font-size:0.82rem; color:#888;">
+        참고 교재: <a href="../w5-reports/index.html" target="_blank" style="color:#1565C0;">Ch4 공간 디스플레이</a> &nbsp;·&nbsp; <a href="../w6-reports/index.html" target="_blank" style="color:#1565C0;">Ch5 공간인지</a>
+      </span>
+    </a>
+    <a href="#q5">
+      문제 5 — 초고령사회 의약품 라벨 + 실버 서비스 (100점)
+      <span style="margin-left:8px; font-size:0.82rem; color:#888;">
+        참고 교재: <a href="../w6-reports/w6-chapter6.html" target="_blank" style="color:#1565C0;">Ch6 언어와 커뮤니케이션</a> &nbsp;·&nbsp; <a href="../w7-reports/index.html" target="_blank" style="color:#1565C0;">Ch7 기억과 훈련</a>
+      </span>
+    </a>
+    <a href="#q6">
+      문제 6 — 본인 성찰 · 인지 변화 + 환경 최적화 (100점)
+      <span style="margin-left:8px; font-size:0.82rem; color:#888;">
+        참고 교재: Ch1-7 전체 &nbsp;·&nbsp; <a href="index.html" target="_blank" style="color:#1565C0;">Q1-3 전략 (Ch1-3 핵심 개념 참고)</a>
+      </span>
+    </a>
+    <a href="#checklist">최종 체크리스트</a>
+  </div>
+
+
+  <!-- ===== Q4 ===== -->
+  <h2 id="q4">문제 4 · Ch4/5: 공간 디스플레이 &amp; 공간인지 <span style="font-size:0.85rem;font-weight:400;">(100점)</span></h2>
+
+  <div class="problem-box">
+    <p class="situation"><strong>배경</strong>: 자율주행 AR(Augmented Reality) / 원격의료 수술 / 군사 관제 중 <strong>하나를 선택</strong>하여 답하시오. 해당 분야에서 "사실적 묘사"가 오히려 인지적 혼란을 유발한 사례를 발굴하고, 문헌에 근거한 분석과 솔루션을 제시하시오.</p>
+    <div class="q-item"><strong>문항 4-1.</strong> 선택한 분야에서 <strong>Naïve Realism(순진한 현실주의)</strong>이 야기한 공간 지각 오류 사례를 분석하고, 이를 극복하기 위한 <strong>인지적 추상화(Cognitive Abstraction)</strong> 설계 지침을 제안하시오. 2022년 이후 논문 최소 2편 APA 인용, 3D 지각 오차 또는 인지부하 수치 포함. <em>(50점)</em></div>
+    <div class="q-item"><strong>문항 4-2.</strong> 공간인지 개인차(정신 회전 능력)가 디스플레이 수행에 미치는 영향을 <strong>FOR(Frame of Reference)</strong> 개념으로 분석하고, 이를 보완하기 위한 <strong>적응형 디스플레이</strong> 설계 방안을 제안하시오. Adaptive(적응형) vs. Training(훈련) 접근의 고전 논쟁에 대한 본인의 과학적 견해를 포함. <em>(50점)</em></div>
+  </div>
+
+  <div class="alert-box">자율주행 AR 선택 강력 추천 — 최신 논문 풍부, LOS 모호성 + 인지 추상화 사례가 명확하여 채점 기준에 가장 잘 맞음.</div>
+
+  <h3>문항 4-1 전략 — Naïve Realism 비판 + 인지 추상화</h3>
+
+  <div class="strategy-box">
+    <p><strong>핵심 논증 구조</strong>: "더 사실적인 3D AR 오버레이 = 더 좋은 디스플레이"라는 직관이 틀렸음을 보이고, 인지적 추상화로 수행도를 올린다.</p>
+  </div>
+
+  <h4>이론 정의 먼저 — Naïve Realism이 왜 함정인가</h4>
+  <table>
+    <tr><th>개념</th><th>정의</th><th>자율주행 AR에서의 문제</th></tr>
+    <tr><td><strong>Naïve Realism</strong></td><td>"사실적일수록 좋다"는 잘못된 믿음 (Smallman &amp; Cook, 2010)</td><td>도로 위에 3D 건물·차량을 실물 그대로 오버레이 → 과제 무관 정보가 인지 부담을 늘림</td></tr>
+    <tr><td><strong>LOS (Line of Sight) Ambiguity</strong></td><td>3D 공간의 세 축이 2D 화면에 투영 시 깊이 축이 모호해짐 (Wickens et al., 2022)</td><td>AR HUD에서 앞 차량까지의 거리를 과소 혹은 과대 추정 → 추돌 위험</td></tr>
+    <tr><td><strong>Task-Irrelevant Information</strong></td><td>과제에 필요없는 정보는 인지 자원을 소비</td><td>전방 건물·광고판 3D 렌더링이 운전 판단과 무관하나 주의 자원을 경쟁</td></tr>
+  </table>
+
+  <h4>사례 서술 예시 (자율주행 AR)</h4>
+  <pre>자율주행 AR HUD에서 전방 차량·보행자를 3D 실사 이미지로 오버레이할 경우,
+운전자는 두 가지 인지적 문제를 경험한다:
+
+① LOS Ambiguity: 3D 공간 정보를 2D 앞유리에 투영하면
+   깊이 축(전후거리)이 모호해져 실제 거리보다 가깝거나
+   멀게 지각하는 오차 발생 → 안전 거리 판단 실패
+
+② Attention 자원 경쟁: 과제 무관 정보(건물 외벽 텍스처,
+   광고판 디테일)가 시각 자원을 경쟁
+   → PPR(Principle of Pictorial Realism)의 역설:
+   "더 정교한 그래픽 ≠ 더 나은 수행"
+   (Smallman &amp; Cook, 2010 — 실험에서 사실적 3D 지형 모델이
+   위상도보다 수행 오히려 낮음)</pre>
+
+  <div class="search-guide">
+    <strong>2022년 이후 논문 탐색 (직접 인용 필수)</strong><br>
+    Google Scholar 검색어:
+    <ul>
+      <li><code>"augmented reality" "head-up display" "cognitive load" "driving" 2022</code></li>
+      <li><code>"AR HUD" "spatial cognition" "performance" autonomous vehicle 2023</code></li>
+      <li><code>"naive realism" "3D display" "workload" "automotive" 2022</code></li>
+    </ul>
+    찾아야 할 내용: <strong>3D 지각 오차 수치</strong>(예: 거리 추정 편차 %) 또는 <strong>인지부하 수치</strong>(NASA-TLX 점수, 반응시간 등)<br>
+    참고 학술지: IEEE Transactions on Intelligent Transportation Systems, Human Factors, Ergonomics
+  </div>
+
+  <h4>인지적 추상화 설계 지침 (솔루션)</h4>
+  <pre>원칙: "더 정교한 그래픽 X → 인지적 추상화로 과제 관련 정보만 압축"
+
+① 심볼릭 표현 (Iconic Abstraction)
+   차량: 3D 실사 아이콘 → 단순 삼각형 또는 화살표
+   보행자: 실사 → 사람 형태 실루엣 아이콘
+   위험: 3D 표시 → 색상 경보 바 (적색-황색)
+   → 과제 무관 정보 제거, task-relevant 정보만 남김
+
+② LOS Ambiguity 해결 — Co-planar 보조 표시
+   AR 오버레이(3D) + 소형 2D 거리 표시(co-planar)
+   → 정밀 거리 판단은 2D로, 통합 상황인식은 3D로
+   (Wickens et al., 2000 — ATC에서 3D+2D co-planar 병행)
+
+③ Ecological Interface Design (EID) 적용
+   위험도만 emergent feature로 표시:
+   → 안전 거리 이탈 시 테두리 색상 변화(무채색→주황→적색)
+   → 이 형태 변화만으로 즉각 지각 가능 (Burns et al., 2008)
+
+④ Data-Ink Ratio 원칙 (Tufte, 2001)
+   AR 화면에서 데이터를 표현하지 않는 픽셀 제거
+   → 배경 텍스처·광고판 디테일 모두 제거</pre>
+
+  <div class="mental-model">형모님의 챗봇 UI에서 피해자 감정 상태를 "얼굴 사진"으로 보여주는 것 vs. "감정 바(bar)"로 추상화하는 것 — 동일한 Naïve Realism 함정. 실제 얼굴이 더 직관적으로 느껴지지만, 경찰관이 빠른 판단을 해야 할 때는 추상화된 표시가 수행을 올린다.</div>
+
+  <div class="insight-box">
+    <span class="label">★ 답안 구조 제안 (4-1)</span>
+    Naïve Realism 정의(인용) → 자율주행 AR 사례 서술 → LOS Ambiguity로 오차 기제 설명 → 2022+ 논문 인용(수치 포함) → Cognitive Abstraction 설계 지침 4개 → 한 줄 결론: "사실성보다 과제 관련성이 기준이다"
+  </div>
+
+  <hr>
+
+  <h3>문항 4-2 전략 — 공간인지 개인차 + 적응형 디스플레이</h3>
+
+  <h4>정신 회전(Mental Rotation) + FOR 매핑표</h4>
+  <table>
+    <tr><th>디스플레이 방향</th><th>개인차 영향</th><th>FOR 비용</th><th>적합한 상황</th></tr>
+    <tr><td><strong>North-up (지도 고정)</strong></td><td>정신 회전 능력 높으면 유리, 낮으면 오류↑</td><td>FORT 비용 높음 (0~180° 불일치)</td><td>전체 지형 파악, survey knowledge 보유자</td></tr>
+    <tr><td><strong>Track-up (진행방향-위)</strong></td><td>개인차 영향 최소</td><td>FORT 비용 최소 (0° 정렬)</td><td>실시간 내비게이션, 초보 운전자</td></tr>
+  </table>
+
+  <h4>정신 회전 비용 4구간 — 채점 핵심</h4>
+  <pre>Figure 5.2 기반 (Wickens et al., 2022):
+0~90°   : FORT 비용 거의 없음 → North-up도 큰 문제 없음
+90~180° : 비용 급등 (좌우가 역전되어 명확한 불일치)
+~180° 직전: "dip" — 언어 전략("좌=우") 사용 가능
+180~360°: 0으로 대칭 복귀
+
+→ 실용 결론: 정신 회전 능력이 낮은 사용자는
+  90° 이상 불일치 시 FORT 비용이 급격히 상승
+  → Track-up이 기본, North-up은 선택 옵션</pre>
+
+  <h4>적응형 디스플레이 설계 방안</h4>
+  <div class="strategy-box">
+    <p><strong>핵심 아이디어</strong>: 사용자의 실시간 인지부하·수행을 감지하여 자동으로 North-up ↔ Track-up 전환</p>
+    <ul>
+      <li><strong>입력 신호 ①</strong>: Eye-tracking → 시선이 지도와 실제 도로를 자주 왔다 갔다(FORT 발생 징후) → Track-up으로 자동 전환</li>
+      <li><strong>입력 신호 ②</strong>: 조작 오류율 증가 → 현재 디스플레이 방향이 맞지 않다는 신호 → 전환</li>
+      <li><strong>입력 신호 ③</strong>: 심박수·동공 크기 증가(인지부하 지표) → 단순 Track-up으로 전환</li>
+      <li><strong>YAH 원리 응용</strong>: 지도의 현재 방향과 실제 진행 방향의 일치도를 실시간 계산 → 90° 초과 시 자동 회전</li>
+    </ul>
+  </div>
+
+  <div class="search-guide">
+    <strong>적응형 인터페이스 논문 탐색</strong><br>
+    Google Scholar: <code>"adaptive navigation display" "eye tracking" "cognitive load" 2022</code><br>
+    또는: <code>"dynamic map orientation" "track-up" "north-up" "performance" recent</code><br>
+    찾아야 할 내용: 실시간 인지부하 기반 자동 디스플레이 변경 알고리즘 + 성능 수치
+  </div>
+
+  <h4>Adaptive vs Training 논쟁 — 본인 견해</h4>
+  <table>
+    <tr><th></th><th>Adaptive (적응형)</th><th>Training (훈련형)</th></tr>
+    <tr><td><strong>장점</strong></td><td>즉각적 인지부하 감소, 개인차 자동 보상</td><td>장기적 survey knowledge 발달, 공간인지 능력 향상</td></tr>
+    <tr><td><strong>단점</strong></td><td>사용자가 스스로 FORT를 극복할 기회 사라짐 → 자율성·숙련 발달 저해</td><td>초기 학습 기간 동안 수행 저하, 안전 문제 발생 가능</td></tr>
+  </table>
+
+  <pre>본인 과학적 견해 제안:
+"Phase 1 (초기 적응기) = Adaptive 우선"
+→ 안전 확보 + 사용자 이탈 방지
+→ CLT(Cognitive Load Theory)의 scaffolding 원리:
+   초기에 지원을 제공하고 점차 거둔다
+
+"Phase 2 (숙달 기간) = Training 유도"
+→ 시스템이 점차 North-up 비중을 높이고
+  사용자가 정신 회전 능력을 개발하도록 유도
+→ Bjork (1999): desirable difficulties —
+  약간 어려운 조건이 장기 전이에 유리
+
+결론: 이분법적 대립이 아닌 Phase-based Hybrid 모델이
+인지공학적으로 타당하다.</pre>
+
+  <div class="mental-model">형모님의 피해자전담경찰봇 — 경찰관이 처음 사용할 때는 scaffolding(자동 안내)을 제공하고, 숙달 후에는 고급 기능(문항 선택)을 직접 조작하도록 설계한 것과 동일한 Phase-based 논리.</div>
+
+  <div class="insight-box">
+    <span class="label">★ 답안 구조 제안 (4-2)</span>
+    정신 회전 비용 4구간 → North-up/Track-up 비교 (FOR 기반) → 적응형 설계 방안 (입력 신호 3개) → 논문 인용 → Adaptive vs Training 논쟁 → Phase-based Hybrid 견해로 마무리
+  </div>
+
+  <hr>
+
+  <!-- ===== Q5 ===== -->
+  <h2 id="q5">문제 5 · Ch6/7: 초고령사회 의약품 라벨 &amp; 실버 서비스 <span style="font-size:0.85rem;font-weight:400;">(100점)</span></h2>
+
+  <div class="problem-box">
+    <p class="situation"><strong>상황</strong>: 2025년 한국은 초고령사회에 진입하였다. 노년층의 복약 오류(잘못된 용량 복용, 약물 혼동, 복용 시간 오류)가 사회 문제로 부각되고 있다. 기존 의약품 라벨은 일반 성인을 기준으로 설계되어 노년층의 인지 특성을 반영하지 못하고 있다.</p>
+    <div class="q-item"><strong>문항 5-1.</strong> 노년층의 인지 특성을 <strong>Unitization(자동화)</strong>과 <strong>Bottom-up/Top-down 처리</strong> 개념으로 분석하고, 이를 반영한 의약품 라벨 재설계안을 구체적으로 제안하시오. <em>(50점)</em></div>
+    <div class="q-item"><strong>문항 5-2.</strong> <strong>다중 자원 이론(Multiple Resource Theory, MRT)</strong>, <strong>상황인식(SA)</strong>, <strong>멘탈 모델</strong> 개념을 활용하여 노년층의 WM 감소를 보완하는 디지털 헬스케어 서비스 모델을 제안하고, 그 경제·사회적 가치를 논하시오. <em>(50점)</em></div>
+  </div>
+
+  <h3>문항 5-1 전략 — 노년층 의약품 라벨 재설계</h3>
+
+  <h4>노년층 인지 특성 매핑 — 이론 연결</h4>
+  <table>
+    <tr><th>인지 특성</th><th>이론 연결</th><th>라벨 설계 함의</th></tr>
+    <tr><td>WM 용량 감소 (3~4 chunk → 2~3 chunk)</td><td>Ch7: Baddeley WM, Cowan (2001)</td><td>한 번에 제시하는 정보량 최소화 — 핵심 3개(약명+용량+빈도)만 전면</td></tr>
+    <tr><td>Bottom-up 처리 약화 (시각 기능 저하)</td><td>Ch6: Bottom-up 데이터 의존도 감소</td><td>폰트 최소 14pt, 대비 높은 색상, 굵기 강조 → Salience↑</td></tr>
+    <tr><td>Top-down 의존도 증가 (맥락·기대 기반 처리)</td><td>Ch6: Word Superiority Effect, 친숙성</td><td>익숙한 표현 사용, 아이콘보다 단어+그림 병행(Complementarity)</td></tr>
+    <tr><td>처리 단위 증가 (더 큰 단위로 읽기)</td><td>Ch6: Unitization — Allen et al. (2002)</td><td>소문자 유지 (word shape 다양성), 단어 수준 청킹 설계</td></tr>
+    <tr><td>유사 약물명 혼동 취약</td><td>Ch6: 특징 유사성 → 탐색 오류↑ (Neisser, 1964)</td><td>Tall Man lettering으로 유사 약물명 구별</td></tr>
+  </table>
+
+  <h4>Unitization + Tall Man Lettering 핵심</h4>
+  <div class="strategy-box">
+    <p><strong>Unitization (자동화)</strong>: 반복 경험으로 하위 단위들이 하나의 처리 단위로 묶이는 현상. 노년층은 단어 전체를 하나의 단위로 처리하는 경향이 강해짐 (Allen et al., 2002) → word shape에 의존.</p>
+    <p>→ <strong>소문자가 대문자보다 word shape 다양성이 커</strong> 구별이 쉬움 (Vartabedian, 1972). 의약품 라벨에서 약명은 소문자 중심으로 표기.</p>
+    <p><strong>Tall Man Lettering</strong> (Gerret et al., 2011): 유사 약물명의 차별화 부분을 대문자로 강조.</p>
+    <p>예) <code>amiLODIPine</code> vs <code>AMiodArone</code> — 시각 특징 차별화로 혼동 오류 57% 감소</p>
+  </div>
+
+  <h4>라벨 재설계안 — 5가지 원칙</h4>
+  <pre>① 정보 계층화 (WM 부하 최소화)
+   전면: 약물명(Tall Man) + 용량 + 복용 빈도 = 3개만
+   후면: 부작용·금기·성분 = 상세 정보 격리
+
+② 폰트 설계 (Bottom-up 보완)
+   최소 14pt (Morrow et al., 2007 권고)
+   소문자 중심, 굵기 700 이상
+   배경-전경 명암비 최소 4.5:1 (WCAG 기준)
+
+③ Complementarity (텍스트+그래픽 병행)
+   복용 시간: 텍스트("아침 식후") + 시계 아이콘 병행
+   → 공간 인접성 원칙(Spatial Contiguity, Mayer):
+     텍스트를 해당 그래픽 바로 옆에 배치
+   → WM에서 두 소스를 통합하는 비용 최소화
+
+④ Tall Man Lettering 적용 (유사 약물명)
+   유사한 약물명은 차별화 부분만 대문자 강조
+   → Top-down 오류(잘못된 기대로 읽기) 방지
+
+⑤ 색상 코딩 (범주 구분)
+   용량 경고(과다 복용 위험): 색 채도·밝기로 표시
+   (hue는 순서 정보에 부적합 — Cleveland &amp; McGill, 1984)
+   위험도 범주: 적색(즉각 주의) / 황색(주의) / 녹색(정상)</pre>
+
+  <div class="mental-model">형모님의 인지공학 퀴즈앱 기획 — "K-콘텐츠 앵커로 개념 설명" 방식이 바로 Complementarity + Top-down 활성화다. 텍스트 개념 + 친숙한 드라마 장면(그래픽)을 함께 제시해 WM 부하를 줄이는 원리와 동일.</div>
+
+  <div class="insight-box">
+    <span class="label">★ 답안 구조 제안 (5-1)</span>
+    노년층 인지 특성 표(이론 연결) → Unitization/Bottom-up/Top-down 각각 1문단 → 재설계안 5개 원칙 → 각 원칙마다 이론 근거 + 인용 → 한 줄 결론: "인지 특성을 반영한 라벨이 복약 오류를 줄인다"
+  </div>
+
+  <hr>
+
+  <h3>문항 5-2 전략 — 실버 산업 인지공학 서비스 모델</h3>
+
+  <h4>핵심 이론 3개 매핑</h4>
+  <table>
+    <tr><th>이론</th><th>노년층 문제</th><th>서비스 설계 방향</th></tr>
+    <tr><td><strong>MRT (다중 자원 이론)</strong></td><td>이중과제 수행 시 자원 고갈 — 약 복용하면서 요리하면 둘 다 실패</td><td>단일 채널 설계: 복약 알림은 청각 단독 (시각 채널이 바쁠 때 청각 활용)</td></tr>
+    <tr><td><strong>SA (상황인식, Endsley)</strong></td><td>Level 2(이해), Level 3(예측) 달성 어려움 → "지금 내가 제대로 복용하고 있나?" 판단 불가</td><td>시스템이 SA Level 1-3 모두 지원: 현재 복용 상태(L1) + 약물 상호작용 자동 이해(L2) + 복용 패턴 예측 알림(L3)</td></tr>
+    <tr><td><strong>멘탈 모델</strong></td><td>과거 복약 습관(아날로그 약통, 달력 표시)과 다른 디지털 인터페이스 → 혼란</td><td>아날로그 경험과 호환되는 인터페이스: 디지털 달력+알람, 물리 약통 연동 IoT</td></tr>
+  </table>
+
+  <h4>서비스 모델 — AI 복약 도우미 앱 (예시)</h4>
+  <pre>서비스명: 인지공학 기반 복약 지원 앱 (예: 「약챙겨」)
+
+① SA Level 1 지원 (현재 상태 지각)
+   - 복용 여부를 IoT 스마트 약통이 자동 감지
+   - 상태를 단순 아이콘으로 표시 (✓ 복용/✗ 미복용)
+   - 정보 계층화: 오늘 복용 현황만 전면 표시 (WM 부하↓)
+
+② SA Level 2 지원 (이해 촉진)
+   - "지금 드신 약과 저녁에 드실 약이 함께 복용하면 안 됩니다"
+   - 텍스트 + 충돌 경고 아이콘 (Complementarity)
+   - 부정문 피하기: "함께 복용 금지" > "함께 복용하지 마세요"
+
+③ SA Level 3 지원 (예측 + 가족 알림)
+   - 복용 패턴 분석: "최근 7일간 오후 약을 4회 미복용 → 담당 의사 알림"
+   - 예측 디스플레이 원리 적용(predictor display)
+
+④ MRT 적용 — 단일 채널 우선
+   - 복약 알림: 부드러운 음성 안내 (시각 자원이 다른 활동에 점유 중일 때)
+   - 위급 알림: 시각(화면 전체 깜빡임) + 청각(높은 음)의 이중 채널 동시 사용
+
+⑤ 멘탈 모델 호환
+   - 아날로그 달력 형태 UI
+   - 기존 약통 모양과 유사한 아이콘
+   - "이전에 쓰던 방식"을 디지털로 그대로 옮긴 것처럼 느끼게 설계</pre>
+
+  <h4>경제·사회적 가치 논술 가이드</h4>
+  <div class="strategy-box">
+    <p><strong>경제적 가치</strong>: 노인 복약 오류는 연간 의료비에 상당한 부담을 준다. 복약 오류 감소 → 재입원 감소 → 국민건강보험 재정 절감. 노인 의약품 부작용 관련 응급실 방문 비용을 X% 절감 가능 (구체 수치는 보건복지부 통계 인용).</p>
+    <p><strong>사회적 가치</strong>: ① 독거노인의 자립 생활 연장 (복약 도우미 = 간병 부담 감소) ② 노년층의 디지털 헬스케어 접근성 향상 ③ 가족 안심: 원격 모니터링으로 고독사 예방 기여.</p>
+    <p><strong>인지공학 관점 마무리</strong>: "인지공학 원리를 반영한 설계는 단순 편의 향상이 아닌, 노년층의 인지 한계를 체계적으로 보완하여 자립 생활을 가능하게 한다"</p>
+  </div>
+
+  <div class="mental-model">형모님의 고용노동부 공모전 아이디어(소규모 사업장 노동자 집단상담)와 동일한 구조: 인지·심리적 취약 집단의 특성을 파악 → 인지공학 원리로 설계 → 경제·사회적 가치 논증. Q5-2 답안 틀로 바로 응용 가능.</div>
+
+  <hr>
+
+  <!-- ===== Q6 ===== -->
+  <h2 id="q6">문제 6 · 본인 성찰: 인지 변화 &amp; 환경 최적화 <span style="font-size:0.85rem;font-weight:400;">(100점)</span></h2>
+
+  <div class="problem-box">
+    <p class="situation"><strong>형식</strong>: 인지공학심리학 학습 후 <strong>본인의 인지적 변화</strong>와 <strong>업무/연구 환경 최적화 방안</strong>을 서술하는 성찰 문항이다. 단순히 "알게 되었다" 수준을 넘어 <strong>비판적 성찰</strong>이 필요하다. 각 항목마다 이론을 명시하고 실제 사례를 포함할 것.</p>
+    <div class="q-item"><strong>문항 6-1.</strong> 이 수업을 통해 본인의 인지·지각·기억 방식에 대한 관점이 어떻게 변화하였는지 <strong>5개 이상</strong> 서술하시오. 이론(WM 한계, Bottom-up/Top-down, SEEV, Automaticity 양면성 등)을 명시하고 비판적 성찰을 포함. <em>(50점)</em></div>
+    <div class="q-item"><strong>문항 6-2.</strong> 학습한 인지공학 원리를 자신의 업무·연구 환경에 <strong>5개 이상</strong> 적용하여 최적화한 실제 사례 또는 계획을 서술하시오. 설계 원칙에 근거한 대안을 포함. <em>(50점)</em></div>
+  </div>
+
+  <div class="alert-box">Q6는 정답이 없다 — <strong>본인만의 구체 사례</strong>가 없으면 채점에서 손해. 아래 템플릿을 본인 경험으로 채워서 쓸 것. "알게 되었다" 금지, "이렇게 생각했는데 틀렸고 → 이렇게 바뀌었다"가 채점 핵심.</div>
+
+  <h3>문항 6-1 전략 — 인지 변화 성찰 템플릿 (5개 이상)</h3>
+
+  <div class="insight-box">
+    <span class="label">★ 각 항목의 구조</span>
+    ① 이전 생각 → ② 수업 후 인식 변화 → ③ 관련 이론 명시 → ④ 비판적 성찰 (기존 가정의 어느 부분이 틀렸는가)
+  </div>
+
+  <div class="template-box">
+    <span class="t-label">항목 1 — WM 한계: "집중하면 다 기억할 수 있다"는 믿음의 붕괴</span>
+    <p><strong>이전</strong>: learnUs에서 공지 5-6개를 동시에 읽으면 다 파악할 수 있다고 생각했다.</p>
+    <p><strong>변화</strong>: WM 용량은 3~4 chunk(Cowan, 2001)가 한계이며, 공지 6개를 동시에 처리하는 것 자체가 인지공학적으로 불가능한 요구였다. 이후 나는 체크리스트(외부 retrieval cue)를 사용하기 시작했다.</p>
+    <p><strong>비판적 성찰</strong>: "더 집중하면 된다"는 믿음이 틀렸던 것이 아니라, 시스템 설계 자체가 WM 한계를 고려하지 않았다는 점이 진짜 문제였다. 이는 설계자가 아닌 사용자를 탓하는 전형적인 함정이다.</p>
+  </div>
+
+  <div class="template-box">
+    <span class="t-label">항목 2 — SEEV: 챗봇 알림 설계에서 경찰관이 왜 중요 정보를 놓치는지</span>
+    <p><strong>이전</strong>: 피해자전담경찰봇 개발 시, 경찰관이 챗봇 알림을 무시하는 것은 "주의를 기울이지 않아서"라고 생각했다.</p>
+    <p><strong>변화</strong>: SEEV 모델(Wickens et al., 2022) — Salience(시각 돌출 부족), Effort(알림 아이콘 위치가 시선 중심에서 멀어 이동 비용 높음), Expectancy(평소 중요 알림이 드물어 기대 낮음), Value(이전 알림이 불필요했다는 경험으로 가치 낮음)가 모두 챗봇 알림 무시를 설명한다.</p>
+    <p><strong>비판적 성찰</strong>: "사용자 문제"를 "설계 문제"로 재해석하는 패러다임 전환. 경찰관을 탓하는 것이 아니라 Salience와 Value를 높이는 설계 변경이 정답이다.</p>
+  </div>
+
+  <div class="template-box">
+    <span class="t-label">항목 3 — Automaticity 양면성: 자동화는 언제 도움이 되고 언제 함정인가</span>
+    <p><strong>이전</strong>: 반복적으로 하는 일(매일 논문 정리 루틴)은 익숙해질수록 좋다고 생각했다.</p>
+    <p><strong>변화</strong>: 자동화(Unitization, Schneider &amp; Shiffrin, 1977)는 고부하·스트레스 상황에서 강건하지만, 맥락이 바뀌면(새 플랫폼, 새 과제) 자동화된 반응이 오류를 유발한다. 예: 습관화된 learnUs 탐색 경로가 UI 업데이트 후 반복 오류(Retroactive Interference)를 냈다.</p>
+    <p><strong>비판적 성찰</strong>: 자동화는 효율의 도구이자 유연성의 적이다. 중요한 판단을 자동화에 맡기는 순간, 변화에 대한 취약성이 커진다는 것을 인지공학이 체계적으로 설명해준다.</p>
+  </div>
+
+  <div class="template-box">
+    <span class="t-label">항목 4 — Bottom-up/Top-down: "읽는다"는 것이 이렇게 복잡한 과정이었나</span>
+    <p><strong>이전</strong>: 논문을 읽을 때 집중력 문제라고만 생각했다. 이해가 안 되면 집중력 부족 탓이었다.</p>
+    <p><strong>변화</strong>: Bottom-up(문자 특징→단어→문장 처리)과 Top-down(맥락·배경지식으로 하위 처리 보완)의 상호작용을 이해하고 나서, 낯선 논문을 먼저 abstract와 conclusion을 읽어 Top-down 맥락을 먼저 활성화하는 전략으로 바꿨다(Bransford &amp; Johnson, 1972 — 맥락을 먼저 제공하면 이해·회상 모두 향상).</p>
+    <p><strong>비판적 성찰</strong>: "집중력 부족"이 아닌 "Top-down 맥락 부재"가 진짜 원인이었다. 이 인식 변화는 내 학습 전략을 근본적으로 바꿨다.</p>
+  </div>
+
+  <div class="template-box">
+    <span class="t-label">항목 5 — SA Level 3: 연구 계획을 왜 항상 틀리게 예측했나</span>
+    <p><strong>이전</strong>: 연구 타임라인을 작성하면서 "이번엔 제대로 예측했다"고 생각했지만, 항상 실제는 달랐다.</p>
+    <p><strong>변화</strong>: Endsley SA의 Level 3(Projection — 미래 예측)은 WM 집약적이며, LTM mental model이 정확해야만 가능하다. 대학원 연구는 경험 부족(LTM 템플릿 없음)으로 Level 3 예측이 체계적으로 부정확할 수밖에 없다. Opportunistic planning(Satisficing) — 부분해가 보이면 그대로 진행하는 것이 WM 한계 상황에서 자연스러운 대처다.</p>
+    <p><strong>비판적 성찰</strong>: 예측 실패를 "계획성 부족"으로 자책했던 것이, 실은 LTM mental model 미발달 + SA Level 3의 WM 요구로 설명된다. 이제는 Kanban으로 계획을 외부화해 WM 의존을 줄이고 있다.</p>
+  </div>
+
+  <hr>
+
+  <h3>문항 6-2 전략 — 환경 최적화 사례 템플릿 (5개 이상)</h3>
+
+  <div class="insight-box">
+    <span class="label">★ 각 항목의 구조</span>
+    ① 발견한 문제 → ② 적용한 인지공학 원리 + 인용 → ③ 실제 변화 (구체적 행동) → ④ 효과 (또는 앞으로의 계획)
+  </div>
+
+  <div class="template-box">
+    <span class="t-label">사례 1 — PCP 적용: 논문 읽기 환경</span>
+    <p><strong>문제</strong>: 논문(PDF)을 읽으면서 작성 중인 글(Word)을 왔다 갔다하며 주의가 분산되었다.</p>
+    <p><strong>원리</strong>: 근접 호환성 원칙(PCP, Wickens &amp; Carswell, 1995) — 동시에 통합해야 하는 정보는 디스플레이 상에서 근접하게 배치해야 한다.</p>
+    <p><strong>변화</strong>: 듀얼 모니터 환경에서 PDF(왼쪽) + 작성 문서(오른쪽)를 항상 동시에 표시. 단일 모니터일 때는 화면 분할 소프트웨어 사용.</p>
+    <p><strong>효과</strong>: 시선 이탈 횟수 감소, 논문에서 글로 아이디어를 옮기는 속도 향상.</p>
+  </div>
+
+  <div class="template-box">
+    <span class="t-label">사례 2 — CLT Scaffolding: 새 도구 학습 (Claude Code)</span>
+    <p><strong>문제</strong>: Claude Code를 처음 사용할 때 너무 많은 기능을 한꺼번에 파악하려다 오히려 혼란스러웠다.</p>
+    <p><strong>원리</strong>: CLT — Extraneous Load↓, Germane Load↑. Scaffolding: 초기에 지원을 많이 주고 점차 거둔다 (Wickens et al., 2022).</p>
+    <p><strong>변화</strong>: "핵심 3가지 명령어만 먼저 익히고 나머지는 필요할 때 배우기" 전략으로 전환. Worked example(기존 프롬프트 따라하기) → 직접 수정 → 독자 작성 순서.</p>
+    <p><strong>효과</strong>: 학습 시간 단축 + 새 기능 추가 시 기존 지식과 통합이 더 자연스러워짐.</p>
+  </div>
+
+  <div class="template-box">
+    <span class="t-label">사례 3 — SA 외부화: 연구 타임라인 Kanban</span>
+    <p><strong>문제</strong>: 연구 계획을 머릿속에서 관리하다 보니 중요한 마감을 놓치거나 우선순위를 혼동했다.</p>
+    <p><strong>원리</strong>: SA Level 1-3 지원. "지식을 세상에 두기"(Norman, 1992) — WM 부담을 외부 표상으로 대체. Prospective memory 보완을 위한 retrieval cue 외부화 (Ch7).</p>
+    <p><strong>변화</strong>: 논문별 진행 상태를 칸반(Trello/Notion)으로 시각화. "대기-진행 중-리뷰-완료" 4단계로 분류. SA Level 1(현재 상태), Level 2(의존성 파악), Level 3(마감 예측)를 보드가 지원.</p>
+    <p><strong>효과</strong>: 매일 아침 보드 확인으로 당일 작업 명확화. 마감 2주 전 예측 알림 설정.</p>
+  </div>
+
+  <div class="template-box">
+    <span class="t-label">사례 4 — SDT/Cry wolf 방지: 챗봇 알림 임계값 설계</span>
+    <p><strong>문제</strong>: 피해자전담경찰봇 개발 시, 경찰관이 알림을 무시하지 않도록 하는 임계값 설정이 고민이었다.</p>
+    <p><strong>원리</strong>: SDT의 β(판단 기준) 관리 — 오경보(False Alarm) 남발은 β를 보수적으로 이동시켜 진짜 위기도 무시하게 만든다(Cry wolf syndrome, Wickens et al., 2022).</p>
+    <p><strong>변화</strong>: 챗봇 알림을 Tier 1(즉각 개입 필요), Tier 2(권고), Tier 3(정보 제공)으로 3단계 분류. Tier 1은 절대 남발 금지 → β 보수화 방지. 이는 Likelihood Alarms 원리(Sorkin, 1989)의 적용.</p>
+    <p><strong>효과</strong>: 경찰관이 알림을 신뢰하게 됨 → Value(SEEV)가 높게 유지됨.</p>
+  </div>
+
+  <div class="template-box">
+    <span class="t-label">사례 5 — Spaced Practice: 교재 학습 스케줄</span>
+    <p><strong>문제</strong>: 시험 전날 몰아서 공부하는 패턴이 반복되었고, 매번 시험 후 며칠만 지나면 내용을 잊었다.</p>
+    <p><strong>원리</strong>: Distribution of practice — Massed &lt; Spaced (분산 연습, Cepeda et al., 2006). Interleaved practice(ABC-ABC-ABC)가 Block 연습(AAA-BBB-CCC)보다 장기 retention에 강함. Training-transfer dissociation (Bjork, 1999): 쉽게 학습된 내용은 전이가 약하다.</p>
+    <p><strong>변화</strong>: 매주 챕터를 정해진 시간에 읽고(weekly-textbook 스킬 활용), 복습은 이전 챕터를 섞어서 진행하는 interleaved 스케줄. 학습 후 self-quiz(generation effect)로 능동적 인출 연습.</p>
+    <p><strong>효과</strong>: (진행 중) 이번 중간고사를 통해 Ch1-7 지식 파일이 실시간 학습 도구로 활용됨 — 이 자체가 spaced retrieval practice.</p>
+  </div>
+
+  <div class="mental-model">Q6-2 사례들은 형모님이 실제로 하고 있는 일들이다 — learnUs, 챗봇 개발, 대학원 연구, 학습 스케줄. 위 템플릿에서 형모님 본인의 구체적 수치·날짜·에피소드를 넣으면 채점자가 "비판적 성찰"로 인정한다.</div>
+
+  <hr>
+
+  <!-- ===== CHECKLIST ===== -->
+  <h2 id="checklist">최종 체크리스트</h2>
+
+  <div class="checklist">
+    <h4>Q4~6 필수 포함 항목</h4>
+    <table>
+      <tr><th>문항</th><th>필수 내용</th><th>핵심 인용</th></tr>
+      <tr><td>4-1</td><td>Naïve Realism 정의 → <strong>자율주행 AR 사례</strong> → LOS Ambiguity 기제 → 2022+ 논문 2편 → 인지 추상화 설계 4개</td><td>Smallman &amp; Cook (2010), Wickens et al. (2022), 2022+ 탐색 필요</td></tr>
+      <tr><td>4-2</td><td>정신 회전 4구간 → <strong>North-up vs Track-up 비교</strong> → 적응형 설계 (입력 신호 3개) → Adaptive vs Training → Phase-based 견해</td><td>Wickens et al. (2022), Aretz (1991), 적응형 논문 탐색 필요</td></tr>
+      <tr><td>5-1</td><td>노년층 5가지 인지 특성 → <strong>Unitization + Tall Man Lettering</strong> → Complementarity 재설계안 5개</td><td>Allen et al. (2002), Gerret et al. (2011), Mayer (공간 인접성), Vartabedian (1972)</td></tr>
+      <tr><td>5-2</td><td>MRT + SA 3단계 + 멘탈모델 매핑 → <strong>서비스 모델 구체안</strong> → 경제·사회적 가치 논술</td><td>Endsley (1995), Wickens et al. (2022)</td></tr>
+      <tr><td>6-1</td><td>5개 이상 항목 · <strong>"이전→변화→이론→비판적 성찰"</strong> 구조 · "알게 되었다" 수준 금지</td><td>WM, SEEV, Automaticity, Bottom-up/Top-down, SA 각각 인용</td></tr>
+      <tr><td>6-2</td><td>5개 이상 항목 · <strong>실제 사례(구체 행동 포함)</strong> · 설계 원칙 근거 + 대안</td><td>PCP, CLT, SA, SDT, Spaced Practice 각각 인용</td></tr>
+    </table>
+  </div>
+
+  <div class="alert-box">Q4는 논문 2편 + 적응형 논문 1편을 직접 탐색해야 한다. 위 탐색 가이드의 키워드로 Google Scholar에서 APA 형식으로 인용할 것. 수치(NASA-TLX, 반응시간, 오차 %) 없으면 감점.</div>
+
+  <div class="insight-box">
+    <span class="label">★ 전략 요약</span>
+    Q4는 "더 사실적 = 더 좋다"는 직관의 반박이 핵심 / Q5는 노년층 인지 특성을 이론으로 매핑 후 설계로 연결 / Q6는 본인 경험에 이론을 입히는 것이 전부 — 위 템플릿을 본인 에피소드로 채우면 된다. 세 문제 모두 결론을 먼저, 근거를 뒤에 쓰는 deductive 구조.
+  </div>
+
+</div>
+</body>
+</html>
