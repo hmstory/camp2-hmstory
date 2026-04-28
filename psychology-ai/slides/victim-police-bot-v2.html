@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>피해자전담경찰 챗봇 v2 — 통제감 회복</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0d1117;
+      --bg-card: #1e2740;
+      --bg-card2: #1a2235;
+      --text: #f1f5f9;
+      --text-sub: #94b8c8;
+      --teal: #2dd4bf;
+      --gold: #f59e0b;
+      --gold-light: #fcd34d;
+      --red: #f87171;
+      --green: #6ee7b7;
+      --blue: #93c5fd;
+      --purple: #c4b5fd;
+      --orange: #fdba74;
+      --border: #2a3f5f;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .deck { width: 100vw; height: 100vh; position: relative; }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 36px 72px;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .slide.active { display: flex; }
+    .slide.visible { opacity: 1; }
+
+    .slide-inner { width: 100%; max-width: 1040px; }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      border: 1.5px solid var(--teal);
+      padding: 4px 12px;
+      border-radius: 4px;
+      margin-bottom: 14px;
+    }
+    .tag.gold { color: var(--gold); border-color: var(--gold); }
+    .tag.purple { color: var(--purple); border-color: var(--purple); }
+
+    h1 {
+      font-size: clamp(2.2rem, 4.2vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.2;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-size: clamp(1.45rem, 2.5vw, 1.95rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 18px;
+    }
+    .sub { font-size: 1.05rem; color: var(--text-sub); margin-bottom: 6px; }
+
+    /* 카드 */
+    .card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+    }
+    .card.teal { border-color: rgba(45,212,191,0.55); }
+    .card.gold { border-color: rgba(245,158,11,0.55); }
+    .card.blue { border-color: rgba(147,197,253,0.55); }
+    .card.green { border-color: rgba(110,231,183,0.55); }
+    .card.purple { border-color: rgba(196,181,253,0.55); }
+    .card.orange { border-color: rgba(253,186,116,0.55); }
+    .card.red { border-color: rgba(248,113,113,0.45); background: rgba(248,113,113,0.06); }
+
+    .card-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    /* 인용 */
+    blockquote {
+      border-left: 3px solid var(--gold);
+      padding: 11px 18px;
+      background: rgba(245,158,11,0.08);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.96rem;
+      color: var(--gold-light);
+      line-height: 1.7;
+      margin: 10px 0;
+    }
+    blockquote cite {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      margin-top: 5px;
+      font-style: normal;
+    }
+
+    /* 그리드 */
+    .cols { display: grid; gap: 14px; }
+    .cols-2 { grid-template-columns: 1fr 1fr; }
+    .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+    /* 뱃지 */
+    .badge {
+      display: inline-block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 3px 11px;
+      border-radius: 20px;
+      margin: 2px 2px 2px 0;
+    }
+    .badge.teal { background: rgba(45,212,191,0.18); color: var(--teal); }
+    .badge.gold { background: rgba(245,158,11,0.18); color: var(--gold-light); }
+    .badge.blue { background: rgba(147,197,253,0.18); color: var(--blue); }
+    .badge.green { background: rgba(110,231,183,0.18); color: var(--green); }
+    .badge.red { background: rgba(248,113,113,0.18); color: var(--red); }
+    .badge.purple { background: rgba(196,181,253,0.18); color: var(--purple); }
+
+    /* 테이블 */
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th {
+      background: var(--bg-card2);
+      color: var(--teal);
+      font-weight: 700;
+      padding: 9px 13px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 13px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+      line-height: 1.55;
+    }
+    tr:last-child td { border-bottom: none; }
+
+    /* 흐름 화살표 */
+    .arrow-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .arrow { color: var(--text-sub); font-size: 1.3rem; flex-shrink: 0; }
+    .arrow.gold { color: var(--gold); }
+    .arrow.teal { color: var(--teal); }
+
+    /* 타임라인 */
+    .timeline {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      width: 100%;
+      margin: 16px 0;
+    }
+    .tl-item { flex: 1; position: relative; }
+    .tl-item:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -10px;
+      top: 18px;
+      color: var(--text-sub);
+      font-size: 1.2rem;
+      z-index: 2;
+    }
+    .tl-dot {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin: 0 auto 8px;
+      border: 2.5px solid;
+    }
+    .tl-dot.blue { background: rgba(147,197,253,0.2); border-color: var(--blue); color: var(--blue); }
+    .tl-dot.green { background: rgba(110,231,183,0.2); border-color: var(--green); color: var(--green); }
+    .tl-dot.orange { background: rgba(253,186,116,0.2); border-color: var(--orange); color: var(--orange); }
+    .tl-dot.purple { background: rgba(196,181,253,0.2); border-color: var(--purple); color: var(--purple); }
+    .tl-label { text-align: center; font-size: 0.88rem; font-weight: 700; color: var(--text); }
+    .tl-sub { text-align: center; font-size: 0.78rem; color: var(--text-sub); margin-top: 3px; }
+    .tl-ebt { text-align: center; font-size: 0.75rem; margin-top: 6px; }
+
+    /* 네비게이션 */
+    .nav {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 100;
+      background: rgba(13,17,23,0.7);
+      padding: 8px 18px;
+      border-radius: 30px;
+      border: 1.5px solid var(--border);
+      backdrop-filter: blur(6px);
+    }
+    .nav-btn {
+      background: var(--bg-card2);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .nav-counter { font-size: 0.88rem; color: var(--text); font-weight: 600; min-width: 48px; text-align: center; }
+    .dots { display: flex; gap: 6px; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); cursor: pointer; transition: all 0.2s; }
+    .dot.active { background: var(--teal); width: 22px; border-radius: 4px; }
+
+    .slide-num-badge {
+      position: fixed; top: 22px; right: 30px;
+      font-size: 0.88rem; font-weight: 700;
+      color: var(--text); z-index: 100;
+      background: rgba(30,39,64,0.85);
+      border: 1.5px solid var(--border);
+      padding: 4px 14px;
+      border-radius: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* 구분선 */
+    .divider { border: none; border-top: 1.5px solid var(--border); margin: 12px 0; }
+    .divider.gold { border-color: rgba(245,158,11,0.4); }
+
+    /* 하이라이트 박스 */
+    .hl-box {
+      background: rgba(45,212,191,0.08);
+      border: 1.5px solid rgba(45,212,191,0.35);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+    .hl-box.gold {
+      background: rgba(245,158,11,0.08);
+      border-color: rgba(245,158,11,0.35);
+    }
+    .hl-box.red {
+      background: rgba(248,113,113,0.07);
+      border-color: rgba(248,113,113,0.35);
+    }
+
+    /* 슬라이드 배경 변형 */
+    .s1 { background: radial-gradient(ellipse at 70% 20%, rgba(45,212,191,0.10) 0%, transparent 55%), var(--bg); }
+    .s2 { background: radial-gradient(ellipse at 30% 70%, rgba(245,158,11,0.07) 0%, transparent 55%), var(--bg); }
+    .s3 { background: radial-gradient(ellipse at 65% 40%, rgba(248,113,113,0.07) 0%, transparent 55%), var(--bg); }
+    .s5 { background: radial-gradient(ellipse at 50% 30%, rgba(147,197,253,0.07) 0%, transparent 55%), var(--bg); }
+    .s9 { background: radial-gradient(ellipse at 50% 50%, rgba(45,212,191,0.09) 0%, transparent 60%), var(--bg); }
+
+    @media (max-width: 768px) {
+      .slide { padding: 20px 18px; }
+      .cols-2, .cols-3, .cols-4 { grid-template-columns: 1fr; }
+      h1 { font-size: 1.6rem; }
+      h2 { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="slide-num-badge" id="slideNumBadge">1 / 9</div>
+
+<div class="deck" id="deck">
+
+  <!-- ───── SLIDE 1: 타이틀 ───── -->
+  <div class="slide s1 active" id="s1">
+    <div class="slide-inner" style="text-align:center;">
+      <div class="tag">2차 발표 · 심리학기반 AI</div>
+      <h1 style="font-size:clamp(2.4rem,5vw,3.8rem); margin-bottom:24px;">
+        피해자전담경찰 면담 챗봇
+        <span style="color:var(--teal);">v2</span>
+      </h1>
+      <p style="font-size:clamp(1.2rem,2.4vw,1.65rem); color:var(--gold-light); font-weight:600; margin-bottom:36px; line-height:1.5;">
+        "통제를 잃은 자리에,<br>통제를 돌려드립니다"
+      </p>
+      <div style="display:inline-flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:32px;">
+        <span class="badge blue">PFA · Phase 1</span>
+        <span class="badge green">SPR · Phase 2</span>
+        <span class="badge gold">통제감 회복</span>
+        <span class="badge purple">Bandura 자기효능감</span>
+      </div>
+      <hr class="divider" style="max-width:400px; margin:0 auto 24px;">
+      <p class="sub" style="font-size:1.0rem;">연세대학교 심리이노베이션대학원 디지털 혁신 트랙</p>
+      <p style="font-size:1.0rem; color:var(--text-sub);">김명덕 · 김성언 · 박연서 · 손지영 · 김형모</p>
+    </div>
+  </div>
+
+  <!-- ───── SLIDE 2: 리캡 ───── -->
+  <div class="slide s2" id="s2">
+    <div class="slide-inner">
+      <div class="tag gold">Recap</div>
+      <h2>우리가 여기까지 온 길</h2>
+
+      <!-- 가로 흐름 -->
+      <div style="display:grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap:0; align-items:start; margin-bottom:20px;">
+
+        <!-- 0단계 -->
+        <div class="card" style="border-color:#444; text-align:center;">
+          <div class="card-label" style="color:var(--text-sub);">0단계 · 프리 기획</div>
+          <p style="font-size:0.95rem; color:var(--text); line-height:1.6;">접수면담 대체<br>챗봇 기획</p>
+        </div>
+
+        <!-- 화살표 + 교수님 피드백 ① -->
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 8px; min-width:110px;">
+          <div style="font-size:0.78rem; color:var(--gold); font-weight:700; text-align:center; margin-bottom:4px; line-height:1.4;">교수님 피드백 ①</div>
+          <div style="font-size:0.78rem; color:var(--text-sub); text-align:center; line-height:1.4; margin-bottom:6px;">"어느 센터?<br>어떤 내담자?<br>무엇을 상담?"</div>
+          <div style="color:var(--gold); font-size:1.4rem;">→</div>
+        </div>
+
+        <!-- 1차 발표 -->
+        <div class="card blue" style="text-align:center;">
+          <div class="card-label" style="color:var(--blue);">1차 발표</div>
+          <p style="font-size:0.95rem; color:var(--text); line-height:1.6;">경찰이 사용<br>내담자 = 피해자<br><span style="font-size:0.83rem; color:var(--text-sub);">"치료하지 않습니다.<br>준비시킵니다."</span></p>
+        </div>
+
+        <!-- 화살표 + 교수님 피드백 ② -->
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 8px; min-width:110px;">
+          <div style="font-size:0.78rem; color:var(--gold); font-weight:700; text-align:center; margin-bottom:4px; line-height:1.4;">교수님 피드백 ②</div>
+          <div style="font-size:0.78rem; color:var(--text-sub); text-align:center; line-height:1.4; margin-bottom:6px;">"팩트수집기냐?<br>배경조사<br>더 해라"</div>
+          <div style="color:var(--gold); font-size:1.4rem;">→</div>
+        </div>
+
+        <!-- 2차 발표 -->
+        <div class="card green" style="text-align:center;">
+          <div class="card-label" style="color:var(--green);">2차 발표</div>
+          <p style="font-size:0.95rem; color:var(--text); line-height:1.6;">통제감 회복<br>모델 챗봇<br><span style="font-size:0.83rem; color:var(--text-sub);">"통제를 잃은 자리에,<br>통제를 돌려드립니다."</span></p>
+        </div>
+      </div>
+
+      <!-- 배경조사 박스 (아래 중앙) -->
+      <div style="display:flex; justify-content:center;">
+        <div style="width:2px; height:16px; background:var(--purple); margin:0 auto;"></div>
+      </div>
+      <div class="card purple" style="max-width:560px; margin:0 auto; text-align:center;">
+        <div class="card-label" style="color:var(--purple);">배경조사 — 경찰관 인터뷰 2인</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:0.9rem; text-align:left; margin-top:4px;">
+          <div>
+            <span style="color:var(--purple); font-weight:700;">발견 ①</span>
+            <p style="font-size:0.9rem; color:var(--text-sub); line-height:1.5; margin-top:3px;">세대 차이 — 베테랑은 끝까지 해결 욕구 / 젊은 세대는 감정 소모 호소</p>
+          </div>
+          <div>
+            <span style="color:var(--purple); font-weight:700;">발견 ②</span>
+            <p style="font-size:0.9rem; color:var(--text-sub); line-height:1.5; margin-top:3px;">지속성 천양지차 — 한 번만 vs 계절마다 문자<br><strong style="color:var(--text);">공통 핵심: 통제감</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───── SLIDE 3: 범죄피해자 주호소 ───── -->
+  <div class="slide s3" id="s3">
+    <div class="slide-inner">
+      <div class="tag" style="color:var(--red); border-color:var(--red);">범죄피해자 주호소</div>
+      <h2>피해자들이 호소하는 것들</h2>
+
+      <div class="cols cols-3" style="margin-bottom:16px;">
+        <div class="card" style="border-color:rgba(248,113,113,0.3);">
+          <div class="card-label" style="color:var(--red);">재경험</div>
+          <p style="font-size:0.95rem; color:var(--text); margin-bottom:6px;">악몽 · 플래시백 · 침습적 사고</p>
+          <span class="badge" style="background:rgba(248,113,113,0.1); color:var(--red);">DSM-5 Crit.B</span>
+        </div>
+        <div class="card" style="border-color:rgba(251,146,60,0.35);">
+          <div class="card-label" style="color:var(--orange);">회피</div>
+          <p style="font-size:0.95rem; color:var(--text); margin-bottom:6px;">외출 못 하겠다 · 사람 만나기 싫다</p>
+          <span class="badge" style="background:rgba(251,146,60,0.1); color:var(--orange);">DSM-5 Crit.C</span>
+        </div>
+        <div class="card" style="border-color:rgba(251,146,60,0.35);">
+          <div class="card-label" style="color:var(--orange);">과각성</div>
+          <p style="font-size:0.95rem; color:var(--text); margin-bottom:6px;">잠 못 잔다 · 예민해짐 · 집중력 저하</p>
+          <span class="badge" style="background:rgba(251,146,60,0.1); color:var(--orange);">DSM-5 Crit.E</span>
+        </div>
+        <div class="card green" style="border-color:rgba(52,211,153,0.4);">
+          <div class="card-label" style="color:var(--green);">무력감 · 통제감 상실 ★</div>
+          <p style="font-size:0.95rem; color:var(--text); margin-bottom:6px;">아무것도 못 하겠다 · 의사결정 마비</p>
+          <span class="badge green">Justice Canada 2003</span>
+        </div>
+        <div class="card green" style="border-color:rgba(52,211,153,0.4);">
+          <div class="card-label" style="color:var(--green);">우울 · 사회 고립 ★</div>
+          <p style="font-size:0.95rem; color:var(--text); margin-bottom:6px;">즐거움 상실 · 연락 끊김 · 방 안에만</p>
+          <span class="badge green">DSM-5 Crit.D</span>
+        </div>
+        <div class="card green" style="border-color:rgba(52,211,153,0.4);">
+          <div class="card-label" style="color:var(--green);">회피 행동 ★</div>
+          <p style="font-size:0.95rem; color:var(--text); margin-bottom:6px;">트라우마 상기 자극 피함 · 외출 거부</p>
+          <span class="badge green">DSM-5 Crit.C</span>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+        <span class="badge" style="background:rgba(248,113,113,0.1); color:var(--red);">Phase 2 범위 밖 (임상가)</span>
+        <span style="font-size:0.88rem; color:var(--text-sub);">재경험 · 과각성 · 해리 · 죄책감</span>
+        <span class="badge green">Phase 2 타깃</span>
+        <span style="font-size:0.88rem; color:var(--text-sub);">무력감 · 사회 고립 · 회피</span>
+      </div>
+
+      <blockquote>
+        "실제·지각된 통제감 상실이 피해자의 반응 방식을 결정하는 핵심 변수다"
+        <cite>— Justice Canada (2003). Victims' Response to Trauma and Implications for Interventions</cite>
+      </blockquote>
+    </div>
+  </div>
+
+  <!-- ───── SLIDE 4: 왜 통제감인가 ───── -->
+  <div class="slide" id="s4">
+    <div class="slide-inner">
+      <div class="tag gold">핵심 메커니즘</div>
+      <h2>왜 통제감 회복인가?</h2>
+
+      <!-- 공통 뿌리 -->
+      <div class="hl-box gold" style="text-align:center; margin-bottom:16px;">
+        <div style="font-size:0.72rem; color:var(--gold); font-weight:700; letter-spacing:1px; margin-bottom:6px;">공통 뿌리</div>
+        <p style="font-size:1.15rem; font-weight:700; color:var(--gold-light);">실제 · 지각된 통제감 상실</p>
+        <p style="font-size:0.92rem; color:var(--text-sub); margin-top:4px;">범죄 = 내가 선택하지 않은 일이 내 삶에 침입한 사건</p>
+        <p style="font-size:0.86rem; color:var(--text-sub); margin-top:2px;">통제감 지각 낮음 → PTSD 발생률 높음 — Kushner et al. (1993)</p>
+      </div>
+
+      <!-- 3개 파생 -->
+      <div class="cols cols-3" style="margin-bottom:16px;">
+        <div style="text-align:center;">
+          <div style="font-size:1.5rem; margin-bottom:6px;">↓</div>
+          <div class="card orange">
+            <div class="card-label" style="color:var(--orange);">회피</div>
+            <p style="font-size:0.9rem; color:var(--text-sub); line-height:1.5;">"못 나가겠다"<br>환경 통제 불가 인식</p>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:1.5rem; margin-bottom:6px;">↓</div>
+          <div class="card orange">
+            <div class="card-label" style="color:var(--orange);">무력감</div>
+            <p style="font-size:0.9rem; color:var(--text-sub); line-height:1.5;">"못 하겠다"<br>의사결정 마비</p>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:1.5rem; margin-bottom:6px;">↓</div>
+          <div class="card orange">
+            <div class="card-label" style="color:var(--orange);">사회 고립</div>
+            <p style="font-size:0.9rem; color:var(--text-sub); line-height:1.5;">"안 즐겁다"<br>긍정 활동 감소</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 통제감 회복 시 -->
+      <div class="hl-box" style="text-align:center; margin-bottom:12px;">
+        <span style="font-size:0.92rem; color:var(--teal); font-weight:700;">통제감이 회복되면 세 방향이 동시에 풀린다</span>
+        <div style="display:flex; justify-content:center; gap:24px; margin-top:8px; font-size:0.88rem; color:var(--text-sub);">
+          <span>회피 완화 <span style="color:var(--green);">↑</span></span>
+          <span>작은 선택 → 효능감 <span style="color:var(--green);">↑</span></span>
+          <span>긍정 활동 재개 <span style="color:var(--green);">↑</span></span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <blockquote style="flex:1; min-width:280px; margin:0;">
+          "범죄피해자의 대처는 인식 부정 → 혼란 수용 → <strong>대처 변화</strong> → 의미 부여 4단계를 거친다"
+          <cite>— 장은진 (2018). 사회과학연구 · KCI</cite>
+        </blockquote>
+        <blockquote style="flex:1; min-width:280px; margin:0;">
+          "자기효능감이 외상 후 회복의 핵심 매개변수다"
+          <cite>— Bandura (1977, 1997)</cite>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───── SLIDE 5: EBT 구조 ───── -->
+  <div class="slide s5" id="s5">
+    <div class="slide-inner">
+      <div class="tag blue">EBT 구조</div>
+      <h2>PFA + SPR — 공식 연속선</h2>
+
+      <!-- 타임라인 -->
+      <div class="timeline" style="margin-bottom:20px;">
+        <div class="tl-item">
+          <div class="tl-dot blue">P1</div>
+          <div class="tl-label" style="color:var(--blue);">Phase 1</div>
+          <div class="tl-sub">사건 D+0 ~ D+2</div>
+          <div class="tl-ebt"><span class="badge blue" style="font-size:0.65rem;">PFA</span></div>
+          <div style="text-align:center; font-size:0.8rem; color:var(--text-sub); margin-top:4px;">골든타임<br>1~2회</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot green">P2</div>
+          <div class="tl-label" style="color:var(--green);">Phase 2</div>
+          <div class="tl-sub">D+3 ~ D+30</div>
+          <div class="tl-ebt"><span class="badge green" style="font-size:0.65rem;">SPR</span></div>
+          <div style="text-align:center; font-size:0.8rem; color:var(--text-sub); margin-top:4px;">ASD 위험기<br>주 2~3회</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot orange">P3</div>
+          <div class="tl-label" style="color:var(--orange);">Phase 3</div>
+          <div class="tl-sub">D+30 ~ D+90</div>
+          <div class="tl-ebt"><span class="badge" style="background:rgba(251,146,60,0.12); color:var(--orange); font-size:0.65rem;">임상 게이트</span></div>
+          <div style="text-align:center; font-size:0.8rem; color:var(--text-sub); margin-top:4px;">PTSD 분기점<br>스마일센터 연계</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot purple">P4</div>
+          <div class="tl-label" style="color:var(--purple);">Phase 4</div>
+          <div class="tl-sub">D+90 ~ D+365</div>
+          <div class="tl-ebt"><span class="badge purple" style="font-size:0.65rem;">Follow-up</span></div>
+          <div style="text-align:center; font-size:0.8rem; color:var(--text-sub); margin-top:4px;">회복기<br>월 1~2회</div>
+        </div>
+      </div>
+
+      <!-- EBT 이론 3개 -->
+      <div class="cols cols-3">
+        <div class="card blue">
+          <div class="card-label" style="color:var(--blue);">PFA (WHO 2011)</div>
+          <p style="font-size:0.9rem; color:var(--text-sub); line-height:1.6;">8대 핵심 활동<br>비전문가 적용 설계<br>재난·범죄 국제 표준</p>
+          <div style="margin-top:8px;"><span class="badge blue">Phase 1</span></div>
+        </div>
+        <div class="card green">
+          <div class="card-label" style="color:var(--green);">SPR (NCTSN 2010)</div>
+          <p style="font-size:0.9rem; color:var(--text-sub); line-height:1.6;">PFA <strong style="color:var(--green);">공식 후속</strong> EBT<br>비전문가 자기적용 설계<br>6기술 → 우리 5카테고리</p>
+          <div style="margin-top:8px;"><span class="badge green">Phase 2</span></div>
+        </div>
+        <div class="card purple">
+          <div class="card-label" style="color:var(--purple);">Bandura + BA</div>
+          <p style="font-size:0.9rem; color:var(--text-sub); line-height:1.6;">자기효능감 4원천<br>BA Monitoring (측정만)<br>작은 성공 → 다음 선택</p>
+          <div style="margin-top:8px;"><span class="badge purple">Phase 2 이론 축</span></div>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:14px; font-size:0.92rem; color:var(--teal); font-weight:600;">
+        "PFA + SPR 자동화 — 치료가 아닌, 회복 환경 제공"
+      </div>
+    </div>
+  </div>
+
+  <!-- ───── SLIDE 6: RAG Phase 1 ───── -->
+  <div class="slide" id="s6">
+    <div class="slide-inner">
+      <div class="tag blue">RAG 구현 · Phase 1</div>
+      <h2>PFA → RAG → 10턴 챗봇</h2>
+
+      <div style="display:grid; grid-template-columns: 1fr 28px 1fr 28px 1fr; gap:0; align-items:start; margin-bottom:14px;">
+
+        <!-- EBT 이론 -->
+        <div class="card blue">
+          <div class="card-label" style="color:var(--blue);">EBT 이론</div>
+          <div style="font-size:0.9rem; color:var(--text-sub); line-height:1.7;">
+            PFA 8대 활동<br>OARS 기법<br>Tier 경계 모델
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:center; height:80px;">
+          <span style="color:var(--blue); font-size:1.3rem;">→</span>
+        </div>
+
+        <!-- RAG 지식문서 -->
+        <div class="card" style="border-color:rgba(45,212,191,0.4);">
+          <div class="card-label" style="color:var(--teal);">RAG 지식문서</div>
+          <div style="font-size:0.88rem; color:var(--text-sub); line-height:1.7;">
+            §1 챗봇 정의·위치<br>§2 PFA 매핑표<br>§3 OARS 규칙<br>§4 Tier 경계<br>§5 턴 스크립트
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:center; height:80px;">
+          <span style="color:var(--teal); font-size:1.3rem;">→</span>
+        </div>
+
+        <!-- 챗봇 실행 -->
+        <div class="card green">
+          <div class="card-label" style="color:var(--green);">챗봇 실행 (10턴)</div>
+          <div style="font-size:0.88rem; line-height:1.7;">
+            <span style="color:var(--text-sub);">턴 1</span> 인사 + 안전 확인<br>
+            <span style="color:var(--text-sub);">턴 2~3</span> 안정화<br>
+            <span style="color:var(--text-sub);">턴 3~5</span> 정보 수집<br>
+            <span style="color:var(--text-sub);">턴 7</span> 지원기관 안내<br>
+            <span style="color:var(--text-sub);">턴 9~10</span> 요약서 생성
+          </div>
+        </div>
+      </div>
+
+      <!-- PFA 매핑 테이블 -->
+      <table>
+        <thead>
+          <tr>
+            <th style="width:28%;">PFA 핵심 활동</th>
+            <th style="width:44%;">챗봇 적용</th>
+            <th style="width:28%;">해당 턴</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>① 접촉·관계 형성</td><td>인사, 봇 소개, 비판단적 태도</td><td><span class="badge blue">턴 1</span></td></tr>
+          <tr><td>② 안전과 안정</td><td>현재 안전 확인, 위기 시 즉시 연결</td><td><span class="badge blue">턴 1~2</span></td></tr>
+          <tr><td>③ 안정화</td><td>감정 수용, 반영적 경청</td><td><span class="badge blue">턴 2~3</span></td></tr>
+          <tr><td>④ 정보 수집</td><td>피해 개요 파악</td><td><span class="badge blue">턴 3~5</span></td></tr>
+          <tr><td>⑤ 실질적 도움</td><td>면담 준비, 진술 리허설</td><td><span class="badge blue">턴 8</span></td></tr>
+          <tr><td>⑥⑦ 지지 연결·대처 정보</td><td>스마일센터·법률지원 안내, 권리 고지</td><td><span class="badge blue">턴 7</span></td></tr>
+          <tr><td>⑧ 후속 서비스 연계</td><td>면담 요약서 생성 → 전달</td><td><span class="badge blue">턴 9~10</span></td></tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:10px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <span class="badge" style="background:rgba(248,113,113,0.1); color:var(--red);">Tier 4 진단 ❌</span>
+        <span class="badge" style="background:rgba(248,113,113,0.1); color:var(--red);">Tier 3 치료 ❌</span>
+        <span style="color:var(--border);">|</span>
+        <span class="badge teal">Tier 2 PFA ✅</span>
+        <span class="badge teal">Tier 1 정보 ✅</span>
+        <span style="font-size:0.88rem; color:var(--text-sub); margin-left:4px;">총 10턴 · 약 15분</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───── SLIDE 7: RAG Phase 2 ───── -->
+  <div class="slide" id="s7">
+    <div class="slide-inner">
+      <div class="tag green">Phase 2 · D+3일 이후</div>
+      <h2>통제감 회복 체크인 — 어떻게 작동하나?</h2>
+
+      <!-- 상단: 시작 방법 (Warm Handoff) -->
+      <div class="card" style="border-color:rgba(245,158,11,0.5); background:rgba(245,158,11,0.04); margin-bottom:12px; padding:14px 20px;">
+        <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+          <div>
+            <div class="card-label" style="color:var(--gold);">① 경찰관이 시작한다</div>
+            <p style="font-size:0.95rem; color:var(--text); margin-top:2px;">D+3일, 전담경찰관이 링크를 보내며 첫 줄을 입력</p>
+          </div>
+          <div style="flex:1; min-width:220px;">
+            <code style="display:block; font-size:0.9rem; background:var(--bg-card2); padding:8px 12px; border-radius:6px; color:var(--teal); line-height:1.7;">
+              사건유형: 강도<br>
+              D+4일째<br>
+              상태: 어젯밤 잠 못 잔다고 함
+            </code>
+          </div>
+          <div style="font-size:0.84rem; color:var(--text-sub);">= Warm Handoff<br>Bower & Gilbody, 2005</div>
+        </div>
+      </div>
+
+      <!-- 중단: 5개 질문 (가로 흐름) -->
+      <div class="card-label" style="color:var(--green); font-size:0.86rem; margin-bottom:8px;">② 피해자가 5개 질문에 답한다 — 주 2~3회 반복</div>
+      <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; margin-bottom:12px;">
+
+        <div class="card" style="padding:12px 14px; border-color:rgba(52,211,153,0.35);">
+          <div style="font-size:0.76rem; color:var(--green); font-weight:700; margin-bottom:5px;">턴 2</div>
+          <div style="font-size:0.92rem; font-weight:700; color:var(--text); margin-bottom:5px;">자기돌봄</div>
+          <div style="font-size:0.82rem; color:var(--gold-light); font-style:italic; margin-bottom:5px; line-height:1.4;">"어젯밤 잠은 어떠셨어요?"</div>
+          <div style="font-size:0.78rem; color:var(--text-sub);">수면·식사·위생</div>
+        </div>
+
+        <div class="card" style="padding:12px 14px; border-color:rgba(52,211,153,0.35);">
+          <div style="font-size:0.76rem; color:var(--green); font-weight:700; margin-bottom:5px;">턴 3</div>
+          <div style="font-size:0.92rem; font-weight:700; color:var(--text); margin-bottom:5px;">외부 활동</div>
+          <div style="font-size:0.82rem; color:var(--gold-light); font-style:italic; margin-bottom:5px; line-height:1.4;">"오늘 밖에 나가셨나요?"</div>
+          <div style="font-size:0.78rem; color:var(--text-sub);">외출·사람 만남<br>회피 패턴 기록</div>
+        </div>
+
+        <div class="card" style="padding:12px 14px; border-color:rgba(52,211,153,0.35);">
+          <div style="font-size:0.76rem; color:var(--green); font-weight:700; margin-bottom:5px;">턴 4</div>
+          <div style="font-size:0.92rem; font-weight:700; color:var(--text); margin-bottom:5px;">선택·결정</div>
+          <div style="font-size:0.82rem; color:var(--gold-light); font-style:italic; margin-bottom:5px; line-height:1.4;">"오늘 뭔가 직접 결정하셨나요?"</div>
+          <div style="font-size:0.78rem; color:var(--text-sub);">작은 선택도 OK<br>Locus of Control</div>
+        </div>
+
+        <div class="card" style="padding:12px 14px; border-color:rgba(52,211,153,0.35);">
+          <div style="font-size:0.76rem; color:var(--green); font-weight:700; margin-bottom:5px;">턴 5</div>
+          <div style="font-size:0.92rem; font-weight:700; color:var(--text); margin-bottom:5px;">숙달·즐거움</div>
+          <div style="font-size:0.82rem; color:var(--gold-light); font-style:italic; margin-bottom:5px; line-height:1.4;">"해냈다는 느낌 있으셨나요?"</div>
+          <div style="font-size:0.78rem; color:var(--text-sub);">작은 성공 → 효능감<br>Bandura(1977)</div>
+        </div>
+
+        <div class="card" style="padding:12px 14px; border-color:rgba(245,158,11,0.5); background:rgba(245,158,11,0.04);">
+          <div style="font-size:0.76rem; color:var(--gold); font-weight:700; margin-bottom:5px;">턴 6 · 핵심</div>
+          <div style="font-size:0.92rem; font-weight:700; color:var(--gold-light); margin-bottom:5px;">통제감 점수</div>
+          <div style="font-size:0.82rem; color:var(--gold-light); font-style:italic; margin-bottom:5px; line-height:1.4;">"내 삶을 내가 이끄는 느낌, 0~10점?"</div>
+          <div style="font-size:0.78rem; color:var(--text-sub);">매 세션 기록<br>추세로 회복 판단</div>
+        </div>
+      </div>
+
+      <!-- 하단: 결과 -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div class="hl-box" style="font-size:0.9rem;">
+          <span style="color:var(--teal); font-weight:700;">턴 7 — Affirmation</span>
+          <p style="color:var(--text-sub); margin-top:4px; line-height:1.5;">"오늘 [가장 긍정적인 것] 하셨네요.<br>그것만으로도 충분해요."</p>
+          <p style="color:var(--text-sub); margin-top:4px; font-size:0.82rem;">작은 성공 인정 → 자기효능감 축적</p>
+        </div>
+        <div class="hl-box red" style="font-size:0.9rem;">
+          <span style="color:var(--orange); font-weight:700;">임상 게이트 기준</span>
+          <p style="color:var(--text-sub); margin-top:4px; line-height:1.5;">통제감 점수 4주 연속 3점 이하<br>→ 전담경찰관 알림 → 스마일센터 연계</p>
+          <p style="color:var(--text-sub); margin-top:4px; font-size:0.82rem;">치료 아님 — 게이트키퍼 역할만</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───── SLIDE 8: Phase 1→2 전환 ───── -->
+  <div class="slide" id="s8">
+    <div class="slide-inner">
+      <div class="tag">챗봇 운영 구조</div>
+      <h2>3개 RAG — 분기 플로우</h2>
+
+      <div style="display:flex; flex-direction:column; gap:0; align-items:stretch;">
+
+        <!-- RAG 1: 사고 당일 -->
+        <div style="display:flex; align-items:stretch; gap:0;">
+          <div style="background:rgba(59,130,246,0.08); border:1.5px solid var(--blue); border-radius:10px; padding:14px 20px; flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div>
+                <div style="font-size:0.8rem; font-weight:700; color:var(--blue); letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px;">RAG ① · 사고 당일</div>
+                <div style="font-size:1.0rem; font-weight:700; color:var(--text);">PFA 면담</div>
+                <div style="font-size:0.88rem; color:var(--text-sub); margin-top:3px;">D+0~72h · 1~2회 · 면담 요약서 자동 생성</div>
+              </div>
+              <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                <span class="badge blue">WHO 2011</span>
+                <span class="badge blue">NCTSN 2006</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 10px; gap:3px;">
+            <div style="font-size:0.78rem; color:var(--gold); font-weight:700; white-space:nowrap;">경찰관 확인</div>
+            <div style="font-size:0.78rem; color:var(--gold); font-weight:700; white-space:nowrap;">→ 링크 전송</div>
+          </div>
+        </div>
+
+        <!-- 화살표 -->
+        <div style="text-align:center; font-size:1.4rem; color:var(--text-sub); line-height:1.2; padding:2px 0;">↓</div>
+
+        <!-- RAG 2: 첫 체크인 -->
+        <div style="display:flex; align-items:stretch; gap:0;">
+          <div style="background:rgba(52,211,153,0.07); border:1.5px solid var(--green); border-radius:10px; padding:14px 20px; flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div>
+                <div style="font-size:0.8rem; font-weight:700; color:var(--green); letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px;">RAG ② · 첫 체크인</div>
+                <div style="font-size:1.0rem; font-weight:700; color:var(--text);">통제감 회복 시도</div>
+                <div style="font-size:0.88rem; color:var(--text-sub); margin-top:3px;">D+3~ · 1회 · SUC 기준점 측정 + 행동 첫 설계</div>
+              </div>
+              <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                <span class="badge green">SPR 2010</span>
+                <span class="badge green">Bandura 1977</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 10px; gap:3px;">
+            <div style="font-size:0.78rem; color:var(--gold); font-weight:700; white-space:nowrap;">리포트 확인</div>
+            <div style="font-size:0.78rem; color:var(--gold); font-weight:700; white-space:nowrap;">→ 다음 세션</div>
+          </div>
+        </div>
+
+        <!-- 분기 화살표 -->
+        <div style="display:grid; grid-template-columns:1fr 40px 1fr; align-items:start; margin-top:2px;">
+          <div style="text-align:right; padding-right:8px;">
+            <div style="font-size:1.2rem; color:var(--text-sub);">↙</div>
+            <div style="font-size:0.7rem; color:var(--text-sub); font-weight:600;">오늘은 패스</div>
+          </div>
+          <div></div>
+          <div style="text-align:left; padding-left:8px;">
+            <div style="font-size:1.2rem; color:var(--text-sub);">↘</div>
+            <div style="font-size:0.7rem; color:var(--text-sub); font-weight:600;">행동 참여</div>
+          </div>
+        </div>
+
+        <!-- RAG 3: 분기 두 모드 -->
+        <div style="display:grid; grid-template-columns:1fr 12px 1fr; gap:0; align-items:stretch;">
+
+          <!-- 3-1 거부 모드 -->
+          <div style="background:rgba(251,146,60,0.07); border:1.5px solid var(--orange); border-radius:10px; padding:13px 16px;">
+            <div style="font-size:0.78rem; font-weight:700; color:var(--orange); letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px;">RAG ③-1 · 오늘은 패스</div>
+            <div style="font-size:0.95rem; font-weight:700; color:var(--text); margin-bottom:4px;">체크인만 계속</div>
+            <div style="font-size:0.85rem; color:var(--text-sub); line-height:1.5;">5카테고리 모니터링<br>행동 설계 없이 유지</div>
+            <div style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(251,146,60,0.2); font-size:0.82rem;">
+              <span style="color:var(--red); font-weight:700;">3회 연속 →</span>
+              <span style="color:var(--text-sub);"> 경찰관 연계 신호</span>
+            </div>
+          </div>
+
+          <div></div>
+
+          <!-- 3-2 참여 모드 -->
+          <div style="background:rgba(167,139,250,0.07); border:1.5px solid #a78bfa; border-radius:10px; padding:13px 16px;">
+            <div style="font-size:0.78rem; font-weight:700; color:var(--purple); letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px;">RAG ③-2 · 행동 참여</div>
+            <div style="font-size:0.95rem; font-weight:700; color:var(--text); margin-bottom:4px;">같이 설계</div>
+            <div style="font-size:0.85rem; color:var(--text-sub); line-height:1.5;">Bandura 단계 조정<br>SMART-Tiny 행동 반복 설계</div>
+            <div style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(196,181,253,0.2); font-size:0.82rem;">
+              <span style="color:var(--purple); font-weight:700;">4주 안정 →</span>
+              <span style="color:var(--text-sub);"> 경찰관에게 신호</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:12px; padding:10px 16px; background:var(--bg-card2); border-radius:8px; border:1.5px solid var(--border); font-size:0.85rem; color:var(--text-sub); display:flex; gap:16px; flex-wrap:wrap;">
+        <span><strong style="color:var(--gold);">반수동 운영</strong> — 경찰관이 리포트 확인 후 다음 세션 링크 전송</span>
+        <span><strong style="color:var(--gold);">분기 기준</strong> — 날짜 아닌 행동 참여 여부</span>
+        <span><strong style="color:var(--gold);">Warm Handoff</strong> — Bower & Gilbody 2005</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───── SLIDE 9: 마무리 ───── -->
+  <div class="slide s9" id="s9">
+    <div class="slide-inner" style="text-align:center;">
+      <div class="tag gold">Summary</div>
+      <p style="font-size:clamp(1.3rem,2.6vw,1.8rem); font-weight:700; color:var(--gold-light); margin-bottom:24px; line-height:1.5;">
+        "통제를 잃은 자리에, 통제를 돌려드립니다"
+      </p>
+
+      <!-- Phase 미니맵 -->
+      <div class="timeline" style="margin-bottom:24px;">
+        <div class="tl-item">
+          <div class="tl-dot blue">P1</div>
+          <div class="tl-label" style="color:var(--blue); font-size:0.88rem;">PFA 자동화</div>
+          <div class="tl-sub">10턴 · 15분</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot green">P2</div>
+          <div class="tl-label" style="color:var(--green); font-size:0.88rem;">SPR 자동화</div>
+          <div class="tl-sub">7턴 · 반복</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot orange">P3</div>
+          <div class="tl-label" style="color:var(--orange); font-size:0.88rem;">임상 게이트</div>
+          <div class="tl-sub">스마일센터</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot purple">P4</div>
+          <div class="tl-label" style="color:var(--purple); font-size:0.88rem;">Follow-up</div>
+          <div class="tl-sub">월 1~2회</div>
+        </div>
+      </div>
+
+      <!-- 설계 원칙 -->
+      <div class="cols cols-3" style="margin-bottom:20px; text-align:left;">
+        <div class="card teal">
+          <div class="card-label" style="color:var(--teal);">치료 아님</div>
+          <p style="font-size:0.92rem; color:var(--text-sub); line-height:1.5;">Tier 1·2 한정<br>측정·환경만 제공</p>
+        </div>
+        <div class="card teal">
+          <div class="card-label" style="color:var(--teal);">선택권 보장</div>
+          <p style="font-size:0.92rem; color:var(--text-sub); line-height:1.5;">피해자가 속도 결정<br>강제 없음</p>
+        </div>
+        <div class="card teal">
+          <div class="card-label" style="color:var(--teal);">사각지대 해소</div>
+          <p style="font-size:0.92rem; color:var(--text-sub); line-height:1.5;">스마일센터 대체 ❌<br>18,500명 닿게 함 ✅</p>
+        </div>
+      </div>
+
+      <!-- 근거 -->
+      <div style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center;">
+        <span class="badge blue">PFA · WHO 2011</span>
+        <span class="badge green">SPR · NCTSN 2010</span>
+        <span class="badge gold">Kushner et al. 1993</span>
+        <span class="badge purple">Bandura 1977</span>
+        <span class="badge" style="background:rgba(167,139,250,0.12); color:#c4b5fd;">장은진 2018 KCI</span>
+        <span class="badge" style="background:rgba(45,212,191,0.12); color:var(--teal);">Justice Canada 2003</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───── SLIDE 10: 대화 시뮬레이션 ───── -->
+  <div class="slide" id="s10">
+    <div class="slide-inner" style="max-width:1100px;">
+      <div class="tag purple">Live Demo</div>
+      <h2>실제 대화 — EBT 발현 지점</h2>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start;">
+
+        <!-- LEFT: Phase 1 -->
+        <div>
+          <div style="font-size:0.72rem; font-weight:700; color:var(--blue); letter-spacing:.1em; text-transform:uppercase; margin-bottom:10px; padding:5px 12px; background:rgba(147,197,253,0.1); border:1px solid rgba(147,197,253,0.3); border-radius:6px; display:inline-block;">RAG ① · 사고 당일 · Phase 1</div>
+
+          <!-- 페르소나 -->
+          <div style="background:var(--bg-card2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin-bottom:10px; font-size:0.82rem; color:var(--text-sub);">
+            <strong style="color:var(--text);">이정훈</strong> · 43세 · 배달 라이더 · 흉기 강도 피해 D+0
+          </div>
+
+          <!-- 대화들 -->
+          <div style="display:flex; flex-direction:column; gap:8px;">
+
+            <!-- Turn 2 HL -->
+            <div style="border:1.5px solid var(--gold); border-radius:10px; background:rgba(245,158,11,0.06); padding:10px 13px;">
+              <div style="font-size:0.68rem; font-weight:700; color:var(--gold); margin-bottom:6px;">★ PFA 안정화 — 감정 정상화</div>
+              <div style="font-size:0.8rem; color:var(--blue); font-weight:600; margin-bottom:3px;">🤖 Turn 2</div>
+              <div style="font-size:0.82rem; color:var(--text); line-height:1.55;">칼을 들이대는 일을 겪으셔서 지금도 손이 떨리시는 게 <strong>너무 당연해요.</strong> 그래도 지금 집에서 이렇게 말씀해 주시는 것만으로도 정말 큰 일을 해내고 계신 거예요.</div>
+            </div>
+
+            <!-- Turn 5 HL -->
+            <div style="border:1.5px solid var(--gold); border-radius:10px; background:rgba(245,158,11,0.06); padding:10px 13px;">
+              <div style="font-size:0.68rem; font-weight:700; color:var(--gold); margin-bottom:6px;">★ PFA 안정화 — 자기비판 교정 · 자기효능감</div>
+              <div style="font-size:0.8rem; color:var(--text-sub); font-weight:600; margin-bottom:3px;">👤 이정훈</div>
+              <div style="font-size:0.82rem; color:var(--text); line-height:1.55; margin-bottom:6px;">그냥 아무것도 못 하고 줬어요. ...저도 바보 같은데 그냥 얼어서.</div>
+              <div style="font-size:0.8rem; color:var(--blue); font-weight:600; margin-bottom:3px;">🤖 Turn 5</div>
+              <div style="font-size:0.82rem; color:var(--text); line-height:1.55;">목에 칼을 대고 협박을 당하셨으면 <strong>누구라도 얼 수밖에 없습니다.</strong> 그건 바보 같아서가 아니고, 몸이 위험에서 스스로를 지키려고 한 <strong>자연스러운 반응입니다.</strong></div>
+            </div>
+
+            <!-- Turn 8 HL -->
+            <div style="border:1.5px solid var(--gold); border-radius:10px; background:rgba(245,158,11,0.06); padding:10px 13px;">
+              <div style="font-size:0.68rem; font-weight:700; color:var(--gold); margin-bottom:6px;">★ PFA 대처 정보 — 면담 리허설 · 자기결정권</div>
+              <div style="font-size:0.8rem; color:var(--text-sub); font-weight:600; margin-bottom:3px;">👤 이정훈</div>
+              <div style="font-size:0.82rem; color:var(--text); line-height:1.55; margin-bottom:6px;">"어제 밤에 배달하다가 칼로 위협당하고 오토바이랑 다 뺏겼는데요. <strong>오토바이 없으면 일을 못 해서 그거 도움 좀 받고 싶습니다.</strong>"</div>
+              <div style="font-size:0.75rem; color:var(--green);">→ 피해자가 직접 표현 연습 — 면담 통제감 확보</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT: Phase 2 -->
+        <div>
+          <div style="font-size:0.72rem; font-weight:700; color:var(--green); letter-spacing:.1em; text-transform:uppercase; margin-bottom:10px; padding:5px 12px; background:rgba(110,231,183,0.1); border:1px solid rgba(110,231,183,0.3); border-radius:6px; display:inline-block;">RAG ②③ · 통제감 회복 · Phase 2</div>
+
+          <!-- 페르소나 -->
+          <div style="background:var(--bg-card2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin-bottom:10px; font-size:0.82rem; color:var(--text-sub);">
+            <strong style="color:var(--text);">이정훈</strong> · D+3 첫 체크인 (SUC 1점) → D+18 후속 (SUC 2점)
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:8px;">
+
+            <!-- D+3 거절권 HL -->
+            <div style="border:1.5px solid var(--gold); border-radius:10px; background:rgba(245,158,11,0.06); padding:10px 13px;">
+              <div style="font-size:0.68rem; font-weight:700; color:var(--gold); margin-bottom:6px;">★ PFA 안정화 — 집에 있는 것 수용 · 자율성</div>
+              <div style="font-size:0.8rem; color:var(--text-sub); font-weight:600; margin-bottom:3px;">👤 D+3 이정훈</div>
+              <div style="font-size:0.82rem; color:var(--text); line-height:1.55; margin-bottom:6px;">네… 그냥 집에만 있어요. 배달도 못 나가고.</div>
+              <div style="font-size:0.8rem; color:var(--blue); font-weight:600; margin-bottom:3px;">🤖 봇</div>
+              <div style="font-size:0.82rem; color:var(--text); line-height:1.55;">집에 계신 거, 지금은 <strong>그게 맞는 선택일 수 있어요.</strong> 억지로 나가야 한다는 건 없어요.</div>
+            </div>
+
+            <!-- D+18 거절권 HL -->
+            <div style="border:1.5px solid var(--gold); border-radius:10px; background:rgba(245,158,11,0.06); padding:10px 13px;">
+              <div style="font-size:0.68rem; font-weight:700; color:var(--gold); margin-bottom:6px;">★ Herman 자율성 — 거절권 행사 = 통제감 핵심</div>
+              <div style="font-size:0.8rem; color:var(--text-sub); font-weight:600; margin-bottom:3px;">👤 D+18 이정훈</div>
+              <div style="font-size:0.82rem; color:var(--text); line-height:1.55; margin-bottom:6px;">아내가 어디 같이 가자고 하는데 <strong>"오늘은 못 가겠다"고 했어요. 처음으로.</strong></div>
+              <div style="font-size:0.8rem; color:var(--blue); font-weight:600; margin-bottom:3px;">🤖 봇</div>
+              <div style="font-size:0.82rem; color:var(--text); line-height:1.55;"><strong>조금은 내가 정할 수 있는 것</strong>을 챙기고 계신다는 신호로 느껴집니다.</div>
+            </div>
+
+            <!-- SUC + Bandura HL -->
+            <div style="border:1.5px solid var(--gold); border-radius:10px; background:rgba(245,158,11,0.06); padding:10px 13px;">
+              <div style="font-size:0.68rem; font-weight:700; color:var(--gold); margin-bottom:6px;">★ Bandura 단계 조정 — 편의점→현관문 · 자기효능감</div>
+              <div style="font-size:0.8rem; color:var(--text-sub); font-weight:600; margin-bottom:3px;">👤 이정훈</div>
+              <div style="font-size:0.82rem; color:var(--text); line-height:1.55; margin-bottom:6px;">밖에 나가면 심장이 뛰어요. 편의점도 겨우 간 건데 그 다음부터 더 못 나가게 됐어요.</div>
+              <div style="font-size:0.8rem; color:var(--blue); font-weight:600; margin-bottom:3px;">🤖 봇 → 행동 설계</div>
+              <div style="font-size:0.82rem; color:var(--text); line-height:1.55;">① 집 안에서 <strong>현관문 앞까지만</strong> 걸어가 보기. 문은 꼭 안 열어도 됩니다.<br><span style="color:var(--green); font-size:0.78rem;">→ 이정훈: "①번이요. 해볼 수 있을 것 같아요." ← 자기효능감 발화</span></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SUC 추세 -->
+      <div style="margin-top:14px; display:flex; align-items:center; gap:16px; padding:10px 16px; background:var(--bg-card2); border:1px solid var(--border); border-radius:8px;">
+        <span style="font-size:0.78rem; font-weight:700; color:var(--text-sub); white-space:nowrap;">SUC 추세</span>
+        <span style="font-size:0.82rem; color:var(--red);">D+3 · <strong>1점</strong></span>
+        <div style="flex:1; height:8px; background:#1e2535; border-radius:4px; overflow:hidden;">
+          <div style="width:8%; height:100%; background:linear-gradient(90deg,#ef4444,#f97316); border-radius:4px;"></div>
+        </div>
+        <span style="font-size:0.82rem; color:var(--gold);">D+18 · <strong>2점</strong></span>
+        <div style="flex:1; height:8px; background:#1e2535; border-radius:4px; overflow:hidden;">
+          <div style="width:20%; height:100%; background:linear-gradient(90deg,#f59e0b,#84cc16); border-radius:4px;"></div>
+        </div>
+        <span style="font-size:0.75rem; color:var(--text-sub);">Bandura 숙달 경험 누적</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.deck -->
+
+<!-- 네비게이션 -->
+<nav class="nav">
+  <button class="nav-btn" id="prevBtn">‹</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="nextBtn">›</button>
+  <span class="nav-counter" id="counter">1 / 10</span>
+</nav>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const dotsEl = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const badge = document.getElementById('slideNumBadge');
+  let cur = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => go(i);
+    dotsEl.appendChild(d);
+  });
+
+  function go(n) {
+    slides[cur].classList.remove('visible');
+    setTimeout(() => {
+      slides[cur].classList.remove('active');
+      cur = (n + slides.length) % slides.length;
+      slides[cur].classList.add('active');
+      requestAnimationFrame(() => requestAnimationFrame(() => slides[cur].classList.add('visible')));
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+      const label = `${cur + 1} / ${slides.length}`;
+      counter.textContent = label;
+      badge.textContent = label;
+    }, 200);
+  }
+
+  document.getElementById('prevBtn').onclick = () => go(cur - 1);
+  document.getElementById('nextBtn').onclick = () => go(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(cur + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(cur - 1);
+  });
+
+  slides[0].classList.add('active');
+  requestAnimationFrame(() => requestAnimationFrame(() => slides[0].classList.add('visible')));
+</script>
+</body>
+</html>
